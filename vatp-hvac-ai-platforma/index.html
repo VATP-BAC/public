@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VATP HVAC AI Platforma</title>
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --text-secondary: #5a5a5a;
+      --accent: #2f5b4e;
+      --accent-light: #e8f0ec;
+      --border: #e5e2dc;
+      --risk-critical: #c0392b;
+      --risk-high: #e67e22;
+      --risk-medium: #f39c12;
+      --risk-low: #27ae60;
+      --decision: #2980b9;
+      --tag-bg: #f0ede8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { overflow: hidden; height: 100%; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Slide system - page-based, no scrolling */
+    .slides-container {
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slide {
+      height: 100vh;
+      width: 100%;
+      padding: 48px 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Typography */
+    h1 {
+      font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin-bottom: 28px;
+    }
+
+    .label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+
+    /* Screenshots */
+    .screenshot {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .screenshot img {
+      width: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .screenshot-caption {
+      padding: 10px 14px;
+      background: var(--card);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border);
+    }
+
+    /* Constrain screenshot height to fit in viewport */
+    .screenshot-fit {
+      max-height: calc(100vh - 260px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screenshot-fit img {
+      flex: 1;
+      min-height: 0;
+      object-fit: contain;
+    }
+
+    /* Architecture layers */
+    .arch-layer {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+
+    .arch-layer-num {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-right: 14px;
+      flex-shrink: 0;
+    }
+
+    .arch-layer-title {
+      font-weight: 600;
+      margin-right: 10px;
+      white-space: nowrap;
+      font-size: 0.9rem;
+    }
+
+    .arch-layer-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .arch-highlight {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    /* Risk items */
+    .risk-item {
+      padding: 12px 16px;
+      border-left: 4px solid;
+      background: var(--card);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 8px;
+    }
+
+    .risk-critical { border-color: var(--risk-critical); }
+    .risk-high { border-color: var(--risk-high); }
+    .risk-medium { border-color: var(--risk-medium); }
+
+    .risk-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+
+    .risk-critical .risk-label { color: var(--risk-critical); }
+    .risk-high .risk-label { color: var(--risk-high); }
+    .risk-medium .risk-label { color: var(--risk-medium); }
+
+    /* Decision items */
+    .decision-item {
+      padding: 12px 16px;
+      border-left: 4px solid var(--decision);
+      background: var(--card);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 8px;
+    }
+
+    .decision-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--decision);
+      margin-bottom: 2px;
+    }
+
+    /* Feature list */
+    .feature-list {
+      list-style: none;
+    }
+
+    .feature-list li {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .feature-list li:last-child { border-bottom: none; }
+
+    .check {
+      color: var(--accent);
+      font-weight: bold;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+    }
+
+    /* Slide number */
+    .slide-number {
+      position: absolute;
+      top: 20px;
+      right: 72px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    /* Title slide */
+    .title-slide {
+      background: var(--accent);
+      color: white;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .title-slide h1 {
+      font-size: 3.8rem;
+      color: white;
+    }
+
+    .title-slide .subtitle {
+      color: rgba(255,255,255,0.8);
+      margin: 0 auto 32px;
+    }
+
+    .title-meta {
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+
+    /* Section divider */
+    .section-divider {
+      background: var(--tag-bg);
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* Compact list */
+    .compact-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .compact-list li {
+      padding: 4px 0;
+      font-size: 0.85rem;
+    }
+
+    .compact-list li::before {
+      content: '\2022';
+      color: var(--accent);
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    /* Navigation */
+    .nav-bar {
+      position: fixed;
+      bottom: 28px;
+      right: 32px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(26, 26, 26, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 10px;
+      padding: 6px 8px;
+      z-index: 1000;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+    }
+
+    .nav-bar.hidden {
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+    }
+
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: background 0.15s, color 0.15s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .nav-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .nav-btn:active { background: rgba(255,255,255,0.2); }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; }
+    .nav-btn:disabled:hover { background: transparent; }
+
+    .nav-counter {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 0 6px;
+      min-width: 48px;
+      text-align: center;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    @media print {
+      .slide { page-break-after: always; position: relative; opacity: 1; pointer-events: auto; }
+      .nav-bar { display: none; }
+    }
+
+    @media (max-width: 1024px) {
+      .slide { padding: 32px 28px; }
+      .grid-2, .grid-4 { grid-template-columns: 1fr; }
+      h1 { font-size: 2.2rem; }
+      h2 { font-size: 1.6rem; }
+      .slide-number { right: 28px; }
+      .nav-bar { bottom: 16px; right: 16px; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="slides-container">
+
+<!-- SLIDE 01: TITLE -->
+<div class="slide title-slide active">
+  <div class="label" style="color: rgba(255,255,255,0.6);">IPCEI-CIS Programme</div>
+  <h1>VATP HVAC AI Platforma</h1>
+  <p class="subtitle">
+    Inteliģenta ēku enerģijas vadības sistēma Ventspils Augsto Tehnoloģiju Parkam.
+  </p>
+  <div class="title-meta">Februāris 2026 &middot; Prototips</div>
+</div>
+
+<!-- SLIDE 02: ARCHITECTURE -->
+<div class="slide" style="padding: 36px 64px; justify-content: center;">
+  <span class="slide-number">02</span>
+  <div class="label">Arhitektūra</div>
+  <h2 style="margin-bottom: 6px;">Kā sistēma ir uzbūvēta (šobrīd)</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Sensori vāc datus, kas glabājas lokāli VATP un tiek dublēti EU mākonī. AI modeļi tiek apmācīti mākonī un atgriezti atpakaļ.</p>
+
+  <!-- Architecture diagram as layered boxes -->
+  <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+
+    <!-- Cloud row -->
+    <div style="display: flex; gap: 6px; align-items: stretch;">
+      <div style="width: 120px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 0.72rem; color: var(--text-secondary); text-align: right; line-height: 1.3; flex-shrink: 0;">Mākonis<br>(EU serveris)</div>
+      <div style="flex: 1; display: flex; gap: 6px;">
+        <div style="flex: 1; padding: 10px 14px; background: #e8f4fd; border: 1px solid #b3d4ed; border-radius: 6px; font-size: 0.82rem;">
+          <strong>AI / ML apmācība</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Enerģijas prognozēšanas modeļi, apmācība katru mēnesi</span>
+        </div>
+        <div style="flex: 1; padding: 10px 14px; background: #e8f4fd; border: 1px solid #b3d4ed; border-radius: 6px; font-size: 0.82rem;">
+          <strong>Ilgtermiņa analītika</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Ietaupījumu pārskati, salīdzinājumi, datubāzes kopija</span>
+        </div>
+        <div style="flex: 1; padding: 10px 14px; background: #e8f4fd; border: 1px solid #b3d4ed; border-radius: 6px; font-size: 0.82rem;">
+          <strong>Integrācijas</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Nord Pool · Open-Meteo · Elektrum</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrow row -->
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <div style="width: 120px; flex-shrink: 0;"></div>
+      <div style="flex: 1; text-align: center; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 0.05em;">&#8597; datu sinhronizācija ik pēc dažām stundām &nbsp;/&nbsp; modeļu atjauninājumi plūst uz leju</div>
+    </div>
+
+    <!-- On-prem row — highlighted -->
+    <div style="display: flex; gap: 6px; align-items: stretch;">
+      <div style="width: 120px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 0.72rem; color: var(--accent); font-weight: 600; text-align: right; line-height: 1.3; flex-shrink: 0;">Lokāli<br>pie VATP</div>
+      <div style="flex: 1; display: flex; gap: 6px;">
+        <div style="flex: 1.3; padding: 12px 16px; background: rgba(47,91,78,0.1); border: 2px solid var(--accent); border-radius: 6px; font-size: 0.82rem;">
+          <strong style="color: var(--accent);">Tīmekļa lietotne</strong><br>
+          <span style="color: var(--text-secondary); font-size: 0.77rem;">Enerģijas analītika · brīdinājumi · telpu komforts · TV ekrāni · RBAC · audita žurnāls</span>
+        </div>
+        <div style="flex: 1; padding: 12px 16px; background: rgba(47,91,78,0.07); border: 1px solid rgba(47,91,78,0.25); border-radius: 6px; font-size: 0.82rem;">
+          <strong>Edge kontrolieris</strong><br>
+          <span style="color: var(--text-secondary); font-size: 0.77rem;">HVAC vadība reāllaikā · AI secinājumi · strādā bezsaistē</span>
+        </div>
+        <div style="flex: 1; padding: 12px 16px; background: rgba(47,91,78,0.07); border: 1px solid rgba(47,91,78,0.25); border-radius: 6px; font-size: 0.82rem;">
+          <strong>Datubāze</strong><br>
+          <span style="color: var(--text-secondary); font-size: 0.77rem;">Sensoru vēsture (laika rindas) · ēkas konfigurācija · glabāšana (?)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrow row -->
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <div style="width: 120px; flex-shrink: 0;"></div>
+      <div style="flex: 1; text-align: center; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 0.05em;">&#8597; sensoru rādījumi ik 15–30 min &nbsp;/&nbsp; vadības komandas plūst atpakaļ uz leju</div>
+    </div>
+
+    <!-- Field row -->
+    <div style="display: flex; gap: 6px; align-items: stretch;">
+      <div style="width: 120px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 0.72rem; color: var(--text-secondary); text-align: right; line-height: 1.3; flex-shrink: 0;">Ēkā</div>
+      <div style="flex: 1; display: flex; gap: 6px;">
+        <div style="flex: 1; padding: 10px 14px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.82rem;">
+          <strong>HVAC iekārtas</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Siltumsūkņi · dzesētāji · ventilācija · vārsti</span>
+        </div>
+        <div style="flex: 1; padding: 10px 14px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.82rem;">
+          <strong>Telpu sensori</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Temperatūra · CO₂ · mitrums · caur dokstacijām</span>
+        </div>
+        <div style="flex: 1; padding: 10px 14px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.82rem;">
+          <strong>Enerģijas skaitītāji</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Viedie skaitītāji · apakšskaitītāji pa zonām</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SLIDE 03: DATA & CONNECTIONS -->
+<div class="slide">
+  <span class="slide-number">03</span>
+  <div class="label">Dati un savienojumi</div>
+  <h2>Kā dati tiek vākti, glabāti un aizsargāti</h2>
+  <p class="subtitle" style="margin-bottom: 24px;">Dati glabājas lokāli VATP un tiek dublēti EU mākonī. AI modeļi tiek apmācīti mākonī un nosūtīti atpakaļ uz vietas.</p>
+
+  <div style="display: flex; gap: 16px; align-items: flex-start;">
+
+    <!-- Step 1 -->
+    <div style="flex: 1; text-align: center;">
+      <div style="width: 52px; height: 52px; background: #fdf6ec; border: 2px solid #e8c97a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.4rem;">📡</div>
+      <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;">Sensori vāc datus</p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Telpu sensori un enerģijas skaitītāji nolasa temperatūru, CO₂, mitrumu un patēriņu ik 15–30 minūtes</p>
+    </div>
+
+    <div style="padding-top: 26px; color: var(--text-secondary); font-size: 1.3rem;">&#8594;</div>
+
+    <!-- Step 2 -->
+    <div style="flex: 1; text-align: center;">
+      <div style="width: 52px; height: 52px; background: #fdf6ec; border: 2px solid #e8c97a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.4rem;">🔌</div>
+      <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;">Vārteja savieno</p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Neliels lokāls serveris (vārteja) pārtulko signālus no HVAC iekārtām un sensoriem vienā datu plūsmā platformai</p>
+    </div>
+
+    <div style="padding-top: 26px; color: var(--text-secondary); font-size: 1.3rem;">&#8594;</div>
+
+    <!-- Step 3 -->
+    <div style="flex: 1; text-align: center;">
+      <div style="width: 52px; height: 52px; background: rgba(47,91,78,0.1); border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.4rem;">🖥️</div>
+      <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; color: var(--accent);">Glabājas lokāli</p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Dati glabājas VATP serverī. Nekas neatstāj Latviju bez atļaujas. 90 dienas pilnā izšķirtspējā, ilgāki kopsavilkumi atbilstībai</p>
+    </div>
+
+    <div style="padding-top: 26px; color: var(--text-secondary); font-size: 1.3rem;">&#8594;</div>
+
+    <!-- Step 4 -->
+    <div style="flex: 1; text-align: center;">
+      <div style="width: 52px; height: 52px; background: #e8f4fd; border: 2px solid #b3d4ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.4rem;">☁️</div>
+      <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;">Analītika mākonī</p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Apkopotie (nepersonālie) dati ik pēc dažām stundām sinhronizējas uz EU mākoni ilgtermiņa analīzei, ietaupījumu pārskatiem un AI modeļu apmācībai</p>
+    </div>
+
+    <div style="padding-top: 26px; color: var(--text-secondary); font-size: 1.3rem;">&#8594;</div>
+
+    <!-- Step 5 -->
+    <div style="flex: 1; text-align: center;">
+      <div style="width: 52px; height: 52px; background: #e8f4fd; border: 2px solid #b3d4ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.4rem;">🤖</div>
+      <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;">AI darbojas</p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Apmācīti modeļi tiek nosūtīti atpakaļ lokāli. Sistēma automātiski regulē apkuri un dzesēšanu — mākoņa savienojums ikdienas darbībai nav nepieciešams</p>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 24px; display: flex; gap: 12px;">
+    <div style="flex: 1; padding: 12px 16px; background: rgba(47,91,78,0.06); border-radius: 8px; font-size: 0.82rem;">
+      <strong>Primāri Latvijā</strong> — dati glabājas lokāli VATP, tiek dublēti EU mākonī
+    </div>
+    <div style="flex: 1; padding: 12px 16px; background: rgba(252,211,77,0.1); border-radius: 8px; border-left: 3px solid #f0c040; font-size: 0.82rem;">
+      <strong>Atvērts jautājums:</strong> Cik ilgi precīzi glabāt vēsturiskos datus un kas ir formāli atbildīgs saskaņā ar GDPR
+    </div>
+    <div style="flex: 1; padding: 12px 16px; background: rgba(47,91,78,0.06); border-radius: 8px; font-size: 0.82rem;">
+      <strong>Strādā bezsaistē</strong> — ja mākonis nav sasniedzams, ēka turpina darboties uz pēdējo AI modeli
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 04: DASHBOARD -->
+<div class="slide" style="padding: 28px 64px; justify-content: flex-start;">
+  <span class="slide-number">04</span>
+  <div class="label">Enerģijas pārskats</div>
+  <h2 style="margin-bottom: 4px;">Galvenais panelis</h2>
+  <p class="subtitle" style="margin-bottom: 10px;">Nord Pool elektroenerģijas cenas, laiks no Open-Meteo, ēkas slodze un komforta dati — viss reāllaikā.</p>
+  <div class="grid-2" style="margin-top: 0; gap: 10px;">
+    <div>
+      <img src="screenshots/06-dashboard.png" alt="Dashboard header and weather" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Tiešais laiks (Ventspils) ar Nord Pool · LV un Open-Meteo datu avotiem. 24h vēsture + 12h prognoze.</div>
+    </div>
+    <div>
+      <img src="screenshots/06-dashboard-charts.png" alt="Dashboard energy charts" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">4 tiešraides grafiki: Nord Pool cenas, ārējā temperatūra, ēkas slodze pret prognozi, komforta tendences.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 05: ENERGY ANALYTICS -->
+<div class="slide" style="padding: 28px 64px; justify-content: flex-start;">
+  <span class="slide-number">05</span>
+  <div class="label">Enerģijas analītika</div>
+  <h2 style="margin-bottom: 4px;">Izmaksu analītika un sadalījums</h2>
+  <p class="subtitle" style="margin-bottom: 10px;">Seko faktiskajām enerģijas izmaksām ar kategoriju sadalījumu, periodu salīdzinājumu un siltumsūkņa pret pilsētas apkuri izmaksu salīdzinājumu.</p>
+  <div class="grid-2" style="margin-top: 0; gap: 10px;">
+    <div>
+      <img src="screenshots/06-energy-top.png" alt="Energy cost KPI and area chart" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">334 EUR kopā (24h) · slāņota laukuma diagramma pa kategorijām (HVAC, dzesēšana, apkure, apgaismojums, citi) ar Nord Pool cenu līniju.</div>
+    </div>
+    <div>
+      <img src="screenshots/06-energy-bottom.png" alt="Cost breakdown and heating comparison" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Izmaksu sadalījums pa kategorijām (joslu diagramma) + siltumsūknis pret pilsētas apkuri — HVAC darbojas ~30 EUR/MWh pret fiksētu pilsētas tarifu 75 EUR/MWh.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 06: ALERTS -->
+<div class="slide">
+  <span class="slide-number">06</span>
+  <div class="label">Brīdinājumi un signāli</div>
+  <h2>Brīdinājumi</h2>
+  <p class="subtitle">Katram sensoram var iestatīt sliekšņus — kad tie tiek pārsniegti, parādās brīdinājums. Trīs līmeņi: kritisks, brīdinājums, informatīvs. Katru var apstiprināt un atzīmēt kā atrisinātu.</p>
+  <div class="screenshot screenshot-fit">
+    <img src="screenshots/08-alerts.png" alt="Alerts page">
+    <div class="screenshot-caption">Brīdinājumu tabula ar smaguma filtriem un statusa izsekošanu (aktīvs / apstiprināts / atrisināts). Brīdinājumu veidi: augsts slieksnis, zems slieksnis, ierīce bezsaistē, pārāk straujas izmaiņas.</div>
+  </div>
+</div>
+
+<!-- SLIDE 07: BUILDING HIERARCHY -->
+<div class="slide" style="padding: 28px 64px; justify-content: flex-start;">
+  <span class="slide-number">07</span>
+  <div class="label">Entitāšu pārvaldība</div>
+  <h2 style="margin-bottom: 4px;">Ēkas hierarhija</h2>
+  <p class="subtitle" style="margin-bottom: 10px;">Pilna hierarhijas pārvaldība: Organizācija &rarr; Ēka &rarr; Stāvs &rarr; Telpa &rarr; Sensors/Ierīce.</p>
+  <div class="grid-2" style="margin-top: 0; gap: 10px;">
+    <div>
+      <img src="screenshots/05-buildings.png" alt="Buildings page" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Ēkas hierarhija ar paplašināmu struktūru un izveides formu.</div>
+    </div>
+    <div>
+      <img src="screenshots/06-rooms.png" alt="Rooms page" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Telpu saraksts ar norādi uz stāvu un saiti uz detaļām.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 08: ROOM COMFORT -->
+<div class="slide" style="padding: 28px 64px; justify-content: flex-start;">
+  <span class="slide-number">08</span>
+  <div class="label">Telpu inteliģence</div>
+  <h2 style="margin-bottom: 4px;">Telpu komforta panelis</h2>
+  <p class="subtitle" style="margin-bottom: 10px;">Telpas līmeņa panelis ar reāllaika rādītājiem, telemetrijas grafikiem, ierīču statusu, komforta vērtējumu un apmeklētāju atsauksmēm.</p>
+  <div class="grid-2" style="margin-top: 0; gap: 10px;">
+    <div>
+      <img src="screenshots/07-room-detail-top.png" alt="Room KPIs and telemetry" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Telpa 101: temperatūra (21,2°C), mitrums (49%), CO2 (772 ppm) rādītāji, reāllaika telemetrijas grafiks, ierīču statuss (3 sensori) un komforta vērtējums (100 = Lielisks).</div>
+    </div>
+    <div>
+      <img src="screenshots/07-room-detail-bottom.png" alt="Room comfort and feedback" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Apmeklētāju siltuma atsauksmju logrīks (Par aukstu &rarr; Par karstu) ar emoji izvēli, neobligātām piezīmēm un neseno atsauksmju laika līniju, kas parāda komforta modeļus laika gaitā.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 09: DEVICE HEALTH -->
+<div class="slide">
+  <span class="slide-number">09</span>
+  <div class="label">Ierīču darbība</div>
+  <h2>Ierīču statuss</h2>
+  <p class="subtitle">Pārskats par visām ierīcēm — kas ir tiešsaistē, kas bezsaistē, un cik sen pēdējo reizi saņemts signāls. Kārtojams pēc laika kopš pēdējā signāla.</p>
+  <div class="screenshot screenshot-fit">
+    <img src="screenshots/11-device-health.png" alt="Device health overview">
+    <div class="screenshot-caption">13 ierīces kopā — 10 aktīvas, 1 bezsaistē, 0 kļūdas. Filtrējamas pēc statusa un ēkas.</div>
+  </div>
+</div>
+
+<!-- SLIDE 10: ADMIN -->
+<div class="slide">
+  <span class="slide-number">10</span>
+  <div class="label">Administrācija</div>
+  <h2>Administratora panelis un RBAC</h2>
+  <p class="subtitle">Lietotāju pārvaldība, lomu piešķiršana, atļauju matrica un vadības politikas konfigurācija. Viss glabājas datubāzē.</p>
+  <div class="grid-2" style="margin-top: 12px;">
+    <div class="screenshot screenshot-fit">
+      <img src="screenshots/12-admin.png" alt="Admin panel" style="max-height: calc(100vh - 300px); object-fit: cover; object-position: top;">
+      <div class="screenshot-caption">Administratora panelis ar lietotāju pārvaldību, lomu definīcijām, atļauju matricu un vadības politikām.</div>
+    </div>
+    <div>
+      <h4>7 definētas lomas</h4>
+      <ul class="compact-list">
+        <li><strong>Admin</strong> &mdash; Pilna piekļuve sistēmai</li>
+        <li><strong>Facility Manager</strong> &mdash; Ēkas/ierīču darbība</li>
+        <li><strong>Energy Manager</strong> &mdash; Enerģijas analītika un tarifi</li>
+        <li><strong>Service/Maintenance</strong> &mdash; Ierīču apkope un vadība</li>
+        <li><strong>Auditor/Researcher</strong> &mdash; Tikai lasīšana audita vajadzībām</li>
+        <li><strong>Viewer</strong> &mdash; Tikai lasīšana paneļiem</li>
+        <li><strong>Room</strong> &mdash; Planšetes lietotājs komforta atsauksmēm</li>
+      </ul>
+      <h4 style="margin-top: 20px;">Vadības politikas</h4>
+      <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 6px;">
+        Drošības ierobežojumi HVAC komandām, konfigurējami katram ierīces tipam:
+        siltumsūkņa temperatūra (15&ndash;55&deg;C), vārsta pozīcija (0&ndash;100%),
+        ventilatora ātrums (0&ndash;100%), avārijas apstādināšana (vienmēr iespējota).
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: AUDIT LOGS -->
+<div class="slide" style="padding: 36px 64px;">
+  <span class="slide-number">11</span>
+  <div class="label">Atbilstība</div>
+  <h2 style="margin-bottom: 4px;">Audita žurnāls</h2>
+  <p class="subtitle" style="margin-bottom: 10px;">Pilns, negrozāms žurnāls par visu, kas notiek sistēmā — filtrējams pēc lietotāja, darbības veida, resursa un datuma.</p>
+  <div class="screenshot" style="display: flex; flex-direction: column; flex: 1;">
+    <img src="screenshots/12-audit-cropped.png" alt="Audit logs page" style="width: 100%; height: calc(100vh - 220px); object-fit: cover; object-position: top; border-radius: 6px; border: 1px solid var(--border);">
+    <div class="screenshot-caption">Reģistrē: pieteikšanos · ēku, telpu, sensoru izveidi un dzēšanu · brīdinājumu apstiprināšanu · HVAC komandas · politiku izmaiņas · avārijas apstādināšanu. Tikai lasāms.</div>
+  </div>
+</div>
+
+<!-- SLIDE 12: USER ROLES & PERMISSIONS -->
+<div class="slide">
+  <span class="slide-number">12</span>
+  <div class="label">Piekļuves kontrole</div>
+  <h2>Piekļuves lomas</h2>
+  <p class="subtitle" style="margin-bottom: 12px;">7 definētas lomas ar atļaujām katram resursa veidam.</p>
+
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; font-size: 0.75rem; border-collapse: collapse; margin-top: 8px;">
+      <thead>
+        <tr style="background: var(--accent); color: white;">
+          <th style="padding: 10px; text-align: left;">Resurss/spēja</th>
+          <th style="padding: 10px; text-align: center;">Admin</th>
+          <th style="padding: 10px; text-align: center;">Facility Mgr</th>
+          <th style="padding: 10px; text-align: center;">Energy Mgr</th>
+          <th style="padding: 10px; text-align: center;">Service</th>
+          <th style="padding: 10px; text-align: center;">Auditor</th>
+          <th style="padding: 10px; text-align: center;">Viewer</th>
+          <th style="padding: 10px; text-align: center;">Room</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: rgba(0,0,0,0.02);">
+          <td style="padding: 8px;">Lietotāji un lomas</td>
+          <td style="padding: 8px; text-align: center;">R/C/U/D</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;">Ēkas/stāvi</td>
+          <td style="padding: 8px; text-align: center;">R/C/U/D</td>
+          <td style="padding: 8px; text-align: center;">R/C/U/D</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+        </tr>
+        <tr style="background: rgba(0,0,0,0.02);">
+          <td style="padding: 8px;">Telpas</td>
+          <td style="padding: 8px; text-align: center;">R/C/U/D</td>
+          <td style="padding: 8px; text-align: center;">R/C/U/D</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R (savas)</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;">Sensori/ierīces</td>
+          <td style="padding: 8px; text-align: center;">R/C/U/D</td>
+          <td style="padding: 8px; text-align: center;">R/C/U/D</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R/C/U</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R (savas)</td>
+        </tr>
+        <tr style="background: rgba(0,0,0,0.02);">
+          <td style="padding: 8px;">Paneļi/analītika</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R/C/U</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R (pamata)</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;">Vadības komandas</td>
+          <td style="padding: 8px; text-align: center;">X</td>
+          <td style="padding: 8px; text-align: center;">X</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+          <td style="padding: 8px; text-align: center;">X</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+        </tr>
+        <tr style="background: rgba(0,0,0,0.02);">
+          <td style="padding: 8px;">Komforta atsauksmes</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R/C (savas)</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;">Audita žurnāli</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">R</td>
+          <td style="padding: 8px; text-align: center;">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top: 12px;">
+    <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;"><strong>Apzīmējumi:</strong> R = Lasīt, C = Izveidot, U = Labot, D = Dzēst, X = Vadīt</p>
+  </div>
+</div>
+
+<!-- SLIDE 13: SECTION - TV DISPLAY -->
+<div class="slide section-divider">
+  <div class="label">Foajē un publiskais ekrāns</div>
+  <h1>TV displeja režīms</h1>
+  <p class="subtitle" style="margin: 12px auto;">Ekrāns foajē vai koridorā — bez pieteikšanās. Automātiski mainās starp 4 skatiem ik 20 sekundes ar aktuāliem datiem.</p>
+</div>
+
+<!-- SLIDE 14: TV - ENERGY -->
+<div class="slide tv-slide">
+  <span class="slide-number" style="top: 12px; right: 24px; color: var(--text-secondary);">14</span>
+  <div style="height: 100vh; position: relative;">
+    <img src="screenshots/tv-energy.png" alt="TV Display - Energy Summary" style="width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 14px 24px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.85rem;">
+      <strong>Enerģijas kopsavilkuma panelis</strong> &mdash; Šodienas patēriņš (551,8 kWh), pašreizējā elektroenerģijas cena (40,5 EUR/MWh), dienas izmaksas un dienu salīdzinājuma tendence.
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 15: TV - COMFORT -->
+<div class="slide tv-slide">
+  <span class="slide-number" style="top: 12px; right: 24px; color: var(--text-secondary);">15</span>
+  <div style="height: 100vh; position: relative;">
+    <img src="screenshots/tv-comfort.png" alt="TV Display - Building Comfort" style="width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 14px 24px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.85rem;">
+      <strong>Ēkas komforta panelis</strong> &mdash; Vidējais komforta vērtējums (81,5/100), telpu sadalījums pa kategorijām (Lielisks/Labs/Apmierinošs/Slikts), ārējā temperatūra, uzraudzīto telpu skaits.
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16: TV - SUSTAINABILITY -->
+<div class="slide tv-slide">
+  <span class="slide-number" style="top: 12px; right: 24px; color: var(--text-secondary);">16</span>
+  <div style="height: 100vh; position: relative;">
+    <img src="screenshots/tv-sustainability.png" alt="TV Display - Sustainability" style="width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 14px 24px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.85rem;">
+      <strong>Ilgtspējas panelis</strong> &mdash; Enerģijas ietaupījumi pret bāzlīniju (15,4%), CO2 samazinājums (121,9 kg) un vislabāk darbojošās zonas noteikšana.
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 17: TV - STATUS -->
+<div class="slide tv-slide">
+  <span class="slide-number" style="top: 12px; right: 24px; color: var(--text-secondary);">17</span>
+  <div style="height: 100vh; position: relative;">
+    <img src="screenshots/tv-status.png" alt="TV Display - System Status" style="width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 14px 24px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.85rem;">
+      <strong>Sistēmas statusa panelis</strong> &mdash; Ierīces tiešsaistē (62), ierīces bezsaistē (1), aktīvie brīdinājumi (1) un pēdējā datu atsvaidzināšanas laiks.
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 18: SYSTEM LANDSCAPE -->
+<div class="slide">
+  <span class="slide-number">18</span>
+  <div class="label">Sistēmas ainava</div>
+  <h2>Kā sistēma izskatās fiziski</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Edge kontrolieris pārvalda ēku lokāli. Mākonis palīdz ar analītiku un AI apmācību, bet ikdienas darbam nav vajadzīgs.</p>
+
+  <div style="display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: center;">
+
+    <!-- Field Layer -->
+    <div style="border: 2px solid #e6a817; border-radius: 10px; padding: 14px 20px; background: #fffbf0;">
+      <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #b07a00; margin-bottom: 8px;">Ēkā — VATP</div>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+        <span style="font-size: 0.82rem; color: #1a1a1a;">🌡️ HVAC iekārtas — siltumsūkņi, dzesētāji, ventilācija <span style="color:#888;">(BACnet / Modbus)</span></span>
+        <span style="font-size: 0.82rem; color: #1a1a1a;">⚡ Enerģijas skaitītāji — viedie skaitītāji, apakšskaitītāji <span style="color:#888;">(Modbus / MQTT)</span></span>
+        <span style="font-size: 0.82rem; color: #1a1a1a;">📡 Telpu sensori — temp. / CO₂ / mitrums caur dokstacijām <span style="color:#888;">(Wi-Fi → REST)</span></span>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="text-align: center; font-size: 1.1rem; color: var(--text-secondary); line-height: 1;">↓</div>
+
+    <!-- On-prem row: Edge + App side by side -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+
+      <div style="border: 2px solid #2f5b4e; border-radius: 10px; padding: 14px 20px; background: #f0f6f3;">
+        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2f5b4e; margin-bottom: 8px;">Edge kontrolieris — lokāls serveris</div>
+        <ul style="margin: 0; padding-left: 16px; font-size: 0.82rem; color: #1a1a1a; line-height: 1.8;">
+          <li>Protokolu vārtejas (BACnet / Modbus / MQTT → REST)</li>
+          <li>Reāllaika AI secinājumi (lokālie ML modeļi)</li>
+          <li>HVAC iestatījumu optimizācijas loģika</li>
+          <li>Datu buferis ar saglabāšanu un pārsūtīšanu</li>
+        </ul>
+      </div>
+
+      <div style="border: 2px solid #2f5b4e; border-radius: 10px; padding: 14px 20px; background: #f0f6f3;">
+        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2f5b4e; margin-bottom: 8px;">Lietojumprogrammu slānis — lokāls serveris</div>
+        <ul style="margin: 0; padding-left: 16px; font-size: 0.82rem; color: #1a1a1a; line-height: 1.8;">
+          <li>Next.js tīmekļa lietotne (paneļi, RBAC, brīdinājumi)</li>
+          <li>PostgreSQL + TimescaleDB (90 dienu neapstrādātu datu glabāšana)</li>
+          <li>Datu ieplūdes API (POST /api/ingest)</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Arrow with label -->
+    <div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">↓ <em>sinhronizācija ik pēc dažām stundām</em></div>
+
+    <!-- Cloud Layer -->
+    <div style="border: 2px solid #3b7dd8; border-radius: 10px; padding: 14px 20px; background: #f0f5ff;">
+      <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2a5cb5; margin-bottom: 8px;">Mākoņa analītikas slānis — Google Cloud / EU reģions</div>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+        <span style="font-size: 0.82rem; color: #1a1a1a;">📊 BigQuery — ilgtermiņa laika rindas &amp; portfeļa analītika</span>
+        <span style="font-size: 0.82rem; color: #1a1a1a;">🤖 ML apmācības platforma — modeļu apmācība katru mēnesi</span>
+        <span style="font-size: 0.82rem; color: #1a1a1a;">📦 Modeļu reģistrs — versiju ML artefakti</span>
+      </div>
+    </div>
+
+    <!-- External APIs footnote -->
+    <div style="font-size: 0.78rem; color: var(--text-secondary); text-align: center; padding-top: 4px;">
+      Ārējie API, kas baro sistēmu: <strong>Nord Pool</strong> (elektroenerģijas cenas, ik stundu) &nbsp;·&nbsp; <strong>Open-Meteo</strong> (laika prognoze, ik stundu) &nbsp;·&nbsp; <strong>Elektrum</strong> (plānots)
+    </div>
+
+  </div>
+
+  <p style="font-size: 0.8rem; margin-top: 10px; color: var(--text-secondary);"><strong>Galvenais princips:</strong> Edge kontrolieris vada ēku ar lokālo AI — pat bez interneta. Mākonis uzlabo analītiku un apmāca modeļus, bet nav priekšnoteikums ikdienas darbam.</p>
+</div>
+
+<!-- SLIDE 19: WHERE THIS CAN GO -->
+<div class="slide">
+  <span class="slide-number">19</span>
+  <div class="label">Nākotnes perspektīva</div>
+  <h2>No pirmās ēkas uz…</h2>
+  <p class="subtitle" style="margin-bottom: 28px;">Sākam ar VATP, tālāk — Ventspils ražotnes un brīvosta, pēc tam jebkura ēka, jebkur.</p>
+
+  <div style="display: flex; gap: 0; align-items: stretch; margin-top: 8px;">
+
+    <div style="flex: 1; padding: 24px 28px; background: rgba(47,91,78,0.07); border-radius: 12px 0 0 12px; border: 1px solid rgba(47,91,78,0.15);">
+      <div style="font-size: 1.5rem; margin-bottom: 10px;">🏢</div>
+      <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">Tagad — Pilots</p>
+      <p style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">VATP</p>
+      <ul style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 18px; line-height: 1.8;">
+        <li>1 ēka, īsti sensori</li>
+        <li>Pierādīt enerģijas ietaupījumus</li>
+        <li>Pārbaudīt AI modeļus</li>
+        <li>Vākt lietotāju atsauksmes</li>
+      </ul>
+    </div>
+
+    <div style="display: flex; align-items: center; padding: 0 10px; color: var(--accent); font-size: 1.4rem; background: rgba(47,91,78,0.04); border-top: 1px solid rgba(47,91,78,0.12); border-bottom: 1px solid rgba(47,91,78,0.12);">&#8594;</div>
+
+    <div style="flex: 1; padding: 24px 28px; background: rgba(47,91,78,0.12); border-top: 1px solid rgba(47,91,78,0.2); border-bottom: 1px solid rgba(47,91,78,0.2);">
+      <div style="font-size: 1.5rem; margin-bottom: 10px;">🏙️</div>
+      <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">Tālāk — Ventspils mērogs</p>
+      <p style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Ventspils ražotnes un brīvosta</p>
+      <ul style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 18px; line-height: 1.8;">
+        <li>5–10 ēkas ar dažādiem HVAC profiliem</li>
+        <li>Kopīga analītika mākonī</li>
+        <li>Enerģijas salīdzinājumi starp ēkām</li>
+        <li>AI modeļi kļūst precīzāki ar vairāk datiem</li>
+      </ul>
+    </div>
+
+    <div style="display: flex; align-items: center; padding: 0 10px; color: var(--accent); font-size: 1.4rem; background: rgba(47,91,78,0.04); border-top: 1px solid rgba(47,91,78,0.12); border-bottom: 1px solid rgba(47,91,78,0.12);">&#8594;</div>
+
+    <div style="flex: 1; padding: 24px 28px; background: var(--accent); border-radius: 0 12px 12px 0; color: white;">
+      <div style="font-size: 1.5rem; margin-bottom: 10px;">🌍</div>
+      <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 8px;">Nākotnē — Produkts</p>
+      <p style="font-size: 1rem; font-weight: 600; margin-bottom: 10px; color: white;">Jebkura ēka, jebkur</p>
+      <ul style="font-size: 0.85rem; color: rgba(255,255,255,0.8); padding-left: 18px; line-height: 1.8;">
+        <li>SaaS platforma jebkuram klientam</li>
+        <li>Jebkurš reģions, jebkurš sensoru ražotājs</li>
+        <li>Abonēšanas vai ietaupījumu dalīšanas modelis</li>
+        <li>Izmērāms ROI katrai ēkai</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <p style="margin-top: 24px; font-size: 0.85rem; color: var(--text-secondary); text-align: center;">Jaunu ēku pievienot nozīmē pieslēgt sensorus — AI, analītika un lietotne jau ir gatavi.</p>
+</div>
+
+<!-- SLIDE 20: SCALING & TENANCY MODEL -->
+<div class="slide">
+  <span class="slide-number">20</span>
+  <div class="label">Biznesa modelis</div>
+  <h2>Kā sistēma darbosies ar vairākiem klientiem?</h2>
+  <p class="subtitle" style="margin-bottom: 24px;">Šis ir arhitekturāls lēmums, kas atkarīgs no biznesa modeļa — vajag vienoties.</p>
+
+  <div class="grid-2" style="gap: 20px;">
+
+    <!-- Option A -->
+    <div style="border: 2px solid #3b7dd8; border-radius: 10px; padding: 20px 24px; background: #f0f5ff;">
+      <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2a5cb5; margin-bottom: 10px;">A variants — viena kopīga platforma</div>
+      <p style="font-size: 0.88rem; margin: 0 0 10px;">Visi klienti izmanto vienu sistēmu. Katrs redz tikai savus datus. Kopīga AI infrastruktūra.</p>
+      <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.8;">
+        <li>Lētāk uzturēt — viena instance</li>
+        <li>AI modeļi var mācīties no visām ēkām (ar piekrišanu)</li>
+        <li>Strikta datu atdalīšana starp klientiem</li>
+        <li>Piemērots SaaS modelim</li>
+      </ul>
+    </div>
+
+    <!-- Option B -->
+    <div style="border: 2px solid #e6a817; border-radius: 10px; padding: 20px 24px; background: #fffbf0;">
+      <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #b07a00; margin-bottom: 10px;">B variants — atsevišķa sistēma katram klientam</div>
+      <p style="font-size: 0.88rem; margin: 0 0 10px;">Katrs klients saņem savu atsevišķu sistēmu — savu datubāzi, savu lietotni, savus AI modeļus.</p>
+      <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.8;">
+        <li>Vienkāršāka datu atbildība un GDPR</li>
+        <li>Klients kontrolē savu infrastruktūru</li>
+        <li>Dārgāk uzturēt — N atsevišķas instances</li>
+        <li>Piemērots uzņēmumu vai lokāliem līgumiem</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 20px; background: rgba(252,211,77,0.12); border-left: 3px solid #f0c040; border-radius: 0 8px 8px 0; padding: 12px 18px; font-size: 0.85rem;">
+    <strong>Jautājums:</strong> Vai VATP pārdod sistēmu katram klientam atsevišķi, vai pārvalda ēkas centrāli klientu vārdā? No tā atkarīgs, kurš variants der.
+  </div>
+</div>
+
+<!-- SLIDE 21: AI/ML CAPABILITIES -->
+<div class="slide">
+  <span class="slide-number">21</span>
+  <div class="label">AI un inteliģence</div>
+  <h2>Ko AI īsti vajadzētu darīt?</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Dati plūst, sistēma strādā. Nākamais jautājums — ko AI konkrēti darīs ar šiem datiem?</p>
+
+  <div class="grid-2">
+    <div>
+      <h3 style="font-size: 0.95rem; margin-bottom: 14px; color: var(--accent);">Ieteiktie modeļu kandidāti</h3>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="padding: 12px 16px; background: rgba(47,91,78,0.07); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.88rem; font-weight: 600; margin: 0 0 4px;">Enerģijas izmaksu minimizēšana</p>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">Uzsildīt vai atdzesēt, kamēr elektroenerģija ir lēta, un samazināt patēriņu dārgajās stundās. Ātrākais ietaupījums.</p>
+        </div>
+        <div style="padding: 12px 16px; background: rgba(47,91,78,0.07); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.88rem; font-weight: 600; margin: 0 0 4px;">Apkures/dzesēšanas pieprasījuma prognoze</p>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">Paredzēt, cik apkures vai dzesēšanas rīt vajadzēs — pēc laika prognozes, apmeklējuma un kalendāra.</p>
+        </div>
+        <div style="padding: 12px 16px; background: rgba(47,91,78,0.07); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.88rem; font-weight: 600; margin: 0 0 4px;">Komforta anomāliju atklāšana</p>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">Pamanīt, kad telpā kļūst neērti, pirms to ziņo cilvēki — pēc CO₂, temperatūras un atsauksmju kombinācijas.</p>
+        </div>
+        <div style="padding: 12px 16px; background: rgba(47,91,78,0.07); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.88rem; font-weight: 600; margin: 0 0 4px;">Iekārtu bojājumu prognozēšana</p>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">Atklāt siltumsūkņa darbības pasliktināšanās modeļus pirms atteikumiem. Samazināt neplānotos dīkstāves laikus.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size: 0.95rem; margin-bottom: 14px; color: var(--accent);">Atvērti jautājumi, uz kuriem jāatbild</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="padding: 12px 16px; background: rgba(252,211,77,0.1); border-left: 3px solid #f0c040; border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.85rem; font-weight: 600; margin: 0 0 3px;">Kāds ir galvenais optimizācijas mērķis?</p>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Zemākās izmaksas? Mazākais CO₂? Augstākais komforts? Sajaukums? Tas nosaka, kuru modeli veidot vispirms.</p>
+        </div>
+        <div style="padding: 12px 16px; background: rgba(252,211,77,0.1); border-left: 3px solid #f0c040; border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.85rem; font-weight: 600; margin: 0 0 3px;">Vai mums ir apmeklējuma dati?</p>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Apmeklējums ir spēcīgākais komforta pieprasījuma prognozētājs. Kalendārs? kustības sensori? caurlaidzības dati?</p>
+        </div>
+        <div style="padding: 12px 16px; background: rgba(252,211,77,0.1); border-left: 3px solid #f0c040; border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.85rem; font-weight: 600; margin: 0 0 3px;">Cik daudz vēsturisku datu šobrīd ir pieejams?</p>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Prognozēšanas modeļiem nepieciešami vismaz 3–6 mēneši tīru sensoru datu. Vai var aizpildīt no esošās BMS?</p>
+        </div>
+        <div style="padding: 12px 16px; background: rgba(252,211,77,0.1); border-left: 3px solid #f0c040; border-radius: 0 6px 6px 0;">
+          <p style="font-size: 0.85rem; font-weight: 600; margin: 0 0 3px;">Kas validē un apstiprina AI lēmumus?</p>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Pilna automatizācija, vai ēku pārvaldnieks apstiprina HVAC izmaiņas? Nosaka cilvēka iesaistes modeli.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 22: SECTION - DECISIONS -->
+<div class="slide section-divider">
+  <div class="label">Atvērti jautājumi</div>
+  <h1>Atvērti jautājumi</h1>
+  <p class="subtitle" style="margin: 12px auto;">Tehniskie un biznesa jautājumi, kuri vēl gaida atbildi.</p>
+</div>
+
+<!-- SLIDE 23: TECHNICAL DECISIONS -->
+<div class="slide">
+  <span class="slide-number">23</span>
+  <div class="label">Nepieciešami lēmumi</div>
+  <h2>Atvērti tehniskie lēmumi</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Lēmumi, kas ietekmē arhitektūru un integrāciju — jāvienojas pirms izvietošanas.</p>
+
+  <div class="grid-2">
+    <div>
+      <div class="decision-item">
+        <div class="decision-label">Tehnisks lēmums</div>
+        <h4>Datu pārsūtīšanas vienošanās</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Mūsu API ir gatavs. Jāvienojas par protokolu (MQTT/HTTP/WS), datu formātu, kļūdu apstrādi un ātruma ierobežojumiem.</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Tehnisks lēmums</div>
+        <h4>Edge kontroliera izvietošana</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Visticamāk atsevišķs lokāls serveris. Jāapstiprina fiziskā izvietošana, aparatūras īpašumtiesības un lokālās uzstādīšanas plāns.</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Tehnisks lēmums</div>
+        <h4>Datu glabāšanas vieta</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Tikai lokāli, lokāli + EU mākonis, vai pilnībā mākonī. Šobrīd strādājam ar lokālu primāro + EU mākoņa dublējumu.</p>
+      </div>
+    </div>
+    <div>
+      <div class="decision-item">
+        <div class="decision-label">Tehnisks lēmums</div>
+        <h4>Integrācijas testēšanas atbildība</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Kas atbild par testēšanu ar īstām HVAC iekārtām un lauka protokoliem (BACnet, Modbus, MQTT)? Kritiski TRL 5/7 vajadzībām.</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Tehnisks lēmums</div>
+        <h4>Datu glabāšana un M&V metodoloģija</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">90 dienu neapstrādātu datu glabāšana jau ieviesta. Jāvienojas par retināšanas politiku un Mērījumu un verifikācijas pieeju.</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Tehnisks lēmums</div>
+        <h4>Uzraudzība un incidentu reaģēšana</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Brīdinājumi ir definēti. Kas reaģē uz tiem? Kādi ir SLA?</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 24: BUSINESS DECISIONS -->
+<div class="slide">
+  <span class="slide-number">24</span>
+  <div class="label">Nepieciešami lēmumi</div>
+  <h2>Atvērti biznesa lēmumi</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Lēmumi par biznesa modeli, atbildību un izmēģinājuma plānu.</p>
+
+  <div class="grid-2">
+    <div>
+      <div class="decision-item">
+        <div class="decision-label">Biznesa lēmums</div>
+        <h4>Sensoru partneris un dokstaciju topoloģija</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Vai dokstacija ir obligāta? Kāds ieviešanas modelis? Vai šis sensoru piegādātājs joprojām ir pareizais partneris, ņemot vērā dokstacijas atkarību?</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Biznesa lēmums</div>
+        <h4>GDPR datu pārziņa/apstrādātāja lomas</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Nepieciešama formāla sensoru un lietotāju datu atbildības noteikšana saskaņā ar GDPR.</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Biznesa lēmums</div>
+        <h4>Atbalsts pēc izmēģinājuma un izmaksu atbildība</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Kas nodrošina pastāvīgo atbalstu? Kas maksā par edge aparatūru un mākoņa skaitļošanu?</p>
+      </div>
+    </div>
+    <div>
+      <div class="decision-item">
+        <div class="decision-label">Biznesa lēmums</div>
+        <h4>TRL 5/7 kritēriji un komerciālais modelis</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Ko nozīmē "gatavs" TRL 5 un TRL 7? Kāds biznesa modelis — projekts, abonements vai hibrīds?</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Biznesa lēmums</div>
+        <h4>Izmēģinājuma apjoms un laika grafiks</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Kuras ēkas/stāvi sākotnējai izvietošanai? Cik ilgs izmēģinājuma posms? Kādi veiksmes rādītāji?</p>
+      </div>
+      <div class="decision-item">
+        <div class="decision-label">Biznesa lēmums</div>
+        <h4>Komunikācija ar apmeklētājiem un vadību</h4>
+        <p style="font-size: 0.82rem; color: var(--text-secondary);">Kā paziņojam par sistēmas statusu, enerģijas ietaupījumiem un komforta uzlabojumiem — ēkas apmeklētājiem un vadībai?</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 25: ROADMAP -->
+<div class="slide">
+  <span class="slide-number">25</span>
+  <div class="label">Ceļvedis</div>
+  <h2>Kas nāk tālāk</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Ko darām tuvākajā laikā, lai no prototipa pārietu uz īstu izvietošanu.</p>
+
+  <div class="grid-2">
+    <div>
+      <h3>Tūlītēji (bloķē izvietošanu)</h3>
+      <ul class="feature-list">
+        <li><span class="check">1</span> <strong>Vārtejas izstrāde</strong> &mdash; savienot Edge kontrolieri ar īstajām HVAC iekārtām un sensoriem</li>
+        <li><span class="check">2</span> <strong>Īsto sensoru datu izmantošana</strong> &mdash; aizstāt maketdatus ar īstu telemetriju no ēkas</li>
+        <li><span class="check">3</span> <strong>Edge kontroliera izvietošana</strong> &mdash; aparatūra, izvietojums, uzstādīšana</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Tuvākajā laikā (izmēģinājuma gatavība)</h3>
+      <ul class="feature-list">
+        <li><span class="check">4</span> <strong>Sensoru partnera apstiprināšana</strong> &mdash; dokstacijas topoloģija vai alternatīvas</li>
+        <li><span class="check">5</span> <strong>AI modulis (mākonis)</strong> &mdash; BigQuery sinhronizācija + slodzes prognozēšanas modelis</li>
+        <li><span class="check">6</span> <strong>Elektrum integrācija</strong> &mdash; enerģijas piegādātāja norēķini reālajām izmaksām</li>
+        <li><span class="check">7</span> <strong>TRL pieņemšanas kritēriji</strong> &mdash; definēt "gatavs" TRL 5 un TRL 7 vajadzībām</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 26: CLOSING -->
+<div class="slide" style="background: var(--accent); color: white; justify-content: center; align-items: center; text-align: center;">
+  <h1 style="color: white; font-size: 3rem; line-height: 1.2; margin-bottom: 24px;">Paldies</h1>
+  <p style="font-size: 1.15rem; color: rgba(255,255,255,0.75); max-width: 540px; line-height: 1.7; margin: 0 auto 40px;">
+    Jautājumi, komentāri un lēmumi ir gaidīti.
+  </p>
+  <div style="display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; opacity: 0.55; font-size: 0.9rem;">
+    <span>VATP</span>
+    <span>&middot;</span>
+    <span>IPCEI-CIS</span>
+    <span>&middot;</span>
+    <span>Februāris 2026</span>
+  </div>
+</div>
+
+</div><!-- end slides-container -->
+
+<!-- Navigation -->
+<nav class="nav-bar" id="nav">
+  <button class="nav-btn" id="navPrev" aria-label="Iepriekšējais slaids">&#8592;</button>
+  <span class="nav-counter" id="navCounter">1 / 20</span>
+  <button class="nav-btn" id="navNext" aria-label="Nākamais slaids">&#8594;</button>
+</nav>
+
+<script>
+(function () {
+  var slides  = document.querySelectorAll('.slide');
+  var nav     = document.getElementById('nav');
+  var prev    = document.getElementById('navPrev');
+  var next    = document.getElementById('navNext');
+  var counter = document.getElementById('navCounter');
+  var total   = slides.length;
+  var current = 0;
+  var hideTimer = null;
+
+  function show(index) {
+    if (index < 0 || index >= total) return;
+    slides[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    updateUI();
+  }
+
+  function updateUI() {
+    counter.textContent = (current + 1) + ' / ' + total;
+    prev.disabled = current === 0;
+    next.disabled = current === total - 1;
+  }
+
+  function showNav() {
+    nav.classList.remove('hidden');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () { nav.classList.add('hidden'); }, 3000);
+  }
+
+  prev.addEventListener('click', function () { show(current - 1); showNav(); });
+  next.addEventListener('click', function () { show(current + 1); showNav(); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault(); show(current + 1); showNav();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault(); show(current - 1); showNav();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); show(0); showNav();
+    } else if (e.key === 'End') {
+      e.preventDefault(); show(total - 1); showNav();
+    }
+  });
+
+  document.addEventListener('mousemove', showNav, { passive: true });
+
+  updateUI();
+  showNav();
+})();
+</script>
+
+</body>
+</html>
