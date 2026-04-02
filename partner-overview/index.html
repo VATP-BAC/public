@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VATP HVAC Platform — Partner Technical Overview</title>
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --text-secondary: #5a5a5a;
+      --accent: #2f5b4e;
+      --accent-light: #e8f0ec;
+      --border: #e5e2dc;
+      --tag-bg: #f0ede8;
+      --blue: #3b7dd8;
+      --blue-light: #f0f5ff;
+      --amber: #e6a817;
+      --amber-light: #fffbf0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow: hidden; height: 100%; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .slides-container { height: 100vh; overflow: hidden; position: relative; }
+
+    .slide {
+      height: 100vh; width: 100%;
+      padding: 48px 72px;
+      display: flex; flex-direction: column; justify-content: center;
+      position: absolute; top: 0; left: 0;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+      overflow: hidden;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; }
+
+    h1 { font-family: 'DM Serif Display', Georgia, serif; font-size: 3rem; font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 12px; }
+    h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: 2.2rem; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 10px; }
+    h3 { font-size: 1.05rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px; }
+    h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+
+    .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 680px; margin-bottom: 28px; }
+    .label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 6px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+
+    .card { background: var(--card); border-radius: 10px; padding: 20px; border: 1px solid var(--border); }
+
+    .screenshot-caption { padding: 10px 14px; background: var(--card); font-size: 0.8rem; color: var(--text-secondary); border-top: 1px solid var(--border); }
+
+    .feature-list { list-style: none; }
+    .feature-list li { padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; gap: 10px; font-size: 0.9rem; }
+    .feature-list li:last-child { border-bottom: none; }
+    .check { color: var(--accent); font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
+
+    .compact-list { list-style: none; margin-top: 8px; }
+    .compact-list li { padding: 4px 0; font-size: 0.85rem; }
+    .compact-list li::before { content: '\2022'; color: var(--accent); font-weight: bold; margin-right: 8px; }
+
+    .slide-number { position: absolute; top: 20px; right: 72px; font-size: 0.72rem; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.05em; }
+
+    .title-slide { background: var(--accent); color: white; text-align: center; justify-content: center; align-items: center; }
+    .title-slide h1 { font-size: 3.8rem; color: white; }
+    .title-slide .subtitle { color: rgba(255,255,255,0.8); margin: 0 auto 32px; }
+    .title-meta { font-size: 0.85rem; opacity: 0.6; }
+
+    .section-divider { background: var(--tag-bg); justify-content: center; align-items: center; text-align: center; }
+
+    .protocol-box { text-align: center; padding: 16px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); }
+    .protocol-name { font-size: 1.15rem; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+    .protocol-desc { font-size: 0.78rem; color: var(--text-secondary); }
+
+    .stat-block { text-align: center; padding: 16px; }
+    .stat-number { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; color: var(--accent); }
+    .stat-label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+
+    .roles-table { width: 100%; font-size: 0.78rem; border-collapse: collapse; }
+    .roles-table th { padding: 8px 10px; text-align: left; background: var(--accent); color: white; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .roles-table th:not(:first-child) { text-align: center; }
+    .roles-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+    .roles-table td:not(:first-child) { text-align: center; color: var(--text-secondary); }
+    .roles-table td:first-child { font-weight: 600; }
+    .roles-table tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+
+    .nav-bar {
+      position: fixed; bottom: 28px; right: 32px;
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(26, 26, 26, 0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 10px; padding: 6px 8px;
+      z-index: 1000;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+    }
+    .nav-btn {
+      width: 36px; height: 36px; border: none; background: transparent;
+      color: rgba(255,255,255,0.8); border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; transition: background 0.15s, color 0.15s; user-select: none;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .nav-btn:active { background: rgba(255,255,255,0.2); }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; }
+    .nav-btn:disabled:hover { background: transparent; }
+    .nav-counter { color: rgba(255,255,255,0.55); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em; padding: 0 6px; min-width: 48px; text-align: center; user-select: none; }
+
+    @media print {
+      .slide { page-break-after: always; position: relative; opacity: 1; pointer-events: auto; }
+      .nav-bar { display: none; }
+    }
+    @media (max-width: 1024px) {
+      .slide { padding: 32px 28px; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      h1 { font-size: 2.2rem; } h2 { font-size: 1.6rem; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="slides-container">
+
+<!-- SLIDE 01: TITLE -->
+<div class="slide title-slide active">
+  <div class="label" style="color: rgba(255,255,255,0.6);">IPCEI-CIS Programme</div>
+  <h1>VATP HVAC Platform</h1>
+  <p class="subtitle">
+    Building energy monitoring, HVAC control, and cost optimization
+    for Ventspils High Technology Park.
+  </p>
+  <div class="title-meta">Partner Technical Overview &middot; April 2026</div>
+</div>
+
+<!-- SLIDE 02: WHAT WE'RE BUILDING -->
+<div class="slide">
+  <span class="slide-number">02</span>
+  <div class="label">Product Overview</div>
+  <h2>What we're building</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">A platform that connects HVAC equipment to a web dashboard, so building operators can see what's happening, how much it costs, and control things remotely.</p>
+  <div class="grid-2">
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 10px;">The Problem</h4>
+      <ul class="compact-list">
+        <li>Commercial HVAC systems consume 40-60% of building energy</li>
+        <li>Building operators lack visibility into real-time energy costs</li>
+        <li>Manual control can't react to dynamic electricity prices</li>
+        <li>Diverse equipment protocols create data silos</li>
+        <li>No unified view across buildings, floors, and rooms</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 10px;">Our Solution</h4>
+      <ul class="compact-list">
+        <li>Real-time monitoring of all HVAC sensors and devices</li>
+        <li>Integration with electricity market prices (Nord Pool)</li>
+        <li>One gateway that talks to all equipment regardless of protocol</li>
+        <li>Configurable alerting &mdash; set thresholds, get notified when something's off</li>
+        <li>Two-way control: read sensor data AND send commands to devices</li>
+        <li>People in rooms can report if they're too hot or cold</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-top: 20px;">
+    <div class="card" style="padding: 14px 18px;"><h4>Building Managers</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">See every building, floor, and room. Know what temperature it is, which equipment is running, what's offline.</p></div>
+    <div class="card" style="padding: 14px 18px;"><h4>Energy Managers</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">See how much energy costs right now, broken down by category. Compare against Nord Pool market prices.</p></div>
+    <div class="card" style="padding: 14px 18px;"><h4>Service Engineers</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">List of all devices, when they last reported in, send commands, see what's broken. Full audit trail.</p></div>
+  </div>
+</div>
+
+<!-- SLIDE 03: ARCHITECTURE -->
+<div class="slide" style="padding: 36px 64px;">
+  <span class="slide-number">03</span>
+  <div class="label">Architecture</div>
+  <h2 style="margin-bottom: 6px;">System Architecture</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Everything runs on-premises at VATP. Cloud is only used for ML model training, backups, and long-term analytics.</p>
+  <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+    <div style="display: flex; gap: 6px; align-items: stretch;">
+      <div style="width: 120px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 0.72rem; color: var(--text-secondary); text-align: right; line-height: 1.3; flex-shrink: 0;">Cloud<br>(EU Region)</div>
+      <div style="flex: 1; display: flex; gap: 6px;">
+        <div style="flex: 1; padding: 10px 14px; background: #e8f4fd; border: 1px solid #b3d4ed; border-radius: 6px; font-size: 0.82rem;"><strong>AI / ML Training</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Energy forecasting models, monthly retraining cycle</span></div>
+        <div style="flex: 1; padding: 10px 14px; background: #e8f4fd; border: 1px solid #b3d4ed; border-radius: 6px; font-size: 0.82rem;"><strong>Long-term Analytics</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">BigQuery for portfolio analytics and savings reports</span></div>
+        <div style="flex: 1; padding: 10px 14px; background: #e8f4fd; border: 1px solid #b3d4ed; border-radius: 6px; font-size: 0.82rem;"><strong>External APIs</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Nord Pool (prices) &middot; Open-Meteo (weather)</span></div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 120px; flex-shrink: 0;"></div><div style="flex: 1; text-align: center; font-size: 0.75rem; color: var(--text-secondary);">&#8597; data sync every few hours &nbsp;/&nbsp; trained models flow down</div></div>
+    <div style="display: flex; gap: 6px; align-items: stretch;">
+      <div style="width: 120px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 0.72rem; color: var(--accent); font-weight: 600; text-align: right; line-height: 1.3; flex-shrink: 0;">On-Premises<br>(VATP)</div>
+      <div style="flex: 1; display: flex; gap: 6px;">
+        <div style="flex: 1.3; padding: 12px 16px; background: rgba(47,91,78,0.1); border: 2px solid var(--accent); border-radius: 6px; font-size: 0.82rem;"><strong style="color: var(--accent);">Web Application</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Energy analytics &middot; alerts &middot; room comfort &middot; TV displays &middot; RBAC &middot; audit logs</span></div>
+        <div style="flex: 1; padding: 12px 16px; background: rgba(47,91,78,0.07); border: 1px solid rgba(47,91,78,0.25); border-radius: 6px; font-size: 0.82rem;"><strong>Gateway (Node-RED)</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Protocol adapters &middot; command routing &middot; store-and-forward</span></div>
+        <div style="flex: 1; padding: 12px 16px; background: rgba(47,91,78,0.07); border: 1px solid rgba(47,91,78,0.25); border-radius: 6px; font-size: 0.82rem;"><strong>Database</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">PostgreSQL + TimescaleDB &middot; 90-day time-series &middot; config</span></div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 120px; flex-shrink: 0;"></div><div style="flex: 1; text-align: center; font-size: 0.75rem; color: var(--text-secondary);">&#8597; sensor readings every 15-30 min &nbsp;/&nbsp; control commands flow back down</div></div>
+    <div style="display: flex; gap: 6px; align-items: stretch;">
+      <div style="width: 120px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 0.72rem; color: var(--text-secondary); text-align: right; line-height: 1.3; flex-shrink: 0;">In-Building</div>
+      <div style="flex: 1; display: flex; gap: 6px;">
+        <div style="flex: 1; padding: 10px 14px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.82rem;"><strong>HVAC Equipment</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Heat pumps &middot; chillers &middot; ventilation &middot; valves</span></div>
+        <div style="flex: 1; padding: 10px 14px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.82rem;"><strong>Room Sensors</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Temperature &middot; CO2 &middot; humidity via dock stations</span></div>
+        <div style="flex: 1; padding: 10px 14px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.82rem;"><strong>Energy Meters</strong><br><span style="color: var(--text-secondary); font-size: 0.77rem;">Smart meters &middot; sub-meters per zone</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 04: PROTOCOL GATEWAY -->
+<div class="slide">
+  <span class="slide-number">04</span>
+  <div class="label">Gateway</div>
+  <h2>Protocol Gateway</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">A Node-RED instance that sits between HVAC equipment and the web app. Speaks the protocols that equipment speaks, forwards data in a common format.</p>
+  <div class="grid-4" style="margin-bottom: 20px;">
+    <div class="protocol-box"><div class="protocol-name">MQTT</div><div class="protocol-desc">Pub/sub for IoT sensors via Mosquitto</div></div>
+    <div class="protocol-box"><div class="protocol-name">Modbus</div><div class="protocol-desc">TCP/RTU for industrial devices</div></div>
+    <div class="protocol-box"><div class="protocol-name">BACnet</div><div class="protocol-desc">Building automation controllers</div></div>
+    <div class="protocol-box"><div class="protocol-name">REST</div><div class="protocol-desc">HTTP for dock stations & APIs</div></div>
+  </div>
+  <div class="grid-2">
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 10px;">Gateway Capabilities</h4>
+      <ul class="feature-list">
+        <li><span class="check">&#10003;</span> Protocol adapters with configurable sensor mapping</li>
+        <li><span class="check">&#10003;</span> Normalization to standard {sensorId, value, unit, time}</li>
+        <li><span class="check">&#10003;</span> Store-and-forward queue with dead-letter handling</li>
+        <li><span class="check">&#10003;</span> Exponential backoff retry (1s &rarr; 8s &rarr; 64s)</li>
+        <li><span class="check">&#10003;</span> Command routing &mdash; web commands to device protocols</li>
+        <li><span class="check">&#10003;</span> JSON Schema validated config with hot-reload</li>
+        <li><span class="check">&#10003;</span> Health monitoring (MQTT status, queue depth)</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 10px;">How it works</h4>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px;">
+          <div style="width: 24px; height: 24px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">1</div>
+          <p style="font-size: 0.82rem; margin: 0;"><strong>Receive</strong> &mdash; Each protocol adapter subscribes to its source (MQTT topic, Modbus register, BACnet object, HTTP endpoint)</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: rgba(47,91,78,0.06); border: 1px solid rgba(47,91,78,0.2); border-radius: 6px;">
+          <div style="width: 24px; height: 24px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">2</div>
+          <p style="font-size: 0.82rem; margin: 0;"><strong>Normalize</strong> &mdash; Transform protocol-specific readings into a common format: {sensorId, value, unit, timestamp}</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: rgba(47,91,78,0.06); border: 1px solid rgba(47,91,78,0.2); border-radius: 6px;">
+          <div style="width: 24px; height: 24px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">3</div>
+          <p style="font-size: 0.82rem; margin: 0;"><strong>Queue</strong> &mdash; Batch readings and buffer them. If the web app is down, readings are held and retried automatically</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: rgba(47,91,78,0.12); border: 2px solid var(--accent); border-radius: 6px;">
+          <div style="width: 24px; height: 24px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">4</div>
+          <p style="font-size: 0.82rem; margin: 0;"><strong>Forward</strong> &mdash; POST batches to the web app's ingest API. App validates, scores quality, writes to TimescaleDB</p>
+        </div>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Adding a new sensor type means adding one entry to the config file &mdash; no code changes, no redeployment.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 05: DATA FLOW -->
+<div class="slide">
+  <span class="slide-number">05</span>
+  <div class="label">Data Pipeline</div>
+  <h2>How data moves through the system</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Two directions: sensor readings come in, control commands go out. The gateway handles protocol differences so the web app doesn't have to.</p>
+
+  <div class="grid-2">
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 12px;">Sensor readings in</h4>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="padding: 10px 16px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.85rem;"><strong>Sensors &amp; meters</strong> publish readings (temp, humidity, CO2, kWh) via their native protocol</div>
+        <div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">&#8595; MQTT / Modbus / BACnet / REST</div>
+        <div style="padding: 10px 16px; background: rgba(47,91,78,0.07); border: 1px solid rgba(47,91,78,0.2); border-radius: 6px; font-size: 0.85rem;"><strong>Gateway</strong> normalizes everything to {sensorId, value, unit, timestamp}, queues it in batches</div>
+        <div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">&#8595; HTTP POST /api/ingest (with API key)</div>
+        <div style="padding: 10px 16px; background: rgba(47,91,78,0.12); border: 2px solid var(--accent); border-radius: 6px; font-size: 0.85rem;"><strong style="color: var(--accent);">Web app</strong> validates, scores quality (good/suspect/bad), writes to TimescaleDB hypertable</div>
+      </div>
+    </div>
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 12px;">Control commands out</h4>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="padding: 10px 16px; background: rgba(47,91,78,0.12); border: 2px solid var(--accent); border-radius: 6px; font-size: 0.85rem;"><strong style="color: var(--accent);">Operator</strong> clicks "set heating to 45&deg;C" in the web UI. Command saved with status: <em>issued</em></div>
+        <div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">&#8595; routed to gateway</div>
+        <div style="padding: 10px 16px; background: rgba(47,91,78,0.07); border: 1px solid rgba(47,91,78,0.2); border-radius: 6px; font-size: 0.85rem;"><strong>Gateway</strong> translates command to device-specific protocol (e.g. write Modbus register 100 = 450)</div>
+        <div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">&#8595; BACnet / Modbus / REST</div>
+        <div style="padding: 10px 16px; background: #fdf6ec; border: 1px solid #e8c97a; border-radius: 6px; font-size: 0.85rem;"><strong>Device executes</strong>, sends acknowledgment back. Command status updated to <em>acked</em> or <em>rejected</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; display: flex; gap: 12px;">
+    <div style="flex: 1; padding: 10px 16px; background: rgba(47,91,78,0.06); border-radius: 8px; font-size: 0.82rem;"><strong>If the network drops,</strong> readings are buffered locally and forwarded once connectivity is restored</div>
+    <div style="flex: 1; padding: 10px 16px; background: rgba(47,91,78,0.06); border-radius: 8px; font-size: 0.82rem;"><strong>Bad readings</strong> (sensor glitches, out-of-range values) are flagged, not silently dropped</div>
+    <div style="flex: 1; padding: 10px 16px; background: rgba(47,91,78,0.06); border-radius: 8px; font-size: 0.82rem;"><strong>Every command</strong> is logged with who sent it, when, and whether the device accepted it</div>
+  </div>
+</div>
+
+<!-- SLIDE 06: ENERGY DASHBOARD -->
+<div class="slide" style="padding: 28px 64px; justify-content: flex-start;">
+  <span class="slide-number">06</span>
+  <div class="label">The App</div>
+  <h2 style="margin-bottom: 4px;">Energy Dashboard</h2>
+  <p class="subtitle" style="margin-bottom: 10px;">Current electricity prices from Nord Pool, weather from Open-Meteo, building load, and comfort data on one screen.</p>
+  <div class="grid-2" style="margin-top: 0; gap: 10px;">
+    <div>
+      <img src="screenshots/06-dashboard.png" alt="Dashboard" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Live weather (Ventspils) with Nord Pool and Open-Meteo data. 24h history + 12h forecast.</div>
+    </div>
+    <div>
+      <img src="screenshots/06-energy-top.png" alt="Energy analytics" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">334 EUR total (24h). Stacked area chart by category with Nord Pool price overlay. Heat pump vs district heating comparison.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 07: ROOM COMFORT -->
+<div class="slide" style="padding: 28px 64px; justify-content: flex-start;">
+  <span class="slide-number">07</span>
+  <div class="label">The App</div>
+  <h2 style="margin-bottom: 4px;">Room View</h2>
+  <p class="subtitle" style="margin-bottom: 10px;">Each room gets its own page: current temperature, humidity, CO2, sensor history, and a way for people to say if they're comfortable.</p>
+  <div class="grid-2" style="margin-top: 0; gap: 10px;">
+    <div>
+      <img src="screenshots/07-room-detail-top.png" alt="Room KPIs" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Room 101: temperature (21.2&deg;C), humidity (49%), CO2 (772 ppm), telemetry chart, comfort score (100).</div>
+    </div>
+    <div>
+      <img src="screenshots/07-room-detail-bottom.png" alt="Room feedback" style="width: 100%; max-height: calc(100vh - 195px); object-fit: contain; object-position: top; display: block; border-radius: 6px; border: 1px solid var(--border);">
+      <div class="screenshot-caption" style="margin-top: 6px;">Occupant thermal feedback widget (Too Cold &rarr; Too Hot) with recent feedback timeline showing comfort patterns.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 08: TV DISPLAY -->
+<div class="slide" style="padding: 20px 48px;">
+  <span class="slide-number">08</span>
+  <div class="label" style="margin-bottom: 8px;">Public Display &mdash; TV Mode (auto-rotates, no login required)</div>
+  <div class="grid-2" style="margin-top: 0; gap: 10px; height: calc(100vh - 70px);">
+    <div style="display: flex; flex-direction: column; gap: 10px; height: 100%;">
+      <div style="flex: 1; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+        <img src="screenshots/tv-energy.png" alt="TV Energy" style="width: 100%; height: 100%; object-fit: cover;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 14px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.78rem;"><strong>Energy Summary</strong> &mdash; consumption, current price, daily costs</div>
+      </div>
+      <div style="flex: 1; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+        <img src="screenshots/tv-comfort.png" alt="TV Comfort" style="width: 100%; height: 100%; object-fit: cover;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 14px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.78rem;"><strong>Building Comfort</strong> &mdash; average score, room breakdown</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; height: 100%;">
+      <div style="flex: 1; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+        <img src="screenshots/tv-sustainability.png" alt="TV Sustainability" style="width: 100%; height: 100%; object-fit: cover;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 14px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.78rem;"><strong>Sustainability</strong> &mdash; energy savings vs baseline, CO2 reduction</div>
+      </div>
+      <div style="flex: 1; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+        <img src="screenshots/tv-status.png" alt="TV Status" style="width: 100%; height: 100%; object-fit: cover;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 14px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: white; font-size: 0.78rem;"><strong>System Status</strong> &mdash; devices online/offline, active alerts</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 09: SECURITY & RBAC -->
+<div class="slide">
+  <span class="slide-number">09</span>
+  <div class="label">Security & Access Control</div>
+  <h2>Access control & audit</h2>
+  <p class="subtitle" style="margin-bottom: 16px;">Different people need different access. A service engineer shouldn't change cost targets. A viewer shouldn't send commands to equipment.</p>
+  <div class="grid-2">
+    <div>
+      <table class="roles-table">
+        <thead><tr><th>Role</th><th>What they can do</th></tr></thead>
+        <tbody>
+          <tr><td>Admin</td><td>Everything &mdash; users, config, commands</td></tr>
+          <tr><td>Facility Manager</td><td>Manage buildings, send commands, handle alerts</td></tr>
+          <tr><td>Energy Manager</td><td>View analytics, set cost targets</td></tr>
+          <tr><td>Service / Maint.</td><td>Device status, send commands, manage alerts</td></tr>
+          <tr><td>Auditor</td><td>Read-only access to everything including logs</td></tr>
+          <tr><td>Viewer</td><td>Read-only dashboards</td></tr>
+          <tr><td>Room (Tablet)</td><td>See room climate, submit comfort feedback</td></tr>
+          <tr><td>Org Admin</td><td>Manage organization-level settings</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top: 14px; padding: 12px 16px; background: var(--amber-light); border: 1px solid #e8c97a; border-radius: 8px;">
+        <p style="font-size: 0.82rem; color: var(--text-secondary);"><strong>Safety limits:</strong> Even authorized users can't set a heat pump above 55&deg;C or below 15&deg;C. Valve and fan speed capped at 100%. Emergency stop is always available.</p>
+      </div>
+    </div>
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 10px;">How we handle security</h4>
+      <ul class="compact-list">
+        <li><strong>Login:</strong> Google OAuth with domain restriction &mdash; only allowed email domains can sign in</li>
+        <li><strong>Gateway auth:</strong> The ingest API requires a bearer token &mdash; random data can't be POSTed in</li>
+        <li><strong>Database:</strong> All queries use parameterized statements, no string concatenation</li>
+        <li><strong>Containers:</strong> App runs as a non-root user inside Docker</li>
+        <li><strong>Audit log:</strong> Every action (login, command, config change) is recorded with who did it and when</li>
+        <li><strong>Data location:</strong> Production data stays in EU (currently Scaleway Warsaw, target: on-prem at VATP)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: INFRASTRUCTURE -->
+<div class="slide">
+  <span class="slide-number">10</span>
+  <div class="label">Infrastructure</div>
+  <h2>Deployment & Tech Stack</h2>
+  <p class="subtitle" style="margin-bottom: 16px;">Target: a dedicated server at VATP running everything locally. During development, we host on a cheap Scaleway VM.</p>
+  <div class="grid-2">
+    <div>
+      <div style="border: 2px solid var(--accent); border-radius: 10px; padding: 16px 20px; background: rgba(47,91,78,0.06); margin-bottom: 12px;">
+        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 8px;">On-Premises &mdash; Server at VATP</div>
+        <ul style="margin: 0; padding-left: 16px; font-size: 0.82rem; line-height: 1.8;">
+          <li><strong>Web app:</strong> Next.js 16, React 19, TypeScript</li>
+          <li><strong>Database:</strong> PostgreSQL 14 + TimescaleDB (time-series)</li>
+          <li><strong>Gateway:</strong> Node-RED + MQTT broker (Mosquitto)</li>
+          <li><strong>Reverse proxy:</strong> Caddy</li>
+          <li><strong>Orchestration:</strong> Docker Compose (all services in containers)</li>
+        </ul>
+      </div>
+      <div style="border: 2px solid var(--blue); border-radius: 10px; padding: 16px 20px; background: var(--blue-light);">
+        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue); margin-bottom: 8px;">Scaleway Cloud (EU, Warsaw region)</div>
+        <ul style="margin: 0; padding-left: 16px; font-size: 0.82rem; line-height: 1.8;">
+          <li><strong>ML training:</strong> Model training on synced time-series data</li>
+          <li><strong>Backups:</strong> Database snapshots to object storage</li>
+          <li><strong>Dev hosting:</strong> Temporary &mdash; running the app here until on-prem server is ready</li>
+          <li><strong>CI/CD:</strong> GitHub Actions builds Docker images, deploys via SSH</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h4 style="color: var(--accent); margin-bottom: 10px;">Technology Stack</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">Next.js 16</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">App Router, Server Components</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">React 19</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Server Actions, Hooks</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">TypeScript</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Strict mode, mandatory</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">TimescaleDB</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Hypertables, compression</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">Node-RED</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Visual flow gateway</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">Visx</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">React chart library</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">NextAuth.js v5</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Google OAuth + RBAC</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">Docker</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Multi-stage builds</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">Tailwind CSS 4</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Utility-first styling</span></div>
+        <div class="card" style="padding: 10px 14px;"><strong style="font-size: 0.85rem;">Playwright</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">E2E test framework</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: INTEGRATIONS -->
+<div class="slide">
+  <span class="slide-number">11</span>
+  <div class="label">Connectivity</div>
+  <h2>What we connect to</h2>
+  <p class="subtitle" style="margin-bottom: 16px;">The platform pulls in external data to give context to what's happening in the building &mdash; electricity prices, weather, and metering data.</p>
+  <div class="grid-3" style="gap: 12px;">
+    <div class="card" style="border-top: 3px solid var(--amber); padding: 16px 20px;"><h4>Nord Pool</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">Hourly electricity market prices (EUR/MWh) for the Baltic/Nordic region. Day-ahead prices available too.</p><p style="margin-top: 6px; font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">Live</p></div>
+    <div class="card" style="border-top: 3px solid var(--blue); padding: 16px 20px;"><h4>Open-Meteo</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">Weather forecast and current conditions for Ventspils. Helps anticipate heating/cooling demand.</p><p style="margin-top: 6px; font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">Live</p></div>
+    <div class="card" style="border-top: 3px solid var(--accent); padding: 16px 20px;"><h4>Google OAuth</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">Login via Google accounts. Only emails from allowed domains can access the system.</p><p style="margin-top: 6px; font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">Live</p></div>
+    <div class="card" style="border-top: 3px solid var(--amber); padding: 16px 20px;"><h4>Electricity Meters</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">Controller proxies connected to electricity counters in the building. Actual consumption data via Modbus/MQTT.</p><p style="margin-top: 6px; font-size: 0.72rem; font-weight: 700; color: var(--blue); text-transform: uppercase;">In Progress</p></div>
+    <div class="card" style="border-top: 3px solid var(--blue); padding: 16px 20px;"><h4>BigQuery</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">Cloud storage for training ML models on historical data. Synced from on-prem database periodically.</p><p style="margin-top: 6px; font-size: 0.72rem; font-weight: 700; color: var(--amber); text-transform: uppercase;">Planned</p></div>
+    <div class="card" style="border-top: 3px solid var(--accent); padding: 16px 20px;"><h4>BMS / SCADA</h4><p style="font-size: 0.82rem; color: var(--text-secondary);">Existing building management systems. Connected through the multi-protocol gateway.</p><p style="margin-top: 6px; font-size: 0.72rem; font-weight: 700; color: var(--blue); text-transform: uppercase;">In Progress</p></div>
+  </div>
+  <div style="margin-top: 16px; padding: 12px 18px; background: rgba(47,91,78,0.06); border-radius: 8px;">
+    <p style="font-size: 0.82rem; color: var(--text-secondary);"><strong>Integration boundary:</strong> Everything goes through the gateway's standard REST API. The web app never talks directly to field devices &mdash; the gateway is swappable without touching the rest of the stack.</p>
+  </div>
+</div>
+
+<!-- SLIDE 12: ROADMAP -->
+<div class="slide">
+  <span class="slide-number">12</span>
+  <div class="label">Roadmap</div>
+  <h2>Where we are and where we're going</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">The web app, gateway, and database are working. Next step is connecting to real equipment in a real building.</p>
+
+  <div style="display: flex; gap: 0; align-items: stretch;">
+    <div style="flex: 1; padding: 24px 28px; background: rgba(47,91,78,0.07); border-radius: 12px 0 0 12px; border: 1px solid rgba(47,91,78,0.15);">
+      <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">Now</p>
+      <p style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Software ready</p>
+      <ul style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 18px; line-height: 1.8;">
+        <li>Web app with dashboards, alerts, room monitoring</li>
+        <li>Gateway handling 4 protocols</li>
+        <li>Running on temporary Scaleway hosting</li>
+        <li>Nord Pool and weather data connected</li>
+      </ul>
+    </div>
+    <div style="display: flex; align-items: center; padding: 0 10px; color: var(--accent); font-size: 1.4rem; background: rgba(47,91,78,0.04); border-top: 1px solid rgba(47,91,78,0.12); border-bottom: 1px solid rgba(47,91,78,0.12);">&rarr;</div>
+    <div style="flex: 1; padding: 24px 28px; background: rgba(47,91,78,0.12); border-top: 1px solid rgba(47,91,78,0.2); border-bottom: 1px solid rgba(47,91,78,0.2);">
+      <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">Next</p>
+      <p style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Pilot at VATP</p>
+      <ul style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 18px; line-height: 1.8;">
+        <li>Connect real sensors and HVAC equipment</li>
+        <li>Deploy on-prem server at VATP</li>
+        <li>Hook up electricity meters via controller proxies</li>
+        <li>Validate data quality with actual readings</li>
+      </ul>
+    </div>
+    <div style="display: flex; align-items: center; padding: 0 10px; color: var(--accent); font-size: 1.4rem; background: rgba(47,91,78,0.04); border-top: 1px solid rgba(47,91,78,0.12); border-bottom: 1px solid rgba(47,91,78,0.12);">&rarr;</div>
+    <div style="flex: 1; padding: 24px 28px; background: var(--accent); border-radius: 0 12px 12px 0; color: white;">
+      <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 8px;">Later</p>
+      <p style="font-size: 1rem; font-weight: 600; margin-bottom: 10px; color: white;">ML and optimization</p>
+      <ul style="font-size: 0.85rem; color: rgba(255,255,255,0.8); padding-left: 18px; line-height: 1.8;">
+        <li>Train forecasting models on collected data</li>
+        <li>Floorplan visualization with sensor overlays</li>
+        <li>SMS/email alerts for critical events</li>
+        <li>Expand to additional buildings</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; padding: 14px 18px; background: rgba(47,91,78,0.06); border-radius: 8px;">
+    <p style="font-size: 0.85rem; color: var(--text-secondary);">The system is designed to work without internet. Cloud is used for model training and backups, but the building keeps running on local data if the connection drops.</p>
+  </div>
+</div>
+
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="navigate(-1)" disabled>&#8592;</button>
+  <span class="nav-counter" id="counter">1 / 12</span>
+  <button class="nav-btn" id="nextBtn" onclick="navigate(1)">&#8594;</button>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function show(index) {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[index].classList.add('active');
+    document.getElementById('counter').textContent = (index + 1) + ' / ' + total;
+    document.getElementById('prevBtn').disabled = index === 0;
+    document.getElementById('nextBtn').disabled = index === total - 1;
+  }
+
+  function navigate(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < total) { current = next; show(current); }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); navigate(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); navigate(-1); }
+    if (e.key === 'Home') { current = 0; show(current); }
+    if (e.key === 'End') { current = total - 1; show(current); }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1);
+  });
+</script>
+</body>
+</html>
