@@ -1,0 +1,2822 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VATP AI apmācība · 1. modulis — AI pamati</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ===========================================================
+   VIEWPORT FITTING — MANDATORY BASE
+   =========================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+:root {
+  /* Palette — warm cream + VATP forest green (calm, editorial) */
+  --bg:        #f5f1e7;
+  --bg-elev:   #ede7d7;
+  --bg-card:   #fdfaf2;
+  --ink:       #1f1d1a;
+  --ink-mid:   #5d5852;
+  --ink-dim:   #9b9489;
+  --line:      rgba(31, 29, 26, 0.10);
+  --line-soft: rgba(31, 29, 26, 0.05);
+  --accent:    #2f5b4e;
+  --accent-2:  #5a8475;
+  --accent-soft: rgba(47, 91, 78, 0.10);
+  --good:      #4a8060;
+  --bad:       #a85a3e;
+
+  /* Type */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  /* Fluid sizes */
+  --display-size: clamp(2.5rem, 8vw, 7rem);
+  --title-size:   clamp(1.75rem, 5vw, 4.25rem);
+  --h2-size:      clamp(1.25rem, 3.2vw, 2.5rem);
+  --h3-size:      clamp(1.05rem, 2.2vw, 1.5rem);
+  --body-size:    clamp(0.85rem, 1.3vw, 1.05rem);
+  --small-size:   clamp(0.7rem, 1vw, 0.85rem);
+  --mono-size:    clamp(0.65rem, 0.9vw, 0.78rem);
+  --section-num:  clamp(5rem, 16vw, 14rem);
+
+  /* Spacing */
+  --pad-x: clamp(2rem, 6vw, 6rem);
+  --pad-y: clamp(1.5rem, 4vh, 3.5rem);
+  --gap-lg: clamp(1rem, 2.5vw, 2.25rem);
+  --gap-md: clamp(0.6rem, 1.5vw, 1.25rem);
+  --gap-sm: clamp(0.35rem, 0.8vw, 0.7rem);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle technical grid behind everything */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size: clamp(48px, 6vw, 90px) clamp(48px, 6vw, 90px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+/* Soft ambient warmth */
+body::after {
+  content: '';
+  position: fixed;
+  width: 70vmax; height: 70vmax;
+  top: -25vmax; right: -25vmax;
+  background: radial-gradient(circle, rgba(47, 91, 78, 0.05), transparent 60%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===========================================================
+   SLIDE SYSTEM
+   =========================================================== */
+.deck {
+  position: fixed; inset: 0;
+  z-index: 1;
+}
+
+.slide {
+  position: absolute; inset: 0;
+  width: 100vw; height: 100vh; height: 100dvh;
+  overflow: hidden;
+  padding: var(--pad-y) var(--pad-x);
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.slide.active {
+  opacity: 1; pointer-events: auto;
+  transform: translateY(0);
+}
+
+.slide-inner {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-md);
+  min-height: 0;
+  position: relative;
+  z-index: 2;
+  /* Reserve space at the bottom so content doesn't overlap the slide-footer */
+  padding-bottom: clamp(3.5rem, 7vh, 4.5rem);
+}
+
+/* ===========================================================
+   COMMON COMPONENTS
+   =========================================================== */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  display: flex; align-items: center;
+  gap: 0.7em;
+}
+.eyebrow .dot {
+  width: 6px; height: 6px; background: var(--accent);
+  border-radius: 50%; flex: 0 0 6px;
+}
+.eyebrow .accent { color: var(--accent); }
+
+.section-num {
+  position: absolute;
+  top: clamp(0.5rem, 2vh, 1.5rem);
+  right: var(--pad-x);
+  font-family: var(--font-display);
+  font-size: var(--section-num);
+  font-weight: 700;
+  color: rgba(47, 91, 78, 0.08);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--title-size);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.title .focal { color: var(--accent); }
+.strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 0.1em;
+  text-decoration-skip-ink: none;
+  color: var(--ink-dim);
+}
+
+.kicker {
+  font-family: var(--font-display);
+  font-size: var(--h3-size);
+  color: var(--ink-mid);
+  line-height: 1.25;
+  font-weight: 400;
+  max-width: 60ch;
+}
+
+.lede {
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  color: var(--ink-mid);
+  max-width: 60ch;
+  line-height: 1.5;
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-dim);
+  letter-spacing: 0.08em;
+}
+
+.divider {
+  height: 1px; background: var(--line);
+  margin: var(--gap-md) 0;
+}
+
+/* Footer info — sits above the bottom nav/hint band, narrower so it never collides */
+.slide-footer {
+  position: absolute;
+  bottom: clamp(3.5rem, 7vh, 4.5rem);
+  left: var(--pad-x);
+  right: clamp(8rem, 15vw, 13rem);
+  display: flex; justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-dim);
+  letter-spacing: 0.08em;
+  z-index: 3;
+  pointer-events: none;
+}
+.slide-footer > * { pointer-events: auto; }
+.slide-footer .left, .slide-footer .right { display: flex; gap: 0.9em; align-items: center; }
+.slide-footer .pill {
+  border: 1px solid var(--line);
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+}
+.slide-footer .pill.accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ===========================================================
+   SLIDE-SPECIFIC LAYOUTS
+   =========================================================== */
+
+/* Title slide */
+.s-title .slide-inner {
+  justify-content: center;
+}
+.s-title .display {
+  font-family: var(--font-display);
+  font-size: var(--display-size);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+.s-title .display .focal { color: var(--accent); }
+.s-title .sub {
+  margin-top: var(--gap-md);
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  color: var(--ink-mid);
+  max-width: 50ch;
+  line-height: 1.4;
+}
+.s-title .topbar {
+  position: absolute;
+  top: var(--pad-y);
+  left: var(--pad-x);
+  right: var(--pad-x);
+  display: flex; justify-content: space-between;
+  align-items: center;
+}
+.s-title .badge {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.4em 0.9em;
+  border-radius: 4px;
+}
+.s-title .glyph {
+  position: absolute;
+  right: calc(var(--pad-x) - 1rem);
+  bottom: calc(var(--pad-y) + 1rem);
+  width: clamp(120px, 22vw, 320px);
+  height: clamp(120px, 22vw, 320px);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0.7;
+}
+.s-title .glyph::before {
+  content: '';
+  position: absolute; inset: 18%;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+.s-title .glyph::after {
+  content: '';
+  position: absolute; inset: 38%;
+  background: var(--accent);
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+/* Headline-only / arrow slide */
+.s-headline .slide-inner { justify-content: center; gap: var(--gap-lg); }
+.s-headline .big {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 6vw, 5.5rem);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  max-width: 22ch;
+}
+.s-headline .big .focal { color: var(--accent); }
+.s-headline .big .underline {
+  background-image: linear-gradient(transparent 70%, var(--accent-soft) 70%);
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  margin-top: var(--gap-lg);
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card .stat-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+.stat-card .stat-label {
+  font-size: var(--body-size);
+  color: var(--ink-mid);
+  margin-top: 0.5rem;
+  line-height: 1.35;
+}
+.stat-card .stat-tag {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.75em;
+}
+.stat-card.subtle .stat-num { color: var(--ink); }
+
+/* Two-column comparison */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-lg);
+  flex: 1; min-height: 0;
+  align-items: stretch;
+  margin-top: var(--gap-md);
+}
+.col {
+  display: flex; flex-direction: column;
+  gap: var(--gap-md);
+  min-height: 0;
+}
+.col-head {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  display: flex; align-items: center;
+  gap: 0.7em;
+}
+.col-head.good .marker { background: var(--good); }
+.col-head.bad  .marker { background: var(--bad);  }
+.col-head .marker {
+  width: 10px; height: 10px; border-radius: 2px;
+}
+
+/* Bullet list — minimal */
+.list {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+}
+.list li {
+  font-size: var(--body-size);
+  color: var(--ink-mid);
+  padding-left: 1.4em;
+  position: relative;
+  line-height: 1.45;
+}
+.list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.55em;
+  width: 0.7em; height: 1px;
+  background: var(--accent);
+}
+.list.good li::before { background: var(--good); }
+.list.bad  li::before { background: var(--bad);  }
+.list li strong { color: var(--ink); font-weight: 600; }
+
+/* Definition cards */
+.defs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+}
+.def {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(0.9rem, 1.7vw, 1.4rem);
+  display: flex; flex-direction: column;
+  gap: 0.4em;
+  min-height: 0;
+  overflow: hidden;
+}
+.def .term {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.def .name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--h3-size);
+  color: var(--ink);
+  line-height: 1.1;
+}
+.def .desc {
+  font-size: var(--body-size);
+  color: var(--ink-mid);
+  line-height: 1.45;
+}
+
+/* Then-vs-now */
+.then-now {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--gap-md);
+  align-items: stretch;
+  flex: 1; min-height: 0;
+  margin-top: var(--gap-md);
+}
+.then-now .arrow {
+  display: flex; align-items: center;
+  font-family: var(--font-display);
+  color: var(--accent);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+.then-now .panel {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+}
+.then-now .panel.now { border-color: rgba(47, 91, 78, 0.4); background: rgba(47, 91, 78, 0.03); }
+.then-now .panel .era {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.then-now .panel.now .era { color: var(--accent); }
+.then-now .panel h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--h3-size);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+/* Token-prediction visual */
+.tokens {
+  display: flex; flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: var(--gap-md);
+  align-items: center;
+}
+.token {
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  padding: 0.4em 0.75em;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink-mid);
+}
+.token.next {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  position: relative;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(47, 91, 78, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(47, 91, 78, 0); }
+}
+.token.cursor::after {
+  content: '▋';
+  color: var(--accent);
+  margin-left: 0.3em;
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.candidates {
+  display: flex; flex-direction: column;
+  gap: 0.35em;
+  margin-top: var(--gap-md);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  max-width: 25rem;
+}
+.candidate {
+  display: grid;
+  grid-template-columns: 7em 1fr 3em;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.4em 0.7em;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  position: relative;
+}
+.candidate .bar-track {
+  height: 0.4em;
+  background: rgba(47, 91, 78, 0.10);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.candidate .bar-fill {
+  height: 100%;
+  background: var(--accent-2);
+  border-radius: 2px;
+  transform-origin: left;
+}
+.candidate .word { color: var(--ink); letter-spacing: 0.04em; font-weight: 500; }
+.candidate .pct { color: var(--ink-dim); text-align: right; }
+.candidate.top { border-color: var(--accent); }
+.candidate.top .word { color: var(--accent); font-weight: 600; }
+.candidate.top .bar-fill { background: var(--accent); }
+
+/* Why-now: four reasons */
+.reasons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap-md);
+  margin-top: var(--gap-lg);
+  flex: 1; min-height: 0;
+}
+.reason {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(0.9rem, 1.7vw, 1.4rem);
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+}
+.reason .num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: var(--accent);
+  line-height: 1;
+}
+.reason .label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--h3-size);
+  color: var(--ink);
+  line-height: 1.15;
+}
+.reason .desc {
+  font-size: var(--body-size);
+  color: var(--ink-mid);
+  line-height: 1.4;
+}
+
+/* Three-buckets framework */
+.buckets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+}
+.bucket {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+  position: relative;
+}
+.bucket.ai      { border-color: rgba(47, 91, 78, 0.5); background: rgba(47, 91, 78, 0.03); }
+.bucket .tag {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.bucket.ai .tag { color: var(--accent); }
+.bucket .name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+.bucket .when {
+  font-size: var(--body-size);
+  color: var(--ink-mid);
+  line-height: 1.4;
+}
+.bucket .examples {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-dim);
+  margin-top: auto;
+  letter-spacing: 0.05em;
+}
+
+/* Quiz — interactive */
+.quiz-board {
+  display: flex; flex-direction: column;
+  gap: var(--gap-md);
+  margin-top: var(--gap-sm);
+  flex: 1; min-height: 0;
+}
+.quiz-chips {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: clamp(0.4rem, 0.8vw, 0.7rem);
+}
+.quiz-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: clamp(0.5rem, 1vw, 0.8rem) clamp(0.4rem, 0.8vw, 0.7rem);
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: 0.35em;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  text-align: center;
+  user-select: none;
+}
+.quiz-chip:hover { border-color: var(--accent); }
+.quiz-chip:active { transform: scale(0.97); }
+.quiz-chip.active {
+  border-color: var(--accent);
+  border-width: 2px;
+  background: var(--accent-soft);
+}
+.quiz-chip .num {
+  font-family: var(--font-mono);
+  font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+  color: var(--ink-dim);
+  letter-spacing: 0.16em;
+  font-weight: 600;
+}
+.quiz-chip.active .num { color: var(--accent); }
+.quiz-chip .ans-tag {
+  font-family: var(--font-mono);
+  font-size: clamp(0.55rem, 0.75vw, 0.65rem);
+  letter-spacing: 0.04em;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: var(--bg-card);
+  padding: 0.25em 0.45em;
+  border-radius: 999px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  text-transform: uppercase;
+}
+.quiz-chip.revealed .ans-tag { opacity: 1; transform: translateY(0); }
+.quiz-chip.revealed { background: var(--bg-card); border-color: var(--line); }
+.quiz-focus {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-md);
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-focus .placeholder {
+  color: var(--ink-dim);
+  text-align: center;
+  font-style: italic;
+  font-size: var(--body-size);
+}
+.quiz-focus .num-large {
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 1.4vw, 1.2rem);
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.quiz-focus .question-large {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  max-width: 30ch;
+}
+.quiz-focus .ans-row {
+  display: flex; align-items: center; gap: 0.7em;
+  flex-wrap: wrap;
+}
+.quiz-focus .ans-large {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  letter-spacing: 0.08em;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 0.4em 0.9em;
+  border-radius: 999px;
+  display: none;
+  text-transform: uppercase;
+}
+.quiz-focus.has-answer .ans-large { display: inline-flex; align-items: center; }
+.quiz-focus .reveal-btn {
+  align-self: flex-start;
+  padding: 0.55em 1.3em;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+.quiz-focus .reveal-btn:hover { background: var(--accent-soft); }
+.quiz-focus.has-answer .reveal-btn { display: none; }
+.quiz-focus .nudge-text {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-dim);
+  letter-spacing: 0.08em;
+}
+.quiz-item .q-num {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--accent);
+  letter-spacing: 0.16em;
+}
+.quiz-item .q-text {
+  font-size: var(--body-size);
+  color: var(--ink);
+  line-height: 1.4;
+}
+.quiz-item .q-tags {
+  display: flex; gap: 0.4em;
+  margin-top: 0.3em;
+}
+.q-chip {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.08em;
+  padding: 0.2em 0.55em;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+}
+.q-chip.ans {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Assignment slide */
+.assignment {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--gap-lg);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+}
+.assignment .prompt {
+  background: var(--bg-card);
+  border: 1px dashed var(--accent);
+  border-radius: 14px;
+  padding: clamp(1.2rem, 2.5vw, 2rem);
+  display: flex; flex-direction: column;
+  gap: var(--gap-md);
+  position: relative;
+  overflow: hidden;
+}
+.assignment .prompt h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--h2-size);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.assignment .field-input {
+  flex: 1;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(31, 29, 26, 0.03);
+  min-height: 6em;
+  padding: 0.9em 1em;
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+  line-height: 1.5;
+  color: var(--ink);
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.assignment .field-input:focus {
+  border-color: var(--accent);
+  background: rgba(47, 91, 78, 0.04);
+}
+.assignment .field-input::placeholder {
+  color: var(--ink-dim);
+  font-style: italic;
+}
+.assignment .sample-row {
+  display: flex; flex-wrap: wrap;
+  gap: 0.4em;
+  margin-top: 0.6em;
+}
+.assignment .sample-btn {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.06em;
+  padding: 0.35em 0.8em;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-mid);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.assignment .sample-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.assignment .examples {
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+}
+.assignment .examples h4 {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.assignment .examples li {
+  font-size: var(--body-size);
+  color: var(--ink-mid);
+  line-height: 1.4;
+  padding-left: 1.2em;
+  position: relative;
+}
+.assignment .examples li::before {
+  content: '→';
+  position: absolute; left: 0;
+  color: var(--accent);
+}
+
+/* Future-state before/after cards */
+.futures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+  align-items: stretch;
+}
+.futures.six {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(0.6rem, 1.3vw, 1rem);
+}
+.future {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+  min-height: 0;
+}
+.futures.six .future {
+  padding: clamp(0.7rem, 1.3vw, 1rem);
+  border-radius: 10px;
+  gap: 0.3em;
+}
+.futures.six .future .text {
+  font-size: clamp(0.8rem, 1.15vw, 0.95rem);
+  line-height: 1.3;
+}
+.futures.six .future .arrow {
+  font-size: 1.1em;
+  padding: 0.05em 0;
+}
+.future.agentic {
+  border-color: rgba(47, 91, 78, 0.4);
+  background: rgba(47, 91, 78, 0.04);
+}
+.future.agentic .tag.after { font-weight: 600; }
+.future .row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6em 0.8em;
+  align-items: baseline;
+}
+.future .tag {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.future .tag.before { color: var(--bad); }
+.future .tag.after  { color: var(--accent); }
+.future .text {
+  font-size: var(--body-size);
+  line-height: 1.4;
+  color: var(--ink);
+}
+.future .text.dim { color: var(--ink-mid); }
+.future .arrow {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 1.3em;
+  text-align: center;
+  padding: 0.1em 0;
+}
+
+/* Chat-like exchange (hallucination demo) */
+.chat {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-sm);
+  margin-top: var(--gap-md);
+  max-width: 80ch;
+}
+.chat .turn {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(0.8rem, 1.6vw, 1.2rem) clamp(1rem, 2vw, 1.4rem);
+  position: relative;
+}
+.chat .turn .role {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.4em;
+}
+.chat .turn.user .role { color: var(--accent); }
+.chat .turn .body {
+  font-size: var(--body-size);
+  color: var(--ink);
+  line-height: 1.5;
+}
+.chat .turn .annotation {
+  margin-top: 0.7em;
+  padding-top: 0.6em;
+  border-top: 1px dashed rgba(168, 90, 62, 0.4);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--bad);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+.chat .fake {
+  background: rgba(168, 90, 62, 0.10);
+  padding: 0 0.2em;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+/* Prompt → output (mentor-tool slide) */
+.prompt-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+}
+.prompt-pair .panel {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(0.9rem, 1.8vw, 1.4rem);
+  display: flex; flex-direction: column;
+  gap: 0.6em;
+  font-size: var(--body-size);
+  line-height: 1.45;
+  min-height: 0;
+  overflow: hidden;
+}
+.prompt-pair .panel .role {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.prompt-pair .panel.output {
+  border-color: rgba(47, 91, 78, 0.35);
+  background: rgba(47, 91, 78, 0.03);
+}
+.prompt-pair .panel .body {
+  color: var(--ink);
+  white-space: pre-line;
+}
+.prompt-pair .panel .body strong { color: var(--accent); font-weight: 600; }
+.prompt-pair .panel .meta-bar {
+  margin-top: auto;
+  padding-top: 0.6em;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-dim);
+  letter-spacing: 0.06em;
+}
+
+/* Headline cards (article quotes / news clippings) */
+.headlines {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+  align-items: stretch;
+}
+.headlines.six {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(0.6rem, 1.3vw, 1rem);
+}
+.headline-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: clamp(0.8rem, 1.6vw, 1.2rem);
+  display: flex; flex-direction: column;
+  gap: 0.4em;
+  min-height: 0;
+}
+.headlines.six .headline-card {
+  padding: clamp(0.7rem, 1.3vw, 1rem);
+  gap: 0.35em;
+}
+.headlines.six .headline-card .quote {
+  font-size: clamp(0.85rem, 1.25vw, 1.05rem);
+  line-height: 1.25;
+}
+.headline-card .pub {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.headline-card .pub .date { color: var(--ink-dim); margin-left: 0.6em; }
+.headline-card .quote {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  line-height: 1.25;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  flex: 1;
+}
+.headline-card .src {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-dim);
+  letter-spacing: 0.05em;
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  padding-top: 0.5em;
+}
+
+/* Big-question slide (audience prompt) */
+.s-question .slide-inner {
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+}
+.s-question .question-mark {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 9rem);
+  color: var(--accent);
+  line-height: 0.85;
+  margin-bottom: var(--gap-sm);
+  font-weight: 700;
+}
+.s-question .big-q {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5.5vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  max-width: 22ch;
+  color: var(--ink);
+}
+.s-question .big-q .focal { color: var(--accent); }
+.s-question .nudge {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-top: var(--gap-md);
+}
+
+/* Image comparison (two pictures side-by-side) */
+.image-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+  align-items: stretch;
+}
+.image-compare figure {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(0.8rem, 1.5vw, 1.2rem);
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+  min-height: 0;
+  margin: 0;
+}
+.image-compare figure.now { border-color: rgba(47, 91, 78, 0.4); background: rgba(47, 91, 78, 0.03); }
+.image-compare .era {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.image-compare figure.now .era { color: var(--accent); }
+.image-compare figure h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--h3-size);
+  line-height: 1.15;
+  color: var(--ink);
+}
+.image-compare img {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  max-height: 50vh;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.image-compare figcaption {
+  font-size: var(--body-size);
+  color: var(--ink-mid);
+  line-height: 1.4;
+}
+
+/* Three-panel timeline (past / now / future) */
+.timeline {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+  align-items: stretch;
+}
+.tl-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex; flex-direction: column;
+  gap: var(--gap-sm);
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+.tl-panel.now { border-color: rgba(47, 91, 78, 0.45); background: rgba(47, 91, 78, 0.04); }
+.tl-panel.future { border-style: dashed; }
+.tl-panel .era {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.tl-panel.now .era { color: var(--accent); }
+.tl-panel .era-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+/* Myth-bust cards */
+.myths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  flex: 1; min-height: 0;
+  align-content: start;
+}
+.myths[style*="repeat(3"] {
+  gap: clamp(0.5rem, 1vw, 0.8rem);
+}
+.myths[style*="repeat(3"] .myth {
+  padding: clamp(0.6rem, 1.1vw, 0.9rem);
+  gap: 0.25em 0.5em;
+}
+.myths[style*="repeat(3"] .myth .text {
+  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+  line-height: 1.3;
+}
+.myths[style*="repeat(3"] .myth .label {
+  font-size: clamp(0.6rem, 0.85vw, 0.75rem);
+}
+.myth {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: clamp(0.8rem, 1.5vw, 1.1rem);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4em 0.7em;
+}
+.myth .label {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.myth .label.myth { color: var(--bad); }
+.myth .label.real { color: var(--accent); }
+.myth .text {
+  font-size: var(--body-size);
+  color: var(--ink);
+  line-height: 1.4;
+}
+.myth .text.dim { color: var(--ink-mid); }
+
+/* Quote / pull — used for big citations */
+.big-quote {
+  background: var(--bg-card);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 12px 12px 0;
+  padding: clamp(1.2rem, 2.4vw, 2rem);
+  margin-top: var(--gap-md);
+  max-width: 80ch;
+}
+.big-quote .text {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  font-weight: 500;
+}
+.big-quote .text .focal { color: var(--accent); }
+.big-quote .attribution {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  margin-top: 0.8em;
+  text-transform: uppercase;
+}
+
+/* Closing slide */
+.s-bridge .slide-inner {
+  justify-content: center;
+  gap: var(--gap-md);
+}
+.s-bridge .next-card {
+  margin-top: var(--gap-md);
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1.2rem, 2.5vw, 2rem);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--gap-md);
+  align-items: center;
+  max-width: 60ch;
+}
+.s-bridge .next-card .label {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.s-bridge .next-card .title-next {
+  font-family: var(--font-display);
+  font-size: var(--h2-size);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.s-bridge .next-card .arrow-glyph {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* Comparison table */
+.comparison {
+  margin-top: var(--gap-md);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.comparison-row {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 0.8fr 1fr;
+  align-items: center;
+  padding: clamp(0.6rem, 1.4vw, 1rem) clamp(0.8rem, 1.6vw, 1.3rem);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--body-size);
+}
+.comparison-row:last-child { border-bottom: 0; }
+.comparison-row.head {
+  background: rgba(31, 29, 26, 0.03);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.comparison-row .vatp {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--accent);
+}
+.comparison-row .global {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+}
+.comparison-row .verdict {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.08em;
+  color: var(--good);
+}
+.comparison-row .verdict.warn { color: var(--accent); }
+
+/* Pull-quote */
+.pull-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.6vw, 2rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  max-width: 30ch;
+  margin-top: var(--gap-md);
+  padding-left: 1em;
+  border-left: 3px solid var(--accent);
+}
+.pull-quote .focal { color: var(--accent); }
+
+/* ===========================================================
+   NAVIGATION
+   =========================================================== */
+.nav {
+  position: fixed;
+  bottom: clamp(1rem, 2.5vh, 1.8rem);
+  right: clamp(1rem, 2.5vw, 1.8rem);
+  display: flex; align-items: center;
+  gap: 0.5rem;
+  background: rgba(253, 250, 242, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  padding: 0.4rem 0.6rem;
+  border-radius: 999px;
+  z-index: 100;
+  box-shadow: 0 2px 14px rgba(31, 29, 26, 0.06);
+}
+.nav button {
+  width: 32px; height: 32px;
+  background: transparent;
+  border: 0;
+  color: var(--ink-mid);
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s, color 0.15s;
+}
+.nav button:hover { background: rgba(31, 29, 26, 0.06); color: var(--ink); }
+.nav .counter {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-mid);
+  letter-spacing: 0.1em;
+  min-width: 4.5em;
+  text-align: center;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 100;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.hint {
+  position: fixed;
+  bottom: clamp(1rem, 2.5vh, 1.8rem);
+  left: clamp(1rem, 2.5vw, 1.8rem);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  color: var(--ink-dim);
+  letter-spacing: 0.12em;
+  z-index: 100;
+  opacity: 0.7;
+}
+.hint kbd {
+  border: 1px solid var(--line);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  margin: 0 0.15em;
+  background: rgba(31, 29, 26, 0.04);
+  color: var(--ink-mid);
+}
+
+/* ===========================================================
+   REVEAL ANIMATIONS
+   =========================================================== */
+.slide.active .reveal {
+  animation: reveal 0.7s ease forwards;
+}
+.slide.active .reveal:nth-child(1) { animation-delay: 0.05s; }
+.slide.active .reveal:nth-child(2) { animation-delay: 0.18s; }
+.slide.active .reveal:nth-child(3) { animation-delay: 0.31s; }
+.slide.active .reveal:nth-child(4) { animation-delay: 0.44s; }
+.slide.active .reveal:nth-child(5) { animation-delay: 0.55s; }
+.slide.active .reveal:nth-child(6) { animation-delay: 0.65s; }
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+@keyframes reveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================================================
+   RESPONSIVE / SHORT-HEIGHT
+   =========================================================== */
+@media (max-height: 700px) {
+  :root {
+    --pad-y: clamp(1rem, 3vh, 2rem);
+    --gap-lg: clamp(0.7rem, 2vh, 1.5rem);
+    --gap-md: clamp(0.5rem, 1.2vh, 0.9rem);
+  }
+}
+@media (max-height: 600px) {
+  .hint { display: none; }
+  .section-num { font-size: clamp(4rem, 12vw, 8rem); }
+}
+@media (max-width: 800px) {
+  .stats-grid, .reasons { grid-template-columns: repeat(2, 1fr); }
+  .two-col, .defs, .buckets, .assignment { grid-template-columns: 1fr; }
+  .then-now { grid-template-columns: 1fr; }
+  .then-now .arrow { transform: rotate(90deg); justify-self: center; }
+  .quiz { grid-template-columns: 1fr; }
+  .comparison-row { grid-template-columns: 1.2fr 0.6fr 0.6fr 0.6fr; font-size: var(--small-size); }
+}
+@media (max-width: 500px) {
+  .stats-grid, .reasons { grid-template-columns: 1fr; }
+  .nav .counter { min-width: 3em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.15s !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="deck" id="deck">
+
+<!-- ============================================================
+     SLIDE 1 — TITULS
+     ============================================================ -->
+<section class="slide s-title active" data-title="Tituls">
+  <div class="topbar reveal">
+    <span class="badge">VATP · AI apmācība</span>
+    <span class="meta">2026 · 01. modulis</span>
+  </div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Pirmā nodarbība</span></p>
+    <h1 class="display reveal">AI <span class="focal">pamati</span><br>un tendences.</h1>
+    <p class="sub reveal">Pēc šodienas tev būs skaidrs, kas ir AI, kas ir LLM un kādas ikdienas darba problēmas mēs varam risināt.</p>
+  </div>
+  <div class="glyph reveal" aria-hidden="true"></div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill accent">SĀKUMS</span><span>VATP · 1. modulis</span></div>
+    <div class="right"><span>Spied</span><kbd style="border:1px solid var(--line);padding:0.15em 0.4em;border-radius:4px;background:rgba(31, 29, 26, 0.04);">→</kbd><span>lai turpinātu</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 2 — KĀPĒC ŠĪ APMĀCĪBA (Bulta)
+     ============================================================ -->
+<section class="slide s-headline" data-title="Kāpēc šī apmācība">
+  <div class="section-num">02</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Par šo apmācību</span><span class="accent">· 3 min</span></p>
+    <h2 class="big reveal">Šodienas laikā padomā par <span class="focal">vienu reālu ikdienas darba problēmu,</span> ko risināsim cikla gaitā.</h2>
+    <p class="lede reveal" style="margin-top: var(--gap-md);">Mēģināsim pieiet šīm apmācībām praktiski. Nodarbībās kopā izdomāsim, kā risināt jūsu problēmas — sākot ar promptošanu, tad ar automatizācijas rīkiem un aģentiem. Šodien tikai ievads — izvēlēsimies, kādu problēmu risināt.</p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">02</span><span>Sveiciens un ievads</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 3 — VATP ŠODIEN
+     ============================================================ -->
+<section class="slide" data-title="VATP šodien">
+  <div class="section-num">03</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Kur šobrīd ir VATP</span><span class="accent">· iekšējā aptauja · n = 19</span></p>
+    <h2 class="title reveal">Lielākā daļa no jums <span class="focal">jau lieto AI.</span></h2>
+    <p class="kicker reveal" style="margin-top: var(--gap-sm);">Es nedomāju, ka ir nepieciešams apspriest, vai ir vērts lietot AI rīkus. Runāsim par to, kā to darīt labāk.</p>
+
+    <div class="stats-grid reveal">
+      <div class="stat-card">
+        <div class="stat-tag">Lieto AI darbā</div>
+        <div class="stat-num">95%</div>
+        <div class="stat-label">18 no 19 kolēģiem AI rīkus jau izmanto savā ikdienas darbā.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-tag">Lieto AI <em>katru dienu</em></div>
+        <div class="stat-num">47%</div>
+        <div class="stat-label">Gandrīz puse no mums to izmanto katru darba dienu.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-tag">Lieto vismaz reizi nedēļā</div>
+        <div class="stat-num">84%</div>
+        <div class="stat-label">Lielākajai daļai no mums tā jau ir parasta darba sastāvdaļa.</div>
+      </div>
+    </div>
+
+    <p class="reveal" style="margin-top: var(--gap-md); font-family: var(--font-mono); font-size: var(--mono-size); color: var(--ink-dim); letter-spacing: 0.08em;">
+      Populārākie rīki: ChatGPT (95%) · Gemini (63%) · NotebookLM (11%) · Claude (5%)
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">03</span><span>Aptaujas rezultāti</span></div>
+    <div class="right"><span>8 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 4 — VATP pret PASAULI
+     ============================================================ -->
+<section class="slide" data-title="VATP pret pasauli">
+  <div class="section-num">04</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>VATP salīdzinājumā ar globālajām tendencēm</span></p>
+    <h2 class="title reveal">Lietošanā <span class="focal">esam priekšā.</span><br>Problēma ir ar <span class="focal">pārliecību un uzticību.</span></h2>
+
+    <div class="comparison reveal">
+      <div class="comparison-row head">
+        <div>Rādītājs</div>
+        <div>VATP</div>
+        <div>Globāli</div>
+        <div>Vērtējums</div>
+      </div>
+      <div class="comparison-row">
+        <div>Lieto AI darbā</div>
+        <div class="vatp">95%</div>
+        <div class="global">75%</div>
+        <div class="verdict">Virs tirgus vidējā</div>
+      </div>
+      <div class="comparison-row">
+        <div>Lieto AI <em>katru dienu</em></div>
+        <div class="vatp">47%</div>
+        <div class="global">~10%</div>
+        <div class="verdict">Daudz priekšā</div>
+      </div>
+      <div class="comparison-row">
+        <div>Lieto vismaz reizi nedēļā</div>
+        <div class="vatp">84%</div>
+        <div class="global">33%</div>
+        <div class="verdict">2,5× virs vidējā</div>
+      </div>
+      <div class="comparison-row">
+        <div>Galvenā problēma: neprecīzi rezultāti</div>
+        <div class="vatp">47%</div>
+        <div class="global">50%</div>
+        <div class="verdict warn">Visiem viena problēma</div>
+      </div>
+      <div class="comparison-row">
+        <div>Pārliecināti, ka lieto labi</div>
+        <div class="vatp">26%</div>
+        <div class="global">—</div>
+        <div class="verdict warn">Te ir kur augt</div>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="margin-top: var(--gap-md); max-width: 75ch; font-size: clamp(0.85rem, 1.3vw, 1rem);">
+      Avoti: Microsoft Work Trend Index 2025 (n = 31 000), McKinsey "AI in the Workplace" 2025, McKinsey State of AI 2025. Mēs lietojam AI biežāk nekā vidējais tirgus, bet ar uzticību rezultātiem cīnāmies tāpat kā visi citi.
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">04</span><span>VATP pret tendencēm · Microsoft Work Trend Index 2025</span></div>
+    <div class="right"><span>6 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — PASAULE MAINĀS (article headlines, world-stakes)
+     ============================================================ -->
+<section class="slide" data-title="Pasaule mainās">
+  <div class="section-num">05</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Tas, kas notiek apkārt mums</span></p>
+    <h2 class="title reveal">Pasaule <span class="focal">jau strādā</span> ar AI.</h2>
+
+    <div class="headlines six reveal">
+      <div class="headline-card">
+        <div class="pub">OpenAI <span class="date">· Okt 2025</span></div>
+        <p class="quote">ChatGPT sasniedzis 800 miljonus iknedēļas lietotāju — pieaugums no 500 milj. martā uz 800 milj. oktobrī.</p>
+        <div class="src">Sam Altman · OpenAI Dev Day</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Microsoft <span class="date">· WTI 2025</span></div>
+        <p class="quote">82% vadītāju plāno ieviest AI risinājumus tuvāko 12–18 mēnešu laikā. Tikai 40% darbinieku zina, kas ir aģenti.</p>
+        <div class="src">Work Trend Index · 31 000 respondentu</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Anthropic <span class="date">· Marts 2025</span></div>
+        <p class="quote">"Trīs līdz sešu mēnešu laikā AI rakstīs 90% koda. Pēc gada — praktiski viss kods."</p>
+        <div class="src">Dario Amodei, CEO · Council on Foreign Relations</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Goldman Sachs <span class="date">· 2026</span></div>
+        <p class="quote">Pareizos uzdevumos — līdz 30% produktivitātes pieaugums. Ekonomikā kopumā — gandrīz nekas. Atšķirību veido pielietojums.</p>
+        <div class="src">Goldman Sachs Research · Marts 2026</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Google <span class="date">· Feb 2025</span></div>
+        <p class="quote">"Vēsture šo brīdi ieraudzīs kā jauna izgudrojumu zelta laikmeta sākumu."</p>
+        <div class="src">Sundar Pichai · AI Action Summit, Parīze</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">McKinsey <span class="date">· State of AI 2025</span></div>
+        <p class="quote">78% organizāciju AI lieto vismaz vienā biznesa funkcijā — pirms gada bija 55%. Lielākā ieviešanas līkne kopš mākoņskaitļošanas.</p>
+        <div class="src">McKinsey & Company · The State of AI in 2025</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">05</span><span>Globālās tendences</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — TRĪS MĒNEŠUS VĒLĀK (future-state)
+     ============================================================ -->
+<section class="slide" data-title="Trīs mēnešus vēlāk">
+  <div class="section-num">06</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Kāpēc tas ir vērts</span></p>
+    <h2 class="title reveal">Kad AI <span class="focal">strādā tavā labā</span> (un nevis otrādi).</h2>
+    <p class="kicker reveal" style="margin-top: var(--gap-sm); max-width: 70ch;">Seši piemēri no mūsu ikdienas.</p>
+
+    <div class="futures six reveal">
+      <div class="future">
+        <div class="row">
+          <span class="tag before">Pirms</span>
+          <span class="text dim">Lasīt 50 lpp. projekta atskaiti un izvilkt galvenās problēmas.</span>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="row">
+          <span class="tag after">Pēc</span>
+          <span class="text">Piecas minūtes — viena lapa ar problēmām un prioritātēm.</span>
+        </div>
+      </div>
+      <div class="future">
+        <div class="row">
+          <span class="tag before">Pirms</span>
+          <span class="text dim">Pa vienam lasīt 30 klientu e-pastus, meklējot kopējās tēmas.</span>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="row">
+          <span class="tag after">Pēc</span>
+          <span class="text">Tabula ar tēmām, biežumu un piemēriem.</span>
+        </div>
+      </div>
+      <div class="future">
+        <div class="row">
+          <span class="tag before">Pirms</span>
+          <span class="text dim">Pēc divu stundu sapulces sēdēt un rakstīt protokolu.</span>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="row">
+          <span class="tag after">Pēc</span>
+          <span class="text">Viena lapa ar uzdevumiem un atbildīgajiem.</span>
+        </div>
+      </div>
+      <div class="future agentic">
+        <div class="row">
+          <span class="tag before">Pirms</span>
+          <span class="text dim">Katru rītu manuāli savilkt datus no piecām sistēmām pirms tikšanās.</span>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="row">
+          <span class="tag after">Pēc · aģents</span>
+          <span class="text">Aģents to izdara fonā — pārskats tev priekšā, kad atver datoru.</span>
+        </div>
+      </div>
+      <div class="future">
+        <div class="row">
+          <span class="tag before">Pirms</span>
+          <span class="text dim">Pirms zvana ar klientu izpētīt iepriekšējās piezīmes, klienta info un vēsturi pašam.</span>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="row">
+          <span class="tag after">Pēc</span>
+          <span class="text">Viena lapa ar kontekstu, agrākajām sarunām un atvērtajām tēmām.</span>
+        </div>
+      </div>
+      <div class="future agentic">
+        <div class="row">
+          <span class="tag before">Pirms</span>
+          <span class="text dim">Manuāli atjaunināt projekta statusus un pieteikumus pēc katras sapulces.</span>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="row">
+          <span class="tag after">Pēc · aģents</span>
+          <span class="text">Aģents pamana izmaiņas un atjaunina sistēmas — tu apstiprini.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">06</span><span>Kāpēc tas ir vērts</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — JAUTĀJUMS AUDITORIJAI (interactive prompt)
+     ============================================================ -->
+<section class="slide s-question" data-title="Kas, tavuprāt, ir AI">
+  <div class="section-num">07</div>
+  <div class="slide-inner">
+    <div class="question-mark reveal">?</div>
+    <h2 class="big-q reveal">Kas, <span class="focal">tavuprāt,</span> ir AI?</h2>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill accent">Pauze</span><span>Jautājums auditorijai</span></div>
+    <div class="right"><span>2 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — JAUTĀJUMS 2 (kā AI tiek apmācīts)
+     ============================================================ -->
+<section class="slide s-question" data-title="Kā AI tiek apmācīts">
+  <div class="section-num">08</div>
+  <div class="slide-inner">
+    <div class="question-mark reveal">?</div>
+    <h2 class="big-q reveal">Kā, <span class="focal">tavuprāt,</span> AI tiek apmācīts?</h2>
+    <p class="nudge reveal">Vai pašbraucošās automašīnas ir iemācītas katru ielu? Vai LLM zina katru atbildi? Kas notiek apmācības laikā?</p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill accent">Pauze</span><span>Jautājums auditorijai</span></div>
+    <div class="right"><span>2 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 5 — TERMINI VIENKĀRŠI
+     ============================================================ -->
+<section class="slide" data-title="Termini">
+  <div class="section-num">09</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Četri vārdi, ko nereti sajauc</span></p>
+    <h2 class="title reveal">AI ir plašs jēdziens. Šo sesiju ietvaros lielākoties runāsim par <span class="focal">LLM.</span></h2>
+
+    <div class="defs reveal">
+      <div class="def">
+        <span class="term">AI</span>
+        <span class="name">Mākslīgais intelekts</span>
+        <span class="desc">Jebkas, kas atdarina cilvēka spriestspēju — šaha programma, filmu ieteikumi, līguma kopsavilkums. Pārējie šeit ir AI apakšjomas.</span>
+      </div>
+      <div class="def">
+        <span class="term">ML</span>
+        <span class="name">Mašīnmācīšanās</span>
+        <span class="desc">AI apakšjoma. Programmas, kas pašas mācās no datiem, nevis no manuāli rakstītiem noteikumiem. Piemēri: surogātpasta filtri, krāpniecības atklāšana, pieprasījuma prognozes.</span>
+      </div>
+      <div class="def">
+        <span class="term">LLM</span>
+        <span class="name">Lielais valodas modelis</span>
+        <span class="desc">ML apakštips. Modelis, ko apmāca uz milzīga teksta apjoma — tas prognozē nākamo teksta gabalu. Konkrēti: GPT-5.5, Claude Opus 4.7, Gemini 3.1. ChatGPT un Gemini ir produkti virs šiem modeļiem.</span>
+      </div>
+      <div class="def">
+        <span class="term">AGI</span>
+        <span class="name">Vispārējs mākslīgais intelekts</span>
+        <span class="desc">Hipotētiska sistēma, kas jebkurā uzdevumā līdzinātos cilvēkam vai pārspētu to. Vēl nav uzbūvēta. Tālāka spekulācija — <strong>singularitāte</strong>, brīdis, kad AI pats sāk uzlabot AI ātrāk, nekā cilvēks paspēj sekot līdzi.</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">09</span><span>Definīcijas</span></div>
+    <div class="right"><span>5 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 6 — ML TOREIZ pret TAGAD
+     ============================================================ -->
+<section class="slide" data-title="ML toreiz pret tagad">
+  <div class="section-num">10</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Kā ir mainījusies pieeja</span></p>
+    <h2 class="title reveal">Viens modelis. <span class="focal">Daudzi uzdevumi.</span></h2>
+
+    <div class="image-compare reveal">
+      <figure>
+        <span class="era">— 2014 · Toreiz</span>
+        <h3>Viens modelis vienam uzdevumam.</h3>
+        <img src="assets/people-tracking.png" alt="Tradicionāla datorredzes objektu izsekošana — krāsainas līnijas seko cilvēkiem ieejas zonā" />
+        <figcaption>Atsevišķs modelis tikai cilvēku izsekošanai video ierakstā. Citam uzdevumam — cita modeļa apmācība no nulles.</figcaption>
+      </figure>
+      <figure class="now">
+        <span class="era">2023+ · Tagad</span>
+        <h3>Viens pamatmodelis daudziem uzdevumiem.</h3>
+        <img src="assets/foundation-model.png" alt="Pamatmodelis — daudz dažādu ievadu (teksts, balss, attēli) un daudz dažādu izvadu (kopsavilkumi, klasifikācija, atbildes)" />
+        <figcaption>Viens pamatmodelis, kas spēj strādāt ar gandrīz jebkuriem datiem — tekstu, attēliem, video, audio, signāliem — un risina daudzus dažādus uzdevumus.</figcaption>
+      </figure>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">10</span><span>ML toreiz pret tagad</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — KAS IR LLM
+     ============================================================ -->
+<section class="slide" data-title="Kas ir LLM">
+  <div class="section-num">11</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>LLM mehānisms · ko tas patiesībā dara</span></p>
+    <h2 class="title reveal">LLM prognozē <span class="focal">nākamo teksta gabalu.</span> Tas arī viss.</h2>
+    <p class="kicker reveal" style="margin-top: var(--gap-sm); max-width: 75ch;">Konteksts mainās — atbilde mainās. Tas pats mehānisms attiecas gan uz klientu sūdzību, gan līguma kopsavilkumu, gan koda fragmentu.</p>
+
+    <div class="reveal" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-lg); margin-top: var(--gap-md); flex: 1; min-height: 0;">
+      <div>
+        <div class="meta" style="margin-bottom: 0.4em;">→ KONTEKSTS · klientu sūdzība</div>
+        <div class="tokens" style="margin-bottom: 0.6em;">
+          <span class="token">Klients</span>
+          <span class="token">sūtīja</span>
+          <span class="token">e-pastu,</span>
+          <span class="token">ka</span>
+          <span class="token">sistēma</span>
+          <span class="token">ir</span>
+          <span class="token cursor"></span>
+        </div>
+        <div class="candidates">
+          <div class="candidate top">
+            <span class="word">lēna</span>
+            <span class="bar-track"><span class="bar-fill" style="width: 100%"></span></span>
+            <span class="pct">31%</span>
+          </div>
+          <div class="candidate">
+            <span class="word">nestrādā</span>
+            <span class="bar-track"><span class="bar-fill" style="width: 71%"></span></span>
+            <span class="pct">22%</span>
+          </div>
+          <div class="candidate">
+            <span class="word">bojāta</span>
+            <span class="bar-track"><span class="bar-fill" style="width: 48%"></span></span>
+            <span class="pct">15%</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="meta" style="margin-bottom: 0.4em;">→ KONTEKSTS · receptes raksts</div>
+        <div class="tokens" style="margin-bottom: 0.6em;">
+          <span class="token">Vispirms</span>
+          <span class="token">sasildiet</span>
+          <span class="token">cepeškrāsni</span>
+          <span class="token">līdz</span>
+          <span class="token">200</span>
+          <span class="token">grādiem</span>
+          <span class="token">pēc</span>
+          <span class="token cursor"></span>
+        </div>
+        <div class="candidates">
+          <div class="candidate top">
+            <span class="word">Celsija</span>
+            <span class="bar-track"><span class="bar-fill" style="width: 100%"></span></span>
+            <span class="pct">68%</span>
+          </div>
+          <div class="candidate">
+            <span class="word">tam</span>
+            <span class="bar-track"><span class="bar-fill" style="width: 26%"></span></span>
+            <span class="pct">14%</span>
+          </div>
+          <div class="candidate">
+            <span class="word">apmēram</span>
+            <span class="bar-track"><span class="bar-fill" style="width: 18%"></span></span>
+            <span class="pct">9%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">11</span><span>Kas ir LLM</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — PĀRLIECINĀTS ≠ PRECĪZS (tighten the bow)
+     ============================================================ -->
+<section class="slide" data-title="Pārliecināts nav precīzs">
+  <div class="section-num">12</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>LLM kļūda 1/2 · angliski "hallucination"</span></p>
+    <h2 class="title reveal">Izgudrošana jeb halucinācijas — kad AI <span class="focal">izdomā</span> faktu, jo to nezina.</h2>
+
+    <div class="chat reveal">
+      <div class="turn user">
+        <div class="role">Lietotājs</div>
+        <div class="body">Kāda ir Latvijas algoritmu caurspīdīguma likuma 12. panta 2. daļa?</div>
+      </div>
+      <div class="turn llm">
+        <div class="role">LLM atbilde</div>
+        <div class="body">Saskaņā ar <span class="fake">Latvijas algoritmu caurspīdīguma likuma 12. panta 2. daļu</span>, uzņēmumiem ar vairāk nekā 50 darbiniekiem ir pienākums uzturēt <span class="fake">publisku reģistru ar visiem AI rīkiem, ko tie lieto klientu apkalpošanā</span>, sākot ar 2026. gada 1. janvāri.</div>
+        <div class="annotation">↑ Šāda likuma Latvijā nav. Nav ne tāda likuma, ne tāda panta, ne tāda pienākuma. Modelis to vienkārši izdomāja — jo tā skanēja ticami.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">12</span><span>LLM kļūdas — 1/2</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — GLAIMOŠANA (sycophancy)
+     ============================================================ -->
+<section class="slide" data-title="Glaimošana">
+  <div class="section-num">13</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>LLM kļūda 2/2 · angliski "sycophancy"</span></p>
+    <h2 class="title reveal">Glaimošana — kad AI <span class="focal">piekrīt tev,</span> jo tu to gribi dzirdēt.</h2>
+
+    <div class="reveal" style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 3vw, 2.5rem); margin-top: var(--gap-sm); flex: 1; min-height: 0;">
+      <div style="display: flex; flex-direction: column; gap: 0.5em;">
+        <div style="font-family: var(--font-mono); font-size: var(--mono-size); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); padding-bottom: 0.4em; border-bottom: 1px solid var(--accent); margin-bottom: 0.3em;">Piemērs 1 · pēc spiediena padodas</div>
+        <div class="chat" style="margin-top: 0; gap: 0.4em;">
+          <div class="turn user">
+            <div class="role">Lietotājs</div>
+            <div class="body">Vai 100 ir mazāks par 99? Es domāju, ka jā.</div>
+          </div>
+          <div class="turn llm">
+            <div class="role">LLM (sākumā)</div>
+            <div class="body">Nē, 100 ir lielāks par 99.</div>
+          </div>
+          <div class="turn user">
+            <div class="role">Lietotājs</div>
+            <div class="body">Vai esi drošs? Mans skolotājs teica citādi.</div>
+          </div>
+          <div class="turn llm">
+            <div class="role">LLM (padodas)</div>
+            <div class="body">Jūs esat <span class="fake">absolūti taisnībā</span> — atvainojos par kļūdu. <span class="fake">100 dažos kontekstos var būt mazāks par 99</span>.</div>
+            <div class="annotation">↑ Pretojas vienu reizi. Pēc spiediena — pieņem nepareizo atbildi.</div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5em;">
+        <div style="font-family: var(--font-mono); font-size: var(--mono-size); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); padding-bottom: 0.4em; border-bottom: 1px solid var(--accent); margin-bottom: 0.3em;">Piemērs 2 · piekrīt jau iepriekš pieņemtam lēmumam</div>
+        <div class="chat" style="margin-top: 0; gap: 0.4em;">
+          <div class="turn user">
+            <div class="role">Lietotājs</div>
+            <div class="body">Mēs nolēmām produkcijas datus glabāt bez dublēšanas. Labs lēmums?</div>
+          </div>
+          <div class="turn llm">
+            <div class="role">LLM atbilde</div>
+            <div class="body">Jā, tas ir <span class="fake">saprātīgs lēmums</span>! Ieguvumi: <span class="fake">vienkāršāka uzturēšana, ātrāka piekļuve, mazāk infrastruktūras izmaksu</span>.</div>
+            <div class="annotation">↑ Patiesībā tas ir sliktākais lēmums — bez dublēšanas viens disks zudis = klients zaudēts. Modelis to nepasaka, jo lietotājs jau "nolēma".</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">13</span><span>LLM kļūdas — 2/2</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — ★ BULTA: prognozē, nedomā
+     ============================================================ -->
+<section class="slide s-headline" data-title="LLM prognozē, nevis domā">
+  <div class="section-num">14</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span class="accent">Kā darbojas LLM</span></p>
+    <h2 class="big reveal">LLM <span class="focal">prognozē,</span> tas <span class="strike">nedomā</span>.</h2>
+    <div class="reveal" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-lg); margin-top: var(--gap-md); max-width: 90ch;">
+      <ul class="list">
+        <li>Tas nedomā tā, kā domā cilvēks.</li>
+        <li>Tas patiesībā nezina faktus — tikai prognozē.</li>
+        <li>Tāpēc tas spēj izklausīties pārliecinoši arī tad, kad runā nepareizi.</li>
+      </ul>
+      <ul class="list">
+        <li>Atbilde izskatās tā, it kā kāds patiešām būtu domājis.</li>
+        <li>Patiesībā tas ir tikai minējums.</li>
+        <li>Tieši tāpēc tik svarīgi, kā mēs jautājam un kādu kontekstu sniedzam.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill accent">14</span><span>Kā darbojas LLM</span></div>
+    <div class="right"><span>(daļa no 8 min)</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — KĀPĒC TAGAD
+     ============================================================ -->
+<section class="slide" data-title="Kāpēc tagad">
+  <div class="section-num">15</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Kāpēc tieši tagad, nevis pirms desmit gadiem</span></p>
+    <h2 class="title reveal">Četras lietas notika <span class="focal">vienlaikus</span> — un tas mainīja visu.</h2>
+
+    <div class="reasons reveal">
+      <div class="reason">
+        <div class="num">01</div>
+        <div class="label">Labākas arhitektūras</div>
+        <div class="desc">2017. gadā Google publicēja pētījumu "Attention Is All You Need". Tā ieviestie transformeri šodien ir gandrīz katra LLM kodols — bet līdz komerciālam produktam tie nokļuva tikai pēc pieciem gadiem.</div>
+      </div>
+      <div class="reason">
+        <div class="num">02</div>
+        <div class="label">Daudz lielāka skaitļošanas jauda</div>
+        <div class="desc">Jaunie grafikas procesori un speciālās AI mikroshēmas padarījušas modeļu apmācību daudz lētāku.</div>
+      </div>
+      <div class="reason">
+        <div class="num">03</div>
+        <div class="label">Vairāk datu nekā jebkad</div>
+        <div class="desc">Divdesmit gadi publiska interneta teksta dod modeļiem ļoti daudz materiāla, no kā mācīties.</div>
+      </div>
+      <div class="reason">
+        <div class="num">04</div>
+        <div class="label">ChatGPT brīdis</div>
+        <div class="desc">2022. gada novembrī ChatGPT divos mēnešos sasniedza 100 miljonus lietotāju — ātrāk par jebkuru produktu vēsturē. Pēkšņi par AI runāja visi, ne tikai inženieri.</div>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="margin-top: var(--gap-md);">
+      Katra lieta atsevišķi pastāvēja arī agrāk.
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">15</span><span>Kāpēc AI uzplauka tagad</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — PASAULE: PIRMS / TAGAD / NĀKOTNĒ (3-panel timeline)
+     ============================================================ -->
+<section class="slide" data-title="Pirms · tagad · nākotnē">
+  <div class="section-num">16</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>AI plašākā skatā · vēsture un nākotne</span></p>
+    <h2 class="title reveal">Kas <span class="focal">bija, ir un būs.</span></h2>
+
+    <div class="timeline reveal">
+      <div class="tl-panel">
+        <span class="era">— 2018 · Bija</span>
+        <span class="era-title">ML inženieri un dienām ilga apmācība.</span>
+        <ul class="list" style="margin-top: 0.4em;">
+          <li>Viens uzdevums = viens modelis = nedēļa darba.</li>
+          <li>Dārga skaitļošana, sagatavoti dati, šaurs lietojums.</li>
+          <li>Pieejams tikai tām komandām, kam bija ML resursi.</li>
+        </ul>
+      </div>
+      <div class="tl-panel now">
+        <span class="era">2025 · Ir</span>
+        <span class="era-title">Tērzēšana un pirmie aģenti.</span>
+        <ul class="list" style="margin-top: 0.4em;">
+          <li>Pamatmodeļi paveic gandrīz jebkuru teksta uzdevumu.</li>
+          <li>Aģenti jau pilda darbus, nevis tikai atbild — Cursor, Claude Code, Devin.</li>
+          <li>Lieto ikviens, kam ir pārlūks.</li>
+        </ul>
+      </div>
+      <div class="tl-panel future">
+        <span class="era">2027+ · Būs</span>
+        <span class="era-title">Aģentu komandas un cilvēks, ko tās pastiprina.</span>
+        <ul class="list" style="margin-top: 0.4em;">
+          <li>Aģentu pulki, kas strādā paralēli un sarunājas savā starpā.</li>
+          <li>Cilvēks ar AI palīgiem padara desmitkārt vairāk nekā šodien.</li>
+          <li>AGI ambīcijas — laboratoriju mērķis, vēl ne šodienas tehnoloģija.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">16</span><span>Pirms · tagad · nākotnē</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — EIFORIJA MAZINĀS (reality check on the hype)
+     ============================================================ -->
+<section class="slide" data-title="Eiforija mazinās">
+  <div class="section-num">17</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Pirmā sajūsma pāriet — sāk pienākt reālie rēķini</span></p>
+    <h2 class="title reveal">Pirmā sajūsma pāriet. <span class="focal">Sāk pienākt rēķini.</span></h2>
+
+    <div class="headlines reveal">
+      <div class="headline-card">
+        <div class="pub">OpenAI <span class="date">· Janv 2025</span></div>
+        <p class="quote">"Trakā lieta — mēs šobrīd zaudējam naudu uz Pro abonementiem. Cilvēki tos lieto daudz vairāk nekā gaidīts."</p>
+        <div class="src">Sam Altman par $200/mēn ChatGPT Pro · X ieraksts</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Anthropic <span class="date">· 2025. otrā puse</span></div>
+        <p class="quote">Iknedēļas izmantošanas ierobežojumi Claude Pro un Max. Power lietotāji no 40–50 stundām nedēļā tika nogriezti uz 6–8 stundām.</p>
+        <div class="src">Lietotāji pārvirzīti uz API · TechCrunch, GitHub diskusijas</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Aplis noslēdzas <span class="date">· 2026</span></div>
+        <p class="quote">"Aizstājām izstrādātājus ar AI. Tagad tērējam tik daudz par tokeniem, ka pieņemam izstrādātājus atpakaļ."</p>
+        <div class="src">Industrijas joks ar pārāk daudz patiesības iekšā</div>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="margin-top: var(--gap-md); max-width: 80ch;">
+      Pirmā sajūsma pāriet, paliek vienkārša patiesība: <strong style="color:var(--ink)">AI nav bezmaksas</strong>.
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">17</span><span>Eiforijas pārbaude</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — DATU AKA PIESĀRŅOJAS (data slop / model collapse)
+     ============================================================ -->
+<section class="slide" data-title="Cilvēka rakstīti dati">
+  <div class="section-num">18</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Otrā realitātes pārbaude · datu kvalitāte</span></p>
+    <h2 class="title reveal">Kur ņemt <span class="focal">cilvēka radītus datus?</span></h2>
+
+    <div class="headlines reveal">
+      <div class="headline-card">
+        <div class="pub">Nature <span class="date">· 2024</span></div>
+        <p class="quote">Pierādīts: kad AI mācās no AI ģenerētiem datiem, nākamās paaudzes sāk <strong>degradēt</strong> un atkārtot frāzes. Pētnieki to nosauc par "modeļu sabrukumu".</p>
+        <div class="src">Shumailov et al. · Nature 631(8022)</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Stack Overflow <span class="date">· 2025 aptauja</span></div>
+        <p class="quote">Izstrādātāju uzticība AI atbilžu precizitātei kritusies no 40% uz <strong>29%</strong>. Galvenā problēma (45%): "gandrīz pareizs, bet ne īsti".</p>
+        <div class="src">Developer Survey 2025 · 65 000+ respondentu</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">"Dead Internet" <span class="date">· no memes uz realitāti</span></div>
+        <p class="quote">Vēl pirms pāris gadiem — sazvērestība. Šodien — fons: liela daļa interneta satura, atskaišu un komentāru jau ir AI ģenerēti vai pārstrādāti.</p>
+        <div class="src">Industrijas novērojums · pakāpeniski apstiprināts</div>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="margin-top: var(--gap-md); max-width: 90ch;">
+      Vakar bija jautājums — <em>kā paņemt vairāk datu?</em> Šodien — <strong style="color:var(--ink)">no kurienes paņemt tos, kas patiešām ir cilvēka radīti?</strong>
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">18</span><span>Datu kvalitātes pārbaude</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — KAS NOTIEK AR BALTĀ APKAKLĪŠU DARBU
+     ============================================================ -->
+<section class="slide" data-title="Kas notiek ar darbu">
+  <div class="section-num">19</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Lomas pārmaiņas</span></p>
+    <h2 class="title reveal">AI raksta. Cilvēks <span class="focal">vada un izlemj.</span></h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-lg); margin-top: var(--gap-md); flex: 1; min-height: 0;" class="reveal">
+      <div>
+        <div class="col-head bad" style="margin-bottom: var(--gap-sm);"><span class="marker"></span><span>Ko AI jau pārņem</span></div>
+        <ul class="list bad">
+          <li><strong>30% Microsoft jaunā koda</strong> — raksta AI (Satya Nadella, Q3 2025).</li>
+          <li><strong>95% koda</strong> ceturtdaļā Y Combinator 2025. ziemas batch (Garry Tan).</li>
+          <li><strong>Pirmie melnraksti</strong> — atskaites, vēstules, prezentācijas.</li>
+          <li><strong>Atbildes</strong> uz biežiem klientu jautājumiem.</li>
+          <li><strong>Liela teksta apstrāde</strong> un meklēšana daudzos dokumentos.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-head good" style="margin-bottom: var(--gap-sm);"><span class="marker"></span><span>Kas paliek cilvēkam</span></div>
+        <ul class="list good">
+          <li><strong>Lēmumi par to, ko vispār būvēt</strong> — kas ir vērts un kas nav.</li>
+          <li><strong>AI vadīšana</strong> — uzdot, sadalīt, pārbaudīt rezultātu.</li>
+          <li><strong>Klientu attiecības</strong> un sarunas, kur vajag uzticību.</li>
+          <li><strong>Dziļa darba pieredze</strong>, kuras nav internetā.</li>
+          <li><strong>Atbildība</strong> — paraksts paliek pie tā, kas paraksta.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="margin-top: var(--gap-md); max-width: 85ch;">
+      Loma mainās — no <em>rakstītāja</em> uz <em>režisoru</em>. Jautājums nav <em>"vai mani aizstās"</em>, bet gan <em>"vai paspēšu iemācīties to vadīt pirms manis to izdara kāds cits"</em>.
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">19</span><span>Darba nākotne</span></div>
+    <div class="right"><span>5 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — KUR AI LABI PADODAS
+     ============================================================ -->
+<section class="slide" data-title="Kur AI labi padodas">
+  <div class="section-num">20</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Ko AI šodien jau dara labi</span></p>
+    <h2 class="title reveal">Daudz vairāk nekā <span class="focal">tekstu ielīmēt tērzētavā.</span></h2>
+    <p class="kicker reveal" style="margin-top: var(--gap-sm); max-width: 75ch;">Sākot no klasiska teksta darba un beidzot ar darbiem, ko AI dara fonā.</p>
+
+    <ul class="list good reveal" style="margin-top: var(--gap-md); display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-sm) var(--gap-lg);">
+      <li><strong>Apkopo</strong> garus dokumentus, izceļot punktus, kas tev rūp.</li>
+      <li><strong>Pārraksta</strong> tekstu citā tonī, garumā vai valodā.</li>
+      <li><strong>Ģenerē idejas</strong>, kad tukša lapa nelaiž tālāk.</li>
+      <li><strong>Izvelk strukturētus datus</strong> no e-pastiem, PDF, atšifrējumiem.</li>
+      <li><strong>Klasificē</strong> pieteikumus, klientus, atsauksmes.</li>
+      <li><strong>Meklē tīmeklī</strong> un apkopo atrasto.</li>
+      <li><strong>Vāc datus no tīmekļa lapām</strong> — cenas, kontakti, jaunumi.</li>
+      <li><strong>Strādā cilpā</strong> — atkārto vienu darbu pār 200 dokumentiem vai e-pastiem.</li>
+      <li><strong>Strādā fonā pēc grafika</strong> — pamana ienākušu e-pastu vai jaunu rindu tabulā un dara nākamo soli.</li>
+      <li><strong>Pieslēdzas tavām sistēmām</strong> — kalendāram, CRM, faila krātuvei — un dara darbu uz vietas.</li>
+    </ul>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">20</span><span>Stiprās puses</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — KUR AI NAV UZTICAMS
+     ============================================================ -->
+<section class="slide" data-title="Kur AI nav uzticams">
+  <div class="section-num">21</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Robežas</span></p>
+    <h2 class="title reveal">Tur, kur svarīga ir <span class="focal">precizitāte vai atbildība,</span> AI nav tā vieta.</h2>
+
+    <ul class="list bad reveal" style="margin-top: var(--gap-md); display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-sm) var(--gap-lg);">
+      <li><strong>Garantēta patiesība</strong> — tas spēj radīt pārliecinošu, bet izdomātu informāciju.</li>
+      <li><strong>Augsta riska lēmumi</strong> bez cilvēka, kas pārbauda.</li>
+      <li><strong>Sensitīvi dati</strong> nepareizā vidē — bezmaksas tērzētava nav uzņēmuma rīks.</li>
+      <li><strong>Stingri noteikumi</strong> — AI tur vispār nav vajadzīgs.</li>
+      <li><strong>Atbildība par lēmumu</strong> — tā joprojām paliek cilvēkam.</li>
+    </ul>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">21</span><span>Robežas</span></div>
+    <div class="right"><span>3 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — ATBILDĪBA PALIEK PIE CILVĒKA (responsible use incidents)
+     ============================================================ -->
+<section class="slide" data-title="Atbildība paliek pie cilvēka">
+  <div class="section-num">22</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Reāli stāsti no pēdējiem diviem gadiem</span></p>
+    <h2 class="title reveal">AI <span class="focal">nevar uzņemties</span> atbildību.</h2>
+
+    <div class="headlines six reveal" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="headline-card">
+        <div class="pub">Air Canada <span class="date">· Feb 2024</span></div>
+        <p class="quote">Tiesa lika kompānijai izmaksāt klientam 812 CAD pēc tam, kad čatbots paziņoja par neeksistējošu atlaides politiku.</p>
+        <div class="src">BC Civil Resolution Tribunal · Moffatt v. Air Canada</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Samsung <span class="date">· Maijs 2023</span></div>
+        <p class="quote">Trīs inženieri 20 dienu laikā ielīmēja ChatGPT konfidenciālu pirmavota kodu un sapulces protokolus. Samsung aizliedza ģeneratīvo AI darba ierīcēs.</p>
+        <div class="src">Bloomberg · TechCrunch · Datu noplūde, ne hakeri</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Mata v. Avianca <span class="date">· Jūn 2023</span></div>
+        <p class="quote">Ņujorkas tiesa uzlika juristam 5 000 USD sodu par tiesas dokumentā citētiem tiesu lēmumiem, ko ChatGPT pilnīgi izgudroja.</p>
+        <div class="src">U.S. District Court SDNY · Schwartz / LoDuca</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Replit <span class="date">· Jūl 2025</span></div>
+        <p class="quote">AI aģents iznīcināja klienta produkcijas datu bāzi koda iesaldēšanas laikā un izgudroja 4 000 viltus lietotājus, lai noslēptu nodarīto.</p>
+        <div class="src">The Register · SaaStr — pazaudēti dati par 1 200 vadītājiem</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Stripe Agent Toolkit <span class="date">· Nov 2024</span></div>
+        <p class="quote">Stripe oficiāli ļauj AI aģentiem autonomi iegādāties pakalpojumus un samaksāt rēķinus. Cilvēks bieži pamana tikai pēc tam, kad nauda jau aizgājusi.</p>
+        <div class="src">Stripe Newsroom · Agentic Commerce Suite</div>
+      </div>
+      <div class="headline-card">
+        <div class="pub">Veracode + Apiiro <span class="date">· 2025 ziņojumi</span></div>
+        <p class="quote">45% AI ģenerēta koda satur drošības trūkumus. AI rakstītam kodam — 2,74× vairāk ievainojamību nekā cilvēka rakstītam.</p>
+        <div class="src">2025 GenAI Code Security Report · korporatīvo repo analīze</div>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="margin-top: var(--gap-md); max-width: 90ch;">
+      Neviens no šiem stāstiem nav par to, ka AI ir slikts. Visi ir par vienu un to pašu — <strong style="color:var(--ink)">atbildība neatdalās.</strong> Par AI darbībām atbild cilvēks vai uzņēmums, kas to lieto. Un nu AI sāk arī <em>tērēt</em> reālu naudu un <em>izdzēst</em> reālus datus.
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">22</span><span>Atbildīga lietošana</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — MĪTI, KO VĒRTS IZLABOT
+     ============================================================ -->
+<section class="slide" data-title="Mīti, ko vērts izlabot">
+  <div class="section-num">23</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Daži mīti, kas klejo apkārt</span></p>
+    <h2 class="title reveal">Mīti par AI <span class="focal">— un kā ir patiesībā.</span></h2>
+
+    <div class="myths reveal" style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;">
+      <div class="myth">
+        <span class="label myth">Mīts 01</span>
+        <span class="text dim">"Drošāk to nelietot vispār."</span>
+        <span class="label real">Patiesība</span>
+        <span class="text">95% VATP kolēģu jau lieto. Globāli — 75–80%. Nelietošana nav drošība — tā ir atpalikšana.</span>
+      </div>
+      <div class="myth">
+        <span class="label myth">Mīts 02</span>
+        <span class="text dim">"Mans darbs ir pārāk specifisks, lai AI palīdzētu."</span>
+        <span class="label real">Patiesība</span>
+        <span class="text">Ja darbā ir teksts, e-pasti, dokumenti vai atskaites — AI var palīdzēt. Specifika nav šķērslis, ja sniedz kontekstu.</span>
+      </div>
+      <div class="myth">
+        <span class="label myth">Mīts 03</span>
+        <span class="text dim">"Latviešu valodā AI ir pārāk vājš."</span>
+        <span class="label real">Patiesība</span>
+        <span class="text">Mūsdienu modeļi (GPT-5.5, Claude Opus 4.7, Gemini 3.1) ar latviešu valodu strādā labā līmenī. Vēl pirms gada tā nebija.</span>
+      </div>
+      <div class="myth">
+        <span class="label myth">Mīts 04</span>
+        <span class="text dim">"Datu drošības dēļ mēs to nedrīkstam lietot."</span>
+        <span class="label real">Patiesība</span>
+        <span class="text">Bezmaksas tērzētavās — patiešām nedrīkst. Bet pārvaldītā vidē ar uzņēmuma kontu — drīkst. Atšķirību mācīsimies 4. modulī.</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">23</span><span>Mītu skaidrojums</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 11 — TRĪS GROZI
+     ============================================================ -->
+<section class="slide" data-title="AI pret automatizāciju pret noteikumiem">
+  <div class="section-num">24</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Sesijas kopsavilkums · pirms uzdevumu nodot AI</span></p>
+    <h2 class="title reveal">Atslēgas vārds — <span class="focal">elastība.</span></h2>
+
+    <div class="buckets reveal">
+      <div class="bucket">
+        <span class="tag">Grozs 1</span>
+        <span class="name">Fiksēti noteikumi</span>
+        <p class="when">Ievades dati ir tīri, loģika vienmēr ir vienāda, atbilde katru reizi paredzama. Nav vajadzīga elastība.</p>
+        <p class="when"><strong style="color:var(--ink)">Šeit pietiek ar parastu programmatūru.</strong></p>
+        <span class="examples">algu aprēķins · nodokļi · kalendārs</span>
+      </div>
+      <div class="bucket">
+        <span class="tag">Grozs 2</span>
+        <span class="name">Automatizācija</span>
+        <p class="when">Atkārtotas, paredzamas darbības, kas pārvieto datus starp sistēmām. Bez lielas neskaidrības, ar tik pat maz elastības.</p>
+        <p class="when"><strong style="color:var(--ink)">Šeit der Zapier, Make vai vienkāršs skripts.</strong></p>
+        <span class="examples">veidlapa → CRM · e-pasts → tabula</span>
+      </div>
+      <div class="bucket ai">
+        <span class="tag">Grozs 3</span>
+        <span class="name">Šeit AI ir vietā</span>
+        <p class="when">Daudz teksta, neskaidrība, melnraksti, klasificēšana, sintēze. Domāšanas darbs, kuram vajag <strong style="color:var(--accent)">elastību</strong> — spēju piemēroties tam, ko ievade nesa šodien.</p>
+        <p class="when"><strong style="color:var(--accent)">Šī ir AI zona.</strong></p>
+        <span class="examples">apkopo sapulces · sagatavo atbildes</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">24</span><span>Trīs grozi: noteikumi, automatizācija, AI</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 12 — INTERAKTĪVS TESTS
+     ============================================================ -->
+<section class="slide" data-title="Ātrais tests">
+  <div class="section-num">25</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span class="accent">Kopīgs vingrinājums · sauciet atbildi pirms atklājam</span></p>
+    <h2 class="title reveal">Astoņi uzdevumi. <span class="focal">Kur AI ir vietā?</span></h2>
+
+    <div class="quiz-board reveal" id="quizBoard">
+      <div class="quiz-chips" id="quizChips">
+        <button class="quiz-chip" data-num="01" data-question="Aprēķināt PVN katram rēķinam un mēneša kopējos ieņēmumus." data-answer="Programmatūra">
+          <span class="num">01</span>
+          <span class="ans-tag">Programmatūra</span>
+        </button>
+        <button class="quiz-chip" data-num="02" data-question="Izlasīt 30 klientu e-pastus un sagrupēt tos pēc atkārtotām sūdzību tēmām." data-answer="AI">
+          <span class="num">02</span>
+          <span class="ans-tag">AI</span>
+        </button>
+        <button class="quiz-chip" data-num="03" data-question="Kad iesniegta jauna klienta veidlapa, ievietot datus CRM un nosūtīt paziņojumu Slack." data-answer="Automatizācija">
+          <span class="num">03</span>
+          <span class="ans-tag">Automatizācija</span>
+        </button>
+        <button class="quiz-chip" data-num="04" data-question="Pārvērst divu stundu sapulces ierakstu vienas lapas kopsavilkumā ar uzdevumiem." data-answer="AI">
+          <span class="num">04</span>
+          <span class="ans-tag">AI</span>
+        </button>
+        <button class="quiz-chip" data-num="05" data-question="Apstiprināt vai noraidīt pārvedumu virs 100 000 eiro bez cilvēka pārbaudes." data-answer="Noteikumi + cilvēks">
+          <span class="num">05</span>
+          <span class="ans-tag">Noteikumi + cilvēks</span>
+        </button>
+        <button class="quiz-chip" data-num="06" data-question="Sagatavot prezentācijas melnrakstu par Q3 komandas rezultātiem no esošajiem datiem." data-answer="AI">
+          <span class="num">06</span>
+          <span class="ans-tag">AI</span>
+        </button>
+        <button class="quiz-chip" data-num="07" data-question="Katru piektdienu sūtīt komandai dashboard atjauninājumu ar sprintā paveikto." data-answer="Automatizācija">
+          <span class="num">07</span>
+          <span class="ans-tag">Automatizācija</span>
+        </button>
+        <button class="quiz-chip" data-num="08" data-question="Klienta atbalsta tiketim sagatavot atbildes melnrakstu, ko cilvēks pārbauda pirms sūtīšanas." data-answer="AI + cilvēks">
+          <span class="num">08</span>
+          <span class="ans-tag">AI + cilvēks</span>
+        </button>
+      </div>
+      <div class="quiz-focus" id="quizFocus">
+        <p class="placeholder">Klikšķini augšā uz numura — uzdevums parādās šeit. Atbild auditorija, tad atklājam pareizo izvēli.</p>
+        <span class="num-large" style="display: none;">— 01</span>
+        <p class="question-large" style="display: none;"></p>
+        <div class="ans-row">
+          <button class="reveal-btn" style="display: none;">Atklāt atbildi</button>
+          <span class="ans-large"></span>
+        </div>
+        <p class="nudge-text" style="display: none;">Klikšķini augšā uz nākamā numura, lai turpinātu.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill accent">Kopīgs vingrinājums</span><span>Praktiski piemēri</span></div>
+    <div class="right"><span>(daļa no 8 min)</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13 — TAVS UZDEVUMS
+     ============================================================ -->
+<section class="slide" data-title="Tavs uzdevums">
+  <div class="section-num">26</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span class="accent">Tava daļa — minūte klusumā</span></p>
+    <h2 class="title reveal">Tagad — <span class="focal">tavs uzdevums.</span></h2>
+    <p class="kicker reveal" style="margin-top: var(--gap-sm); max-width: 70ch;">Padomā par vienu konkrētu darba uzdevumu, ko gribētu atrisināt ar AI palīdzību tuvāko nedēļu laikā.</p>
+
+    <div class="assignment reveal">
+      <div class="prompt">
+        <h3>Reāls uzdevums no tavas šonedēļas darba.</h3>
+        <textarea class="field-input" id="taskInput" placeholder="Sāc rakstīt savu uzdevumu šeit..." rows="4"></textarea>
+        <div class="sample-row">
+          <span class="meta" style="text-transform: none; letter-spacing: 0.05em; color: var(--ink-dim); align-self: center; margin-right: 0.3em;">Vajag iedvesmu? →</span>
+          <button class="sample-btn" data-sample="Apkopot pēdējās 30 e-pasta sarakstes ar klientu, lai sagatavotos zvanam">Klientu izpēte</button>
+          <button class="sample-btn" data-sample="No 90 minūšu sapulces ieraksta sagatavot 1 lapas kopsavilkumu ar uzdevumiem un atbildīgajiem">Sapulces kopsavilkums</button>
+          <button class="sample-btn" data-sample="No vairākiem PDF dokumentiem izvilkt visas sūdzības par konkrētu produktu un grupēt pēc tēmām">Sūdzību analīze</button>
+          <button class="sample-btn" data-sample="Sagatavot prezentācijas melnrakstu par komandas Q ceturkšņa rezultātiem no esošajiem datiem">Prezentācijas melnraksts</button>
+        </div>
+      </div>
+      <div class="examples">
+        <h4>Vērts apsvērt uzdevumus, kuros ir…</h4>
+        <ul class="list">
+          <li>Daudz teksta — e-pasti, atskaites, PDF, sapulču atšifrējumi.</li>
+          <li>Sagatavošana no tukšas lapas, kad pirmais melnraksts ir grūtākā daļa.</li>
+          <li>Meklēšana, apkopošana vai informācijas izvilkšana no nesakārtota materiāla.</li>
+          <li>Atkārtots administratīvs darbs, kurā tomēr svarīga ir elastība.</li>
+          <li>Jebkas, ko dari katru nedēļu un kas paņem laiku, kuru gribētu pavadīt citur.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill accent">Tava daļa</span><span>Izvēlies vienu uzdevumu</span></div>
+    <div class="right"><span>4 min</span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE — TILTS UZ 2. MODULI
+     ============================================================ -->
+<section class="slide s-bridge" data-title="Kas tālāk">
+  <div class="section-num">27</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal"><span class="dot"></span><span>Kur mēs ejam šajā ciklā</span></p>
+    <h2 class="title reveal">No <span class="focal">Gemini lietotāja</span> līdz <span class="focal">prototipa veidotājam</span> piecās nodarbībās.</h2>
+
+    <div class="reveal" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-md); margin-top: var(--gap-md); max-width: 100ch;">
+      <div class="next-card" style="margin: 0;">
+        <div class="arrow-glyph">→</div>
+        <div>
+          <div class="label">02. modulis · Nākamā nodarbība</div>
+          <div class="title-next" style="font-size: clamp(1rem, 1.6vw, 1.25rem);">Rīki, prompti, konteksts un savienojumi — kā panākt, ka rezultāts ir tas, ko tu gaidi.</div>
+        </div>
+      </div>
+      <div class="next-card" style="margin: 0; border-style: dashed;">
+        <div class="arrow-glyph" style="opacity: 0.5;">···</div>
+        <div>
+          <div class="label" style="color: var(--ink-dim);">Moduļi 03–05 · Kur mēs nonākam</div>
+          <div class="title-next" style="font-size: clamp(1rem, 1.6vw, 1.25rem); color: var(--ink-mid);">Stabils darba pamats (Claude Code, desktop commander) → īsti prototipi (Lovable) → iekļauti tavā ikdienā.</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="lede reveal" style="max-width: 70ch; margin-top: var(--gap-md);">
+      Paņem līdzi uzdevumu, ko tikko izvēlējies. Sāksim to risināt kopā jau nākamreiz.
+    </p>
+  </div>
+  <div class="slide-footer">
+    <div class="left"><span class="pill">27</span><span>Tilts uz 2. moduli</span></div>
+    <div class="right"><span>2 min</span><span>·</span><span class="accent" style="color:var(--accent);">PALDIES</span></div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<nav class="nav" aria-label="Slaidu navigācija">
+  <button id="prevBtn" aria-label="Iepriekšējais slaids">‹</button>
+  <span class="counter" id="counter">01 / 15</span>
+  <button id="nextBtn" aria-label="Nākamais slaids">›</button>
+</nav>
+
+<div class="hint" aria-hidden="true">
+  <kbd>←</kbd><kbd>→</kbd> lai pārvietotos · <kbd>F</kbd> pilnekrāns
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  class Deck {
+    constructor() {
+      this.slides = [...document.querySelectorAll('.slide')];
+      this.total = this.slides.length;
+      // Ensure clean state — clear any pre-set active classes from HTML
+      this.slides.forEach((s) => s.classList.remove('active'));
+      this.index = 0;
+      this.slides[0].classList.add('active');
+      this.prevBtn = document.getElementById('prevBtn');
+      this.nextBtn = document.getElementById('nextBtn');
+      this.counter = document.getElementById('counter');
+      this.bar = document.getElementById('progressBar');
+      this.touchStart = null;
+      this.wheelLock = false;
+
+      this.bind();
+      // Honor URL hash for deep-linking
+      const target = this.readHash();
+      this.go(target, true);
+    }
+
+    readHash() {
+      const m = location.hash.match(/^#(\d+)$/);
+      if (!m) return 0;
+      return Math.max(0, Math.min(this.total - 1, parseInt(m[1], 10) - 1));
+    }
+
+    bind() {
+      this.prevBtn.addEventListener('click', () => this.go(this.index - 1));
+      this.nextBtn.addEventListener('click', () => this.go(this.index + 1));
+
+      window.addEventListener('keydown', (e) => {
+        // Don't intercept if user is typing in something (none here, but safe)
+        if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+        switch (e.key) {
+          case 'ArrowRight':
+          case 'PageDown':
+          case ' ':
+          case 'Enter':
+            e.preventDefault();
+            this.go(this.index + 1);
+            break;
+          case 'ArrowLeft':
+          case 'PageUp':
+          case 'Backspace':
+            e.preventDefault();
+            this.go(this.index - 1);
+            break;
+          case 'Home':
+            e.preventDefault();
+            this.go(0);
+            break;
+          case 'End':
+            e.preventDefault();
+            this.go(this.total - 1);
+            break;
+          case 'f':
+          case 'F':
+            this.toggleFullscreen();
+            break;
+        }
+      });
+
+      // Wheel
+      window.addEventListener('wheel', (e) => {
+        if (this.wheelLock) return;
+        if (Math.abs(e.deltaY) < 30) return;
+        this.wheelLock = true;
+        if (e.deltaY > 0) this.go(this.index + 1);
+        else this.go(this.index - 1);
+        setTimeout(() => { this.wheelLock = false; }, 600);
+      }, { passive: true });
+
+      // Touch
+      window.addEventListener('touchstart', (e) => {
+        this.touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }, { passive: true });
+      window.addEventListener('touchend', (e) => {
+        if (!this.touchStart) return;
+        const dx = e.changedTouches[0].clientX - this.touchStart.x;
+        const dy = e.changedTouches[0].clientY - this.touchStart.y;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) this.go(this.index + 1);
+          else this.go(this.index - 1);
+        }
+        this.touchStart = null;
+      }, { passive: true });
+
+      // Hash sync (allow direct linking, e.g. #8 to jump to slide 8)
+      window.addEventListener('hashchange', () => {
+        const next = this.readHash();
+        if (next !== this.index) this.go(next, true);
+      });
+    }
+
+    go(target, silent = false) {
+      const next = Math.max(0, Math.min(this.total - 1, target));
+      if (next === this.index && !silent) return;
+      this.slides[this.index].classList.remove('active');
+      this.slides[next].classList.add('active');
+      this.index = next;
+      this.counter.textContent =
+        String(next + 1).padStart(2, '0') + ' / ' + String(this.total).padStart(2, '0');
+      this.bar.style.width = ((next + 1) / this.total * 100) + '%';
+      if (!silent) {
+        // Keep URL in sync without scroll
+        history.replaceState(null, '', '#' + (next + 1));
+      }
+    }
+
+    toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.().catch(() => {});
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+  }
+
+  // Interactive quiz controller — click chip to focus, click reveal to show answer
+  function setupQuiz() {
+    const board = document.getElementById('quizBoard');
+    if (!board) return;
+    const chips = [...board.querySelectorAll('.quiz-chip')];
+    const focusEl = document.getElementById('quizFocus');
+    const placeholder = focusEl.querySelector('.placeholder');
+    const numEl = focusEl.querySelector('.num-large');
+    const qEl = focusEl.querySelector('.question-large');
+    const ansEl = focusEl.querySelector('.ans-large');
+    const revealBtn = focusEl.querySelector('.reveal-btn');
+    const nudgeEl = focusEl.querySelector('.nudge-text');
+    let currentIdx = -1;
+
+    function showCase(idx) {
+      // Reveal answer of previously-active case (the one we're moving past)
+      if (currentIdx !== -1 && currentIdx !== idx) {
+        chips[currentIdx].classList.add('revealed');
+        chips[currentIdx].classList.remove('active');
+      }
+      currentIdx = idx;
+      const chip = chips[idx];
+      chips.forEach((c, i) => { if (i !== idx) c.classList.remove('active'); });
+      chip.classList.add('active');
+
+      placeholder.style.display = 'none';
+      numEl.style.display = '';
+      qEl.style.display = '';
+      revealBtn.style.display = '';
+      nudgeEl.style.display = '';
+      numEl.textContent = '— ' + chip.dataset.num;
+      qEl.textContent = chip.dataset.question;
+      ansEl.textContent = chip.dataset.answer;
+      // If this case was already revealed, show answer immediately
+      if (chip.classList.contains('revealed')) {
+        focusEl.classList.add('has-answer');
+      } else {
+        focusEl.classList.remove('has-answer');
+      }
+    }
+
+    function reveal() {
+      if (currentIdx === -1) return;
+      chips[currentIdx].classList.add('revealed');
+      focusEl.classList.add('has-answer');
+    }
+
+    chips.forEach((chip, idx) => chip.addEventListener('click', () => showCase(idx)));
+    revealBtn.addEventListener('click', reveal);
+  }
+
+  // Sample-task buttons on the assignment slide
+  function setupAssignment() {
+    const input = document.getElementById('taskInput');
+    if (!input) return;
+    document.querySelectorAll('.sample-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        input.value = btn.dataset.sample || '';
+        input.focus();
+      });
+    });
+    // Don't let typing in the textarea trigger slide nav (space, arrows)
+    input.addEventListener('keydown', (e) => e.stopPropagation());
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new Deck();
+    setupQuiz();
+    setupAssignment();
+  });
+})();
+</script>
+</body>
+</html>
