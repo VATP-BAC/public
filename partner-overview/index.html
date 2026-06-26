@@ -628,36 +628,49 @@
   </div>
 </div>
 
-<!-- SLIDE 17: CLOSING - STATUS AND SIEMENS -->
+<!-- SLIDE 17: CLOSING - STATUS -->
 <div class="slide">
   <span class="slide-number">17</span>
   <div class="label">In Closing</div>
-  <h2>Where we are, and what we'd like</h2>
-  <p class="subtitle" style="margin-bottom: 24px;">The platform is built and running, and the pilot at VHTP is the next step. The one concrete thing we would like from Siemens is hardware to put on site.</p>
+  <h2>Where we are</h2>
+  <p class="subtitle" style="margin-bottom: 28px;">The platform is built and running. The pilot at VHTP is the next step, connecting real sensors and HVAC equipment on site.</p>
+  <ul class="feature-list" style="max-width: 700px;">
+    <li><span class="check">&#10003;</span> <span><strong>Built and running:</strong> web app, multi-protocol gateway, and time-series database, with Nord Pool and weather data connected.</span></li>
+    <li><span class="check">&#10003;</span> <span><strong>Pilot at VHTP:</strong> connect real sensors and HVAC equipment, gather live data across the building.</span></li>
+    <li><span class="check">&#10003;</span> <span><strong>Forecasting:</strong> train energy and comfort models on real data, extend to more buildings.</span></li>
+    <li><span class="check">&#10003;</span> <span><strong>IPCEI-CIS WP4:</strong> deliver the smart-building platform as our contribution to the programme by 2027.</span></li>
+  </ul>
+</div>
+
+<!-- SLIDE 18: NEXT STEPS WITH SIEMENS -->
+<div class="slide">
+  <span class="slide-number">18</span>
+  <div class="label">Next steps</div>
+  <h2>Next steps with Siemens</h2>
+  <p class="subtitle" style="margin-bottom: 22px;">We are IPCEI-CIS partners. We would like to deepen that into a hands-on pilot together, where Siemens hardware runs in a live building on our platform.</p>
   <div class="grid-2" style="gap: 32px; align-items: start;">
     <div>
-      <h4 style="color: var(--accent); margin-bottom: 14px;">The platform today</h4>
-      <ul class="feature-list">
-        <li><span class="check">&#10003;</span> <span><strong>Built and running:</strong> web app, multi-protocol gateway, and time-series database, with Nord Pool and weather data connected.</span></li>
-        <li><span class="check">&#10003;</span> <span><strong>Next:</strong> pilot at VHTP, connecting real sensors and HVAC equipment on site.</span></li>
-        <li><span class="check">&#10003;</span> <span><strong>Then:</strong> train forecasting models and extend the platform to more buildings.</span></li>
-      </ul>
-    </div>
-    <div>
-      <h4 style="color: var(--accent); margin-bottom: 14px;">What we would like from Siemens</h4>
-      <div style="display: flex; gap: 20px; align-items: center;">
-        <div style="flex-shrink: 0; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px;">
-          <img src="screenshots/consortium-siemens-co2-sensor.jpg" alt="Siemens QPA2360D room CO2 sensor" style="width: 150px; height: 150px; object-fit: contain; display: block;">
-        </div>
-        <p style="font-size: 0.92rem; color: var(--text-secondary);">To trial Siemens room air-quality sensors in the pilot, starting with the <strong>QPA2360D</strong>: CO2, temperature and humidity, with a display. As a Building X field device it drops straight into the gateway's sensor pipeline.</p>
+      <div class="card" style="border-top: 3px solid var(--blue); padding: 16px 20px;">
+        <h4 style="margin-bottom: 8px;">How we see the collaboration</h4>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">IPCEI-CIS brings us together to pilot Siemens Industrial Edge technology in a real smart-building scenario. Our gateway speaks BACnet and Building X field devices natively, so Siemens hardware integrates without extra engineering on either side.</p>
       </div>
+      <div class="card" style="border-top: 3px solid var(--accent); padding: 16px 20px; margin-top: 12px;">
+        <h4 style="margin-bottom: 8px;">What we would like to start with</h4>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Room air-quality sensors for the VHTP pilot. The <strong>QPA2360D</strong> measures CO2, temperature, and humidity and shows readings on a built-in display. It connects to the gateway immediately and feeds the room-comfort and ventilation logic we have already built.</p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding-top: 8px;">
+      <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+        <img src="screenshots/consortium-siemens-co2-sensor.jpg" alt="Siemens QPA2360D room CO2 sensor" style="width: 200px; height: 200px; object-fit: contain; display: block;">
+      </div>
+      <p style="font-size: 0.82rem; color: var(--text-secondary); text-align: center; max-width: 260px;">Siemens QPA2360D: CO2 (0-2000 ppm), temperature, humidity, built-in display. Building X field device.</p>
     </div>
   </div>
 </div>
 
-<!-- SLIDE 18: FUNDING & ACKNOWLEDGMENT -->
+<!-- SLIDE 19: FUNDING & ACKNOWLEDGMENT -->
 <div class="slide section-divider">
-  <span class="slide-number" style="color: var(--text-secondary);">18</span>
+  <span class="slide-number" style="color: var(--text-secondary);">19</span>
   <div style="max-width: 880px; text-align: center;">
     <div class="label" style="margin-bottom: 14px;">Co-funded by the European Union</div>
     <h2 style="margin-bottom: 20px;">Nextgen Microfactories</h2>
@@ -709,6 +722,8 @@
     const diff = touchStartX - e.changedTouches[0].screenX;
     if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1);
   });
+
+  show(0);
 </script>
 </body>
 </html>
