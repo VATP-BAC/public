@@ -143,31 +143,31 @@
       <rect x="40" y="180" width="4" height="62" fill="var(--p-modbus)"/>
       <text x="56" y="203" class="d-title">2× Ventilation units (AHU)</text>
       <text x="56" y="219" class="d-sub">supply, heat &amp; cool fresh air</text>
-      <text x="56" y="234" class="d-proto">Siemens Climatix · Modbus TCP</text>
+      <text x="56" y="234" class="d-proto" style="fill: var(--p-modbus)">Siemens Climatix — Modbus TCP</text>
 
       <rect x="40" y="254" width="300" height="62" class="d-box"/>
       <rect x="40" y="254" width="4" height="62" fill="var(--p-bacnet)"/>
       <text x="56" y="277" class="d-title">2× Smart energy valves</text>
       <text x="56" y="293" class="d-sub">meter heating / cooling delivered</text>
-      <text x="56" y="308" class="d-proto">Siemens ACVATIX · BACnet/IP</text>
+      <text x="56" y="308" class="d-proto" style="fill: var(--p-bacnet)">Siemens ACVATIX — BACnet/IP (UDP)</text>
 
       <rect x="40" y="328" width="300" height="62" class="d-box"/>
       <rect x="40" y="328" width="4" height="62" fill="var(--p-lux)"/>
       <text x="56" y="351" class="d-title">2× Heat pumps</text>
       <text x="56" y="367" class="d-sub">heating · cooling · hot water</text>
-      <text x="56" y="382" class="d-proto">Alpha Innotec · Luxtronik</text>
+      <text x="56" y="382" class="d-proto" style="fill: var(--p-lux)">Alpha Innotec — Luxtronik protocol (TCP)</text>
 
       <rect x="40" y="402" width="300" height="62" class="d-box"/>
       <rect x="40" y="402" width="4" height="62" fill="var(--p-shelly)"/>
       <text x="56" y="425" class="d-title">13× Electricity meter circuits</text>
       <text x="56" y="441" class="d-sub">which machine used how much power</text>
-      <text x="56" y="456" class="d-proto">Shelly · local HTTP</text>
+      <text x="56" y="456" class="d-proto" style="fill: var(--p-shelly)">Shelly — JSON-RPC over HTTP (LAN)</text>
 
       <rect x="40" y="476" width="300" height="62" class="d-box"/>
       <rect x="40" y="476" width="4" height="62" fill="var(--muted)"/>
       <text x="56" y="499" class="d-title">Room climate sensors</text>
       <text x="56" y="515" class="d-sub">CO₂ · humidity · temperature</text>
-      <text x="56" y="530" class="d-proto">Siemens</text>
+      <text x="56" y="530" class="d-proto">Siemens — transport confirmed at install</text>
 
       <!-- ================= tunnel ================= -->
       <line x1="360" y1="343" x2="576" y2="343" class="d-tube"/>
@@ -235,11 +235,21 @@
       <text x="685" y="538" class="d-lab">pulled hourly</text>
 
       <!-- legend -->
-      <line x1="20" y1="586" x2="56" y2="586" class="d-flow" marker-end="url(#ar-f)"/>
-      <text x="66" y="590" class="d-proto">data flow</text>
-      <line x1="150" y1="586" x2="186" y2="586" class="d-ctl" marker-end="url(#ar-c)"/>
-      <text x="196" y="590" class="d-proto">requests / control (to be enabled)</text>
-      <text x="20" y="616" class="d-proto">all readings are stored at a 10-minute cadence, whatever the poll rate</text>
+      <line x1="20" y1="582" x2="56" y2="582" class="d-flow" marker-end="url(#ar-f)"/>
+      <text x="66" y="586" class="d-proto">data flow</text>
+      <line x1="150" y1="582" x2="186" y2="582" class="d-ctl" marker-end="url(#ar-c)"/>
+      <text x="196" y="586" class="d-proto">requests / control (to be enabled)</text>
+
+      <rect x="20" y="598" width="10" height="10" fill="var(--p-modbus)"/>
+      <text x="36" y="607" class="d-proto">Modbus TCP</text>
+      <rect x="130" y="598" width="10" height="10" fill="var(--p-bacnet)"/>
+      <text x="146" y="607" class="d-proto">BACnet/IP</text>
+      <rect x="240" y="598" width="10" height="10" fill="var(--p-lux)"/>
+      <text x="256" y="607" class="d-proto">Luxtronik TCP</text>
+      <rect x="370" y="598" width="10" height="10" fill="var(--p-shelly)"/>
+      <text x="386" y="607" class="d-proto">HTTP (Shelly)</text>
+
+      <text x="20" y="630" class="d-proto">all readings are stored at a 10-minute cadence, whatever the poll rate</text>
     </svg>
     </div>
   </figure>
@@ -255,7 +265,7 @@
     <div class="card">
       <h2>Data timing</h2>
       <ul>
-        <li>Devices are polled every 40 s – 15 min depending on protocol.</li>
+        <li>Poll rates by protocol: valves (BACnet) 40 s · meters (HTTP) 60 s · AHUs (Modbus) 10 min · heat pumps (Luxtronik) 15 min.</li>
         <li>Storage is capped at <strong>one reading per sensor per 10 minutes</strong> — dashboards move in 10-minute steps, not real time.</li>
         <li>If a device stops reporting, the platform raises an offline alert.</li>
       </ul>
