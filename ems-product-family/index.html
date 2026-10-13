@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>From Audit to Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Geist+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: 1280×720 slide canvas scaled to fit the window (deck mode); on narrow screens the slides stack as a scrolling page.
+   Palette and type follow the VATP EMS platform design system (globals.css). */
+:root {
+  --bg: #f5ecdc;
+  --panel: #fffaf1;
+  --surface: #efe5d4;
+  --border: #e6dcc8;
+  --border-strong: #d4c8ad;
+  --fg: #1d1a13;
+  --fg2: #6b6453;
+  --muted: #6e6655;
+  --accent: #2f5c4f;
+  --accent-bg: rgba(47, 92, 79, 0.12);
+  --ember: #c65b2b;
+  --ember-bg: rgba(198, 91, 43, 0.1);
+  --warn: #b06a1a;
+  --warn-bg: rgba(176, 106, 26, 0.12);
+  --forest: #173d30;
+  --forest-2: #1f4a3b;
+  --forest-fg: #eef3ec;
+  --forest-muted: rgba(238, 243, 236, 0.66);
+  --mint: #9fd1bf;
+  --shadow: rgba(60, 45, 20, 0.10);
+
+  --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17130c; --panel: #221c13; --surface: #2c2519; --border: #362e20; --border-strong: #483e2c;
+    --fg: #f1e9da; --fg2: #b7ad98; --muted: #9c937e;
+    --accent: #6fae9c; --accent-bg: rgba(111, 174, 156, 0.14);
+    --ember: #e07a5f; --ember-bg: rgba(224, 122, 95, 0.14);
+    --warn: #d99a4e; --warn-bg: rgba(217, 154, 78, 0.14);
+    --forest: #10291f; --forest-2: #173528; --forest-fg: #eef3ec; --forest-muted: rgba(238, 243, 236, 0.64);
+    --mint: #8cc4b0; --shadow: rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17130c; --panel: #221c13; --surface: #2c2519; --border: #362e20; --border-strong: #483e2c;
+  --fg: #f1e9da; --fg2: #b7ad98; --muted: #9c937e;
+  --accent: #6fae9c; --accent-bg: rgba(111, 174, 156, 0.14);
+  --ember: #e07a5f; --ember-bg: rgba(224, 122, 95, 0.14);
+  --warn: #d99a4e; --warn-bg: rgba(217, 154, 78, 0.14);
+  --forest: #10291f; --forest-2: #173528; --forest-fg: #eef3ec; --forest-muted: rgba(238, 243, 236, 0.64);
+  --mint: #8cc4b0; --shadow: rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, ul, ol { margin: 0; }
+h1, h2 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.01em; text-wrap: balance; line-height: 1.05; }
+h3 { font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+ul { padding: 0; list-style: none; display: grid; gap: 9px; }
+li { position: relative; padding-left: 18px; }
+ul.dots > li::before { content: ""; position: absolute; left: 2px; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.mono { font-family: var(--font-mono); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Deck shell ---------- */
+.viewport { position: relative; }
+.slide {
+  background: var(--bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 52px 68px 40px;
+  gap: 26px;
+  overflow: hidden;
+}
+body.deck { overflow: hidden; background: var(--surface); }
+body.deck .viewport { position: fixed; inset: 0; bottom: 0; overflow: hidden; }
+body.deck .slide {
+  border-radius: var(--r-lg);
+  position: absolute; left: 50%; top: calc(50% - 26px);
+  width: 1280px; height: 720px;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(var(--scale, 1));
+  box-shadow: 0 30px 80px -30px var(--shadow);
+  visibility: hidden; opacity: 0;
+  transition: opacity 220ms ease;
+}
+body.deck .slide.active { visibility: visible; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { body.deck .slide { transition: none; } }
+
+body.flow .viewport { display: grid; gap: 20px; padding: 16px; }
+body.flow .slide { border-radius: var(--r-lg); padding: 28px 20px 24px; border: 1px solid var(--border); }
+body.flow .nav { display: none; }
+
+.slide-foot {
+  margin-top: auto;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.06em; color: var(--muted);
+  border-top: 1px solid var(--border); padding-top: 12px;
+}
+
+.nav {
+  position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: 6px;
+  background: var(--panel); border: 1px solid var(--border-strong); border-radius: var(--r-pill);
+  padding: 5px; box-shadow: 0 8px 24px -10px var(--shadow); z-index: 5;
+}
+.nav button {
+  font: 500 13px var(--font-mono); color: var(--fg); background: transparent; border: 0;
+  border-radius: var(--r-pill); padding: 7px 12px; cursor: pointer;
+}
+.nav button:hover { background: var(--surface); }
+.nav button:disabled { opacity: 0.35; cursor: default; background: transparent; }
+.nav .count { font: 500 12.5px var(--font-mono); color: var(--fg2); padding: 0 8px; font-variant-numeric: tabular-nums; min-width: 58px; text-align: center; }
+.progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--accent); z-index: 6; transition: width 220ms ease; }
+body.flow .progress { display: none; }
+
+/* ---------- Shared slide parts ---------- */
+.eyebrow { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+.s-head { display: grid; gap: 12px; }
+.s-head h2 { font-size: 48px; }
+.lede { font-size: 20px; color: var(--fg2); max-width: 62ch; }
+.question { font-family: var(--font-display); font-size: 25px; color: var(--fg2); line-height: 1.25; max-width: 48ch; }
+.head-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+
+/* Journey rail (where this slide sits in the lineup) */
+.rail { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.rail span {
+  font: 500 11.5px var(--font-mono); width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; border: 1px solid var(--border-strong); color: var(--muted);
+}
+.rail i { width: 14px; height: 1px; background: var(--border-strong); }
+.rail .gap { width: 10px; background: transparent; }
+.rail span.f { border-radius: 6px; border-style: dashed; }
+.rail span.on { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.rail span.f.on { background: var(--ember); border-color: var(--ember); border-style: solid; }
+
+.cols3 { display: grid; grid-template-columns: 1.1fr 1fr 1.15fr; gap: 28px; }
+.col { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.col li { font-size: 16.5px; }
+.platform {
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 18px 20px; display: grid; gap: 12px; align-content: start; min-width: 0;
+}
+.hb { gap: 8px; }
+.hb li { padding-left: 0; display: grid; grid-template-columns: 72px 1fr; gap: 10px; align-items: baseline; font-size: 15px; }
+.pill {
+  font: 500 10.5px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase;
+  border-radius: var(--r-pill); padding: 3px 8px; text-align: center; white-space: nowrap; justify-self: start;
+}
+.pill.have { background: var(--accent-bg); color: var(--accent); }
+.pill.part { background: var(--warn-bg); color: var(--warn); }
+.pill.build { background: transparent; color: var(--ember); box-shadow: inset 0 0 0 1px var(--ember); }
+.handoff {
+  font-size: 15px; color: var(--fg2); border-top: 1px dashed var(--border-strong); padding-top: 12px; display: grid; gap: 4px;
+}
+.handoff b { font: 500 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
+
+/* ---------- Cover ---------- */
+.cover { background: var(--forest); color: var(--forest-fg); }
+.cover .slide-foot { color: var(--forest-muted); border-top-color: rgba(238,243,236,0.14); }
+.cover .eyebrow { color: var(--mint); }
+.cover-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; flex: 1; }
+.cover h1 { font-size: 84px; line-height: 0.98; }
+.cover .sub { font-size: 21px; color: var(--forest-muted); max-width: 34ch; margin-top: 22px; }
+.cover .draft { display: inline-flex; gap: 8px; align-items: center; margin-top: 30px; font: 500 12px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--forest-fg); border: 1px dashed rgba(238,243,236,0.35); border-radius: var(--r-pill); padding: 7px 14px; }
+.heat { display: grid; gap: 10px; min-width: 0; }
+.heat-grid { display: grid; grid-template-columns: 22px repeat(24, 1fr); gap: 3px; }
+.heat-grid .d { font: 500 11px var(--font-mono); color: var(--forest-muted); align-self: center; }
+.heat-grid .c { aspect-ratio: 1; border-radius: 3px; background: color-mix(in srgb, var(--mint) calc(var(--v) * 100%), var(--forest-2)); }
+.heat-axis { display: grid; grid-template-columns: 22px repeat(4, 1fr); font: 500 11px var(--font-mono); color: var(--forest-muted); }
+.heat-cap { font: 500 11.5px var(--font-mono); letter-spacing: 0.06em; color: var(--forest-muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+.cover .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; }
+.cover .chip { font: 500 12px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; border-radius: var(--r-pill); padding: 7px 14px; background: var(--mint); color: var(--forest); }
+.cover .chips .draft { margin-top: 0; }
+
+/* ---------- Two goals ---------- */
+.goals { display: grid; grid-template-columns: 170px 1fr 1fr; border-top: 2px solid var(--fg); }
+.goals > div { padding: 11px 14px 11px 0; border-bottom: 1px solid var(--border); font-size: 15px; min-width: 0; }
+.goals .gh { font-family: var(--font-display); font-size: 25px; line-height: 1.1; padding-top: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-strong); }
+.goals .gh.cn { color: var(--accent); }
+.goals .gh.re { color: var(--ember); }
+.goals .rl { font: 500 12px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 13px; }
+.goals .rl b { color: var(--fg); font-weight: 500; display: block; }
+.goals .last { border-bottom: 0; background: var(--ember-bg); }
+.goals .last.rl { padding-left: 10px; }
+
+/* ---------- Proposal slide ---------- */
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.point { border-top: 2px solid var(--fg); padding-top: 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.point .k { font: 500 12px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.point p { font-size: 18px; }
+.point strong { font-family: var(--font-display); font-weight: 400; font-size: 27px; line-height: 1.15; display: block; }
+.goal { background: var(--accent-bg); border-radius: var(--r-lg); padding: 18px 22px; display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; }
+.goal b { font: 500 12px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+/* ---------- Pilot today ---------- */
+.arch { display: grid; grid-template-columns: 1.35fr 24px 1fr 24px 1fr; gap: 10px; align-items: stretch; }
+.zone { background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.zone.field { background: transparent; border-style: dashed; border-color: var(--border-strong); }
+.zone li { font-size: 14.5px; }
+.zone .sub-note { font: 500 11px var(--font-mono); color: var(--muted); }
+.arch .arrow { align-self: center; justify-self: center; font: 500 20px var(--font-mono); color: var(--accent); }
+.inv { display: grid; gap: 0; }
+.inv div { display: grid; grid-template-columns: 34px 1fr auto; gap: 8px; align-items: baseline; font-size: 14.5px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.inv div:last-child { border-bottom: 0; }
+.inv b { font: 500 13px var(--font-mono); color: var(--accent); }
+.inv em { font: 500 11px var(--font-mono); font-style: normal; color: var(--muted); white-space: nowrap; }
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.fact { border-top: 2px solid var(--fg); padding-top: 10px; display: grid; gap: 4px; min-width: 0; }
+.fact strong { font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.fact span { font-size: 14px; color: var(--fg2); }
+.fact.warn strong { color: var(--warn); }
+
+/* ---------- Journey map ---------- */
+.journey { display: grid; gap: 14px; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; position: relative; }
+.step {
+  background: var(--panel); border: 1px solid var(--border-strong); border-radius: var(--r-lg);
+  padding: 18px 18px 20px; display: grid; gap: 8px; align-content: start; position: relative; min-width: 0;
+}
+.step .n { font: 500 12px var(--font-mono); color: var(--accent); letter-spacing: 0.1em; }
+.step .t { font-family: var(--font-display); font-size: 24px; line-height: 1.1; }
+.step .q { font-size: 15px; color: var(--fg2); }
+.step .out { font: 500 11.5px var(--font-mono); color: var(--muted); border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; }
+.steps .step:not(:last-child)::after {
+  content: "→"; position: absolute; right: -27px; top: 50%; transform: translateY(-50%);
+  font: 500 20px var(--font-mono); color: var(--accent);
+}
+.loop {
+  margin: 0 calc(12.5% - 8px) 0 calc(37.5% - 8px);
+  height: 26px; border: 1.5px solid var(--accent); border-top: 0; border-radius: 0 0 14px 14px; position: relative;
+}
+.loop span {
+  position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
+  background: var(--bg); padding: 0 10px; font: 500 11.5px var(--font-mono); color: var(--accent); white-space: nowrap;
+}
+.loop::before { content: ""; position: absolute; left: -6px; top: -6px; border: 6px solid transparent; border-bottom-color: var(--accent); }
+.fund-band {
+  margin-top: 14px; border: 1.5px dashed var(--ember); border-radius: var(--r-lg); background: var(--ember-bg);
+  padding: 16px 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 22px; align-items: center;
+}
+.fund-band .t { font-family: var(--font-display); font-size: 24px; }
+.fund-band .k { font: 500 11.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ember); }
+.fund-band p { font-size: 15.5px; color: var(--fg2); }
+.fund-band .uses { font: 500 11.5px var(--font-mono); color: var(--fg2); display: grid; gap: 4px; text-align: right; }
+
+/* ---------- Funding slide ---------- */
+.fund-slide .eyebrow { color: var(--ember); }
+.fund-slide ul.dots > li::before { background: var(--ember); }
+.why { background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.why li { font-size: 15.5px; }
+.prog { display: grid; gap: 8px; }
+.prog li { padding-left: 0; font-size: 15px; display: grid; gap: 1px; }
+.prog li span { font: 500 11px var(--font-mono); color: var(--muted); letter-spacing: 0.04em; }
+.note { font: 500 11.5px var(--font-mono); color: var(--muted); }
+
+/* ---------- Have vs build matrix ---------- */
+.matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.mgroup { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.mgroup + .mgroup { margin-top: 18px; }
+.mgroup h3 { display: flex; gap: 8px; align-items: center; padding-bottom: 6px; border-bottom: 1px solid var(--border-strong); color: var(--fg); }
+.mgroup h3 em { font-style: normal; color: var(--accent); }
+.mgroup.fund h3 em { color: var(--ember); }
+.mrow { display: grid; grid-template-columns: 1fr 74px; gap: 10px; align-items: center; font-size: 14.5px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.mrow .pill { justify-self: end; }
+.legend { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; font-size: 13.5px; color: var(--fg2); }
+.legend span { display: inline-flex; gap: 6px; align-items: center; }
+
+/* ---------- Data thread ---------- */
+.thread { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; margin-top: 8px; }
+.thread::before { content: ""; position: absolute; left: 10px; right: 10px; top: 10px; height: 2px; background: var(--accent); }
+.tnode { position: relative; padding: 36px 22px 0 0; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.tnode::before { content: ""; position: absolute; left: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.tnode:last-child::before { background: var(--accent); }
+.tnode .k { font: 500 12px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.tnode .t { font-family: var(--font-display); font-size: 30px; line-height: 1.05; }
+.tnode p { font-size: 15.5px; color: var(--fg2); }
+.formula {
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 22px;
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 28px; align-items: center;
+}
+.formula pre { margin: 0; font: 400 14px/1.6 var(--font-mono); color: var(--fg); overflow-x: auto; }
+.formula pre b { color: var(--accent); font-weight: 500; }
+.formula p { font-size: 15.5px; color: var(--fg2); }
+
+/* ---------- Questions / next steps ---------- */
+.qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 30px; }
+.qitem { display: grid; grid-template-columns: 30px 1fr; gap: 6px 12px; border-top: 1px solid var(--border-strong); padding-top: 12px; min-width: 0; }
+.qitem .qn { font: 500 12px var(--font-mono); color: var(--accent); padding-top: 3px; }
+.qitem b { font-weight: 600; font-size: 16.5px; display: block; }
+.qitem p { grid-column: 2; font-size: 14.5px; color: var(--fg2); }
+.qitem .qtag { font: 500 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+.next { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.ncol { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.ncol h3 { color: var(--fg); padding-bottom: 8px; border-bottom: 2px solid var(--fg); }
+.task { display: grid; grid-template-columns: 18px 1fr; gap: 10px; align-items: start; font-size: 16px; }
+.task::before { content: ""; width: 14px; height: 14px; margin-top: 4px; border: 1.5px solid var(--border-strong); border-radius: 4px; }
+.task small { display: block; font: 500 11.5px var(--font-mono); color: var(--muted); margin-top: 2px; }
+
+/* ---------- Flow (narrow screens) ---------- */
+body.flow .s-head h2 { font-size: 34px; }
+body.flow .cover h1 { font-size: 50px; }
+body.flow .question { font-size: 20px; }
+body.flow .cover-grid, body.flow .cols3, body.flow .three, body.flow .matrix,
+body.flow .qgrid, body.flow .next, body.flow .formula { grid-template-columns: 1fr; gap: 20px; }
+body.flow .steps { grid-template-columns: 1fr; gap: 26px; }
+body.flow .steps .step:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -25px; transform: translateX(-50%); }
+body.flow .loop { display: none; }
+body.flow .goals { grid-template-columns: 1fr; }
+body.flow .goals .gh.blank { display: none; }
+body.flow .arch, body.flow .facts { grid-template-columns: 1fr; }
+body.flow .arch .arrow { transform: rotate(90deg); }
+body.flow .fund-band { grid-template-columns: 1fr; gap: 10px; }
+body.flow .fund-band .uses { text-align: left; }
+body.flow .thread { grid-template-columns: 1fr; gap: 22px; }
+body.flow .thread::before { left: 10px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto; }
+body.flow .tnode { padding: 0 0 0 36px; }
+body.flow .head-row { flex-direction: column; }
+body.flow .rail { flex-wrap: wrap; }
+body.flow .heat-grid { gap: 2px; }
+
+/* ---------- v4: sales story, family, clients, naming ---------- */
+.story { display: grid; grid-template-columns: 1fr 28px 1fr 28px 1.25fr; gap: 10px; align-items: stretch; }
+.story .arr { align-self: center; justify-self: center; font: 500 22px var(--font-mono); color: var(--accent); }
+.phase { border-top: 2px solid var(--fg); padding-top: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.phase .k { font: 500 12px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.phase strong { font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 1.08; }
+.phase p { font-size: 17px; color: var(--fg2); }
+.phase .prod { font: 500 11.5px var(--font-mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.phase.main { border-top-color: var(--accent); }
+.extras { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.extras > div { background: var(--accent-bg); border-radius: var(--r-lg); padding: 14px 18px; display: grid; gap: 4px; }
+.extras > div.fx { background: var(--ember-bg); }
+.extras b { font: 500 11.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.extras .fx b { color: var(--ember); }
+.extras span { font-size: 16.5px; }
+
+.phases { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 34px; }
+.phases span { font: 500 11.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1.5px solid var(--border-strong); padding-bottom: 6px; }
+.phases span.wide { color: var(--accent); border-bottom-color: var(--accent); }
+.bands { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 10px; }
+.band { border-radius: var(--r-lg); padding: 14px 18px; display: grid; gap: 4px; }
+.band.ai { border: 1.5px dashed var(--accent); background: var(--accent-bg); }
+.band.fund { border: 1.5px dashed var(--ember); background: var(--ember-bg); }
+.band .k { font: 500 11.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.band.fund .k { color: var(--ember); }
+.band .t { font-family: var(--font-display); font-size: 23px; line-height: 1.1; }
+.band p { font-size: 15px; color: var(--fg2); }
+
+.clients { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.client { background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.client .k { font: 500 12px var(--font-mono); color: var(--accent); }
+.client strong { font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.08; }
+.client p { font-size: 16px; color: var(--fg2); }
+.client .entry { border-top: 1px dashed var(--border-strong); padding-top: 12px; font-size: 15px; display: grid; gap: 3px; }
+.client .entry b { font: 500 11px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+.rail span.f-ai { border-style: dashed; }
+.src { font: 500 11.5px var(--font-mono); color: var(--muted); letter-spacing: 0.04em; vertical-align: middle; margin-left: 6px; }
+.why em { font-style: normal; font-weight: 600; color: var(--fg); }
+
+.naming { display: grid; grid-template-columns: 1.35fr 1fr; gap: 30px; }
+.names { display: grid; border-top: 2px solid var(--fg); min-width: 0; }
+.nrow { display: grid; grid-template-columns: 26px 1fr 1fr; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 15px; align-items: baseline; }
+.nrow b { font: 500 13px var(--font-mono); color: var(--accent); }
+.nrow span:last-child { color: var(--fg2); }
+.nrow.nhead span { font: 500 11.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.kw { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.chips-light { display: flex; flex-wrap: wrap; gap: 7px; }
+.chips-light span { font: 500 12.5px var(--font-mono); background: var(--accent-bg); color: var(--accent); border-radius: var(--r-pill); padding: 5px 11px; }
+.kw-note { font-size: 15px; color: var(--fg2); background: var(--warn-bg); border-radius: var(--r-md); padding: 12px 14px; }
+.kw-note b { color: var(--warn); font-weight: 600; }
+
+.matrix.compact .mrow { padding: 3px 0; font-size: 14px; }
+.matrix.compact .mgroup + .mgroup { margin-top: 14px; }
+.qgrid.dense { gap: 10px 30px; }
+.qgrid.dense .qitem { padding-top: 9px; gap: 3px 12px; }
+.qgrid.dense .qitem b { font-size: 15.5px; }
+.qgrid.dense .qitem p { font-size: 14px; }
+
+body.flow .story, body.flow .extras, body.flow .bands, body.flow .clients, body.flow .naming { grid-template-columns: 1fr; }
+body.flow .story .arr { transform: rotate(90deg); }
+body.flow .phases { display: none; }
+body.flow .nrow { grid-template-columns: 22px 1fr; }
+body.flow .nrow span:last-child { grid-column: 2; }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<main class="viewport" id="viewport">
+
+<!-- 1 · Cover -->
+<section class="slide cover" id="s1" aria-label="Slide 1: Cover">
+  <div class="eyebrow">Product meeting · 13 Oct 2026</div>
+  <div class="cover-grid">
+    <div>
+      <h1>From audit to automation</h1>
+      <p class="sub">One energy management product family for climate neutrality and renewable energy, built on the EMS we already run at the IPCEI pilot.</p>
+      <div class="chips"><span class="chip">Climate neutrality</span><span class="chip">Renewable energy</span><span class="draft">Working title · no brand yet</span></div>
+    </div>
+    <div class="heat" aria-label="Illustrative heat map of hourly building load over one week">
+      <div class="heat-grid" id="heat"></div>
+      <div class="heat-axis"><span></span><span>00</span><span>06</span><span>12</span><span>18</span></div>
+      <div class="heat-cap"><span>Hourly load, one week</span><span>Illustrative pattern</span></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>01</span></div>
+</section>
+
+<!-- What we sell -->
+<section class="slide" id="s2" aria-label="Slide 2: What we sell">
+  <div class="s-head">
+    <div class="eyebrow">What is the product?</div>
+    <h2>One energy management system, sold in three moves</h2>
+  </div>
+  <div class="story">
+    <div class="phase">
+      <span class="k">Attract</span>
+      <strong>Web simulation</strong>
+      <p>On our public website. A building owner sees likely savings and CO₂ in a few minutes.</p>
+      <span class="prod">Product 1</span>
+    </div>
+    <span class="arr" aria-hidden="true">→</span>
+    <div class="phase">
+      <span class="k">Convince</span>
+      <strong>Report / audit</strong>
+      <p>Energy efficiency and climate-neutrality audit with a CO₂ report, the EU outlook and funding options.</p>
+      <span class="prod">Product 2</span>
+    </div>
+    <span class="arr" aria-hidden="true">→</span>
+    <div class="phase main">
+      <span class="k">Deliver</span>
+      <strong>Implementation + subscription</strong>
+      <p>EMS and sensors in read mode first, then automation and renewables. The EMS stays on as a subscription.</p>
+      <span class="prod">Products 3 + 4</span>
+    </div>
+  </div>
+  <div class="extras">
+    <div><b>Sold separately</b><span>AI, ML and LLM tools on top of EMS data (Product 5)</span></div>
+    <div class="fx"><b>On top</b><span>EU funding support. Relevant, but not the main reason to buy</span></div>
+  </div>
+  <div class="slide-foot"><span>Sales story agreed at the product meeting, 13 Oct 2026</span><span>02</span></div>
+</section>
+
+<!-- Pilot today -->
+<section class="slide" id="s3" aria-label="Slide 3: What the pilot runs today">
+  <div class="s-head">
+    <div class="eyebrow">Starting point</div>
+    <h2>What the pilot runs today</h2>
+  </div>
+  <div class="arch">
+    <div class="zone field">
+      <h3>In the building · private network</h3>
+      <div class="inv">
+        <div><b>2×</b><span>Air handling units, Climatix POL648</span><em>Modbus TCP</em></div>
+        <div><b>2×</b><span>Smart energy valves, ACVATIX</span><em>BACnet/IP</em></div>
+        <div><b>2×</b><span>Ground-source heat pumps, alpha innotec MSW 30</span><em>Luxtronik</em></div>
+        <div><b>13×</b><span>Electricity meter circuits, Shelly</span><em>HTTP</em></div>
+        <div><b>+</b><span>Room sensors, CO₂ · humidity · temperature</span><em>Siemens</em></div>
+      </div>
+    </div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="zone">
+      <h3>On-site server</h3>
+      <ul class="dots">
+        <li>Gateway normalises every protocol into one feed</li>
+        <li>Web app: dashboards, alerts, roles</li>
+        <li>Time-series database</li>
+        <li>ML service: efficiency and forecasts</li>
+      </ul>
+      <span class="sub-note">Keeps running without internet</span>
+    </div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="zone">
+      <h3>Outside</h3>
+      <ul class="dots">
+        <li>Nord Pool prices, hourly</li>
+        <li>Open-Meteo weather, hourly</li>
+        <li>EU cloud for long-term analytics</li>
+        <li>One HTTPS entry point, nothing else public</li>
+      </ul>
+    </div>
+  </div>
+  <div class="facts">
+    <div class="fact"><strong>~150</strong><span>live data points in production</span></div>
+    <div class="fact"><strong>40 s – 15 min</strong><span>polling interval, by device type</span></div>
+    <div class="fact"><strong>7 roles</strong><span>from admin to room tablet, every action logged</span></div>
+    <div class="fact warn"><strong>Read + advise</strong><span>control path is built but not yet switched on</span></div>
+  </div>
+  <div class="slide-foot"><span>Source: VATP System Overview and HVAC AI Platform deck (Feb 2026)</span><span>03</span></div>
+</section>
+
+<!-- Product family -->
+<section class="slide" id="s4" aria-label="Slide 4: The product family">
+  <div class="s-head">
+    <div class="eyebrow">The product family</div>
+    <h2>Five products, one path to a climate-neutral building</h2>
+    <p class="lede">Each works on its own. Most clients go in this order.</p>
+  </div>
+  <div class="journey">
+    <div class="phases" aria-hidden="true"><span>Attract</span><span>Convince</span><span class="wide">Implement + subscribe</span></div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">PRODUCT 1</span>
+        <span class="t">Web simulation</span>
+        <span class="q">What could I save, and what is my CO₂?</span>
+        <span class="out">→ estimate · lead for the audit</span>
+      </div>
+      <div class="step">
+        <span class="n">PRODUCT 2</span>
+        <span class="t">Climate-neutrality audit &amp; report</span>
+        <span class="q">Where do the energy and CO₂ go today?</span>
+        <span class="out">→ baseline · CO₂ report · funding options</span>
+      </div>
+      <div class="step">
+        <span class="n">PRODUCT 3</span>
+        <span class="t">EMS &amp; sensors, read mode</span>
+        <span class="q">What is actually happening, hour by hour?</span>
+        <span class="out">→ measured data · funding prepared</span>
+      </div>
+      <div class="step">
+        <span class="n">PRODUCT 4</span>
+        <span class="t">Automation &amp; renewables, write mode</span>
+        <span class="q">Make the building run itself on cleaner energy.</span>
+        <span class="out">→ controls · renewables · verified savings</span>
+      </div>
+    </div>
+    <div class="bands">
+      <div class="band ai"><span class="k">Product 5 · separate</span><span class="t">AI, ML &amp; LLM</span><p>Forecasting, optimisation and an assistant on top of EMS data.</p></div>
+      <div class="band fund"><span class="k">Add-on</span><span class="t">EU funding support</span><p>Found in the audit, prepared while the EMS collects data.</p></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>04</span></div>
+</section>
+
+<!-- Ideal clients -->
+<section class="slide" id="s5" aria-label="Slide 5: Ideal clients">
+  <div class="s-head">
+    <div class="eyebrow">Who we sell to</div>
+    <h2>Three ideal clients</h2>
+  </div>
+  <div class="clients">
+    <div class="client">
+      <span class="k">01</span>
+      <strong>Manufacturing plants</strong>
+      <p>Large, mixed loads: process heat, cooling, ventilation, compressed air. Their own customers increasingly ask for CO₂ figures.</p>
+      <div class="entry"><b>Likely entry</b>Audit, then EMS to find where energy goes</div>
+    </div>
+    <div class="client">
+      <span class="k">02</span>
+      <strong>New buildings</strong>
+      <p>Heat pumps, ventilation and PV are designed in from the start, so sensors and controls can be planned in, not added later.</p>
+      <div class="entry"><b>Likely entry</b>EMS and automation at the design stage</div>
+    </div>
+    <div class="client">
+      <span class="k">03</span>
+      <strong>Apartment building owners</strong>
+      <p>Heating cost is the main worry, renovation is often co-funded, and residents want to see that it worked.</p>
+      <div class="entry"><b>Likely entry</b>Web simulation, then audit</div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Client types from the product meeting, 13 Oct 2026 · fit and entry points are a first proposal</span><span>05</span></div>
+</section>
+
+<!-- Two goals -->
+<section class="slide" id="s6" aria-label="Slide 6: Two goals in every product">
+  <div class="s-head">
+    <div class="eyebrow">Our focus</div>
+    <h2>Climate neutrality and renewable energy in every product</h2>
+  </div>
+  <div class="goals">
+    <div class="gh blank"></div><div class="gh cn">Climate neutrality</div><div class="gh re">Renewable energy</div>
+    <div class="rl"><b>Product 1</b>Simulation</div><div>First CO₂ estimate from a few inputs</div><div>First look at PV and heat pump potential</div>
+    <div class="rl"><b>Product 2</b>Audit</div><div>CO₂ report and baseline: the starting line</div><div>Renewable potential and today's renewable share</div>
+    <div class="rl"><b>Product 3</b>EMS</div><div>CO₂ tracked hour by hour with grid emission factors</div><div>Renewable share and self-consumption measured</div>
+    <div class="rl"><b>Product 4</b>Write mode</div><div>Waste removed automatically, CO₂ cut verified</div><div>PV, storage and heat pumps installed and run together</div>
+    <div class="rl"><b>Product 5</b>AI</div><div>Forecasts that plan for the lowest-CO₂ hours</div><div>Loads shifted to hours with high renewable output</div>
+  </div>
+  <div class="slide-foot"><span>CO₂ is our goal metric, whenever the funding programmes open</span><span>06</span></div>
+</section>
+
+<!-- Product 1 -->
+<section class="slide" id="s7" aria-label="Slide 7: Product 1, web simulation">
+  <div class="head-row">
+    <div class="s-head">
+      <div class="eyebrow">Product 1 · attract</div>
+      <h2>Web simulation</h2>
+      <p class="question">“What could I save, and what is my building's CO₂ footprint?”</p>
+    </div>
+    <div class="rail" aria-label="Product 1 of 5"><span class="on">1</span><i></i><span>2</span><i></i><span>3</span><i></i><span>4</span><i class="gap"></i><span class="f-ai">5</span><i class="gap"></i><span class="f">+</span></div>
+  </div>
+  <div class="cols3">
+    <div class="col">
+      <h3>Scope</h3>
+      <ul class="dots">
+        <li>Public page on our website, outside the EMS</li>
+        <li>Visitor enters building type, area, heat source and yearly bills</li>
+        <li>Estimate of energy use, CO₂ footprint and savings potential</li>
+        <li>First check of PV and heat pump potential</li>
+        <li>Ends with an offer to book the audit</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Deliverables</h3>
+      <ul class="dots">
+        <li>Instant estimate on screen</li>
+        <li>Short summary the visitor can keep</li>
+        <li>Qualified lead for the sales team</li>
+      </ul>
+      <div class="handoff"><b>Hands off to</b>The visitor's inputs become the starting data for the Product 2 audit.</div>
+    </div>
+    <div class="platform">
+      <h3>From our EMS platform</h3>
+      <ul class="hb">
+        <li><span class="pill have">Have</span>Energy split by end use, learned from the pilot</li>
+        <li><span class="pill have">Have</span>Electricity price and weather data</li>
+        <li><span class="pill build">Build</span>Public simulator page</li>
+        <li><span class="pill build">Build</span>Benchmarks per building type</li>
+        <li><span class="pill build">Build</span>Lead capture into our sales process</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>07</span></div>
+</section>
+
+<!-- Product 2 -->
+<section class="slide" id="s8" aria-label="Slide 8: Product 2, climate-neutrality audit and report">
+  <div class="head-row">
+    <div class="s-head">
+      <div class="eyebrow">Product 2 · convince</div>
+      <h2>Climate-neutrality and energy efficiency audit</h2>
+      <p class="question">“Where do the energy and CO₂ go, and what does the EU expect next?”</p>
+    </div>
+    <div class="rail" aria-label="Product 2 of 5"><span>1</span><i></i><span class="on">2</span><i></i><span>3</span><i></i><span>4</span><i class="gap"></i><span class="f-ai">5</span><i class="gap"></i><span class="f">+</span></div>
+  </div>
+  <div class="cols3">
+    <div class="col">
+      <h3>Scope</h3>
+      <ul class="dots">
+        <li>Site visit, building data, meters and utility bills</li>
+        <li>Energy balance by end use and kWh/m² per year</li>
+        <li>CO₂ footprint in standard reporting templates</li>
+        <li>What upcoming EU rules mean for this building</li>
+        <li>Renewable potential and matching EU funding options</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Deliverables</h3>
+      <ul class="dots">
+        <li>CO₂ report, often the client's first</li>
+        <li>Audit report with documented baseline</li>
+        <li>Roadmap of measures with rough costs</li>
+        <li>Shortlist of funding options</li>
+      </ul>
+      <div class="handoff"><b>Hands off to</b>Baseline and sensor plan go to Product 3. Funding shortlist starts the add-on.</div>
+    </div>
+    <div class="platform">
+      <h3>From our EMS platform</h3>
+      <ul class="hb">
+        <li><span class="pill have">Have</span>Energy breakdown by end use from metered data</li>
+        <li><span class="pill have">Have</span>Weather and electricity price history</li>
+        <li><span class="pill build">Build</span>Audit for buildings without sensors</li>
+        <li><span class="pill build">Build</span>CO₂ templates and emission factors</li>
+        <li><span class="pill build">Build</span>Report generator with EU outlook section</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>08</span></div>
+</section>
+
+<!-- Product 3 -->
+<section class="slide" id="s9" aria-label="Slide 9: Product 3, EMS and sensors in read mode">
+  <div class="head-row">
+    <div class="s-head">
+      <div class="eyebrow">Product 3 · implement</div>
+      <h2>EMS and sensors, read mode</h2>
+      <p class="question">“What is actually happening in my building, hour by hour?”</p>
+    </div>
+    <div class="rail" aria-label="Product 3 of 5"><span>1</span><i></i><span>2</span><i></i><span class="on">3</span><i></i><span>4</span><i class="gap"></i><span class="f-ai">5</span><i class="gap"></i><span class="f">+</span></div>
+  </div>
+  <div class="cols3">
+    <div class="col">
+      <h3>Scope</h3>
+      <ul class="dots">
+        <li>Install gateway, energy meters and room sensors</li>
+        <li>Connect existing plant: heat pumps, AHUs, valves</li>
+        <li>Read only: we watch and advise, nothing is switched</li>
+        <li>Track CO₂ and renewable share next to kWh and euros</li>
+        <li>While data builds up, we prepare EU funding applications</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Deliverables</h3>
+      <ul class="dots">
+        <li>Live EMS access for the client</li>
+        <li>Measured baseline replacing estimates</li>
+        <li>Alerts for faults and comfort</li>
+        <li>Monthly energy, CO₂ and renewables report</li>
+      </ul>
+      <div class="handoff"><b>Hands off to</b>Measured load profiles size the Product 4 design. Data backs the funding application.</div>
+    </div>
+    <div class="platform">
+      <h3>From our EMS platform</h3>
+      <ul class="hb">
+        <li><span class="pill have">Have</span>Modbus, BACnet, MQTT, M-Bus, Shelly, Airvalent</li>
+        <li><span class="pill have">Have</span>Dashboards, alerts, comfort feedback</li>
+        <li><span class="pill have">Have</span>Runs on-site, keeps working offline</li>
+        <li><span class="pill part">Open</span>Reading main utility electricity meters</li>
+        <li><span class="pill part">Partial</span>Plant schematic fixed to the pilot site</li>
+        <li><span class="pill build">Build</span>Standard sensor kit and install playbook</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>09</span></div>
+</section>
+
+<!-- Product 4 -->
+<section class="slide" id="s10" aria-label="Slide 10: Product 4, automation and renewables in write mode">
+  <div class="head-row">
+    <div class="s-head">
+      <div class="eyebrow">Product 4 · implement + subscribe</div>
+      <h2>Automation and renewables, write mode</h2>
+      <p class="question">“Run the building on as much renewable energy as possible, and prove it.”</p>
+    </div>
+    <div class="rail" aria-label="Product 4 of 5"><span>1</span><i></i><span>2</span><i></i><span>3</span><i></i><span class="on">4</span><i class="gap"></i><span class="f-ai">5</span><i class="gap"></i><span class="f">+</span></div>
+  </div>
+  <div class="cols3">
+    <div class="col">
+      <h3>Scope</h3>
+      <ul class="dots">
+        <li>Technical project and estimate from measured data</li>
+        <li>AHU automation: CO₂-led airflow, fan stages, schedules</li>
+        <li>Heat pump automation and integration with existing heating</li>
+        <li>Install renewables: PV, storage, solar thermal</li>
+        <li>Commissioning, then the EMS continues as a subscription</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Deliverables</h3>
+      <ul class="dots">
+        <li>Technical project and estimate</li>
+        <li>Installed, commissioned controls and renewables</li>
+        <li>Energy and CO₂ savings verified against the audit baseline</li>
+        <li>Ongoing EMS subscription</li>
+      </ul>
+      <div class="handoff"><b>Keeps running</b>The subscription keeps monitoring and proving savings after go-live.</div>
+    </div>
+    <div class="platform">
+      <h3>From our EMS platform</h3>
+      <ul class="hb">
+        <li><span class="pill part">Partial</span>AHU and heat pump commands with safety limits, not yet enabled</li>
+        <li><span class="pill have">Have</span>Price-driven hot water scheduling with verified savings</li>
+        <li><span class="pill part">Partial</span>Heating, cooling and heat pump logic, pilot only</li>
+        <li><span class="pill build">Build</span>PV and storage integration</li>
+        <li><span class="pill build">Build</span>Estimate and design templates</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Technical project and estimate placed here, as the meeting list did not name them separately</span><span>10</span></div>
+</section>
+
+<!-- Product 5 -->
+<section class="slide ai-slide" id="s11" aria-label="Slide 11: Product 5, AI, ML and LLM">
+  <div class="head-row">
+    <div class="s-head">
+      <div class="eyebrow">Product 5 · sold separately</div>
+      <h2>AI, ML and LLM</h2>
+      <p class="question">“Let the building plan ahead, and let me ask it questions.”</p>
+    </div>
+    <div class="rail" aria-label="Product 5 of 5"><span>1</span><i></i><span>2</span><i></i><span>3</span><i></i><span>4</span><i class="gap"></i><span class="f-ai on">5</span><i class="gap"></i><span class="f">+</span></div>
+  </div>
+  <div class="cols3">
+    <div class="col">
+      <h3>ML: optimise</h3>
+      <ul class="dots">
+        <li>Forecast heating and cooling demand from weather and calendar</li>
+        <li>Run loads in cheap, low-CO₂ hours</li>
+        <li>Spot comfort problems early</li>
+        <li>Predict heat pump faults</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>LLM: explain</h3>
+      <ul class="dots">
+        <li>Ask the building in plain language: “Why was March so expensive?”</li>
+        <li>Draft monthly energy and CO₂ reports</li>
+        <li>Help prepare funding application texts</li>
+      </ul>
+      <div class="handoff"><b>Needs</b>Several months of clean EMS data. The February deck put it at 3 to 6 months.</div>
+    </div>
+    <div class="platform">
+      <h3>From our EMS platform</h3>
+      <ul class="hb">
+        <li><span class="pill have">Have</span>ML service with efficiency analysis and forecasts</li>
+        <li><span class="pill have">Have</span>Long-term hourly signal store for training</li>
+        <li><span class="pill build">Build</span>Optimisation that sends commands, after write mode</li>
+        <li><span class="pill build">Build</span>Fault prediction</li>
+        <li><span class="pill build">Build</span>LLM assistant and report drafting</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>11</span></div>
+</section>
+
+<!-- Funding add-on -->
+<section class="slide fund-slide" id="s12" aria-label="Slide 12: EU funding support">
+  <div class="head-row">
+    <div class="s-head">
+      <div class="eyebrow">Add-on · on top of any product</div>
+      <h2>EU funding support</h2>
+      <p class="question">“Useful, but not the main reason to buy.” <span class="src">Product meeting</span></p>
+    </div>
+    <div class="rail" aria-label="EU funding add-on"><span>1</span><i></i><span>2</span><i></i><span>3</span><i></i><span>4</span><i class="gap"></i><span class="f-ai">5</span><i class="gap"></i><span class="f on">+</span></div>
+  </div>
+  <div class="cols3">
+    <div class="col">
+      <h3>Where it fits</h3>
+      <ul class="dots">
+        <li>Audit: find matching programmes and conditions</li>
+        <li>EMS read mode: prepare the application while data builds up</li>
+        <li>Write mode: the funded works</li>
+        <li>Subscription: post-grant reporting from EMS data</li>
+      </ul>
+    </div>
+    <div class="why">
+      <h3>Evidence it fits our products</h3>
+      <ul class="dots">
+        <li>A 2026 EKII call listed <em>automated control and energy monitoring systems</em> as eligible costs</li>
+        <li>The same call also covered heat recovery, renewables and energy storage</li>
+        <li>Calls score CO₂ reduction, which our EMS can measure and prove</li>
+      </ul>
+    </div>
+    <div class="platform">
+      <h3>Programmes to watch</h3>
+      <ul class="prog">
+        <li>EKII climate calls<span>Vides investīciju fonds</span></li>
+        <li>EU cohesion funds<span>administered by CFLA</span></li>
+        <li>ALTUM programmes<span>loans and grants</span></li>
+        <li>Modernisation Fund<span>energy systems and efficiency</span></li>
+        <li>LIFE Clean Energy Transition<span>2026 calls closed in September</span></li>
+      </ul>
+      <span class="note">Open dates for CO₂-focused calls are not known yet.</span>
+    </div>
+  </div>
+  <div class="slide-foot"><span>EKII call example: building GHG reduction, Interior Ministry and municipal police buildings, deadline 9 Jul 2026</span><span>12</span></div>
+</section>
+
+<!-- Naming -->
+<section class="slide" id="s13" aria-label="Slide 13: Naming with EU keywords">
+  <div class="s-head">
+    <div class="eyebrow">Naming · proposal</div>
+    <h2>Name the products in the words funders use</h2>
+  </div>
+  <div class="naming">
+    <div class="names">
+      <div class="nrow nhead"><span></span><span>English</span><span>Latvian</span></div>
+      <div class="nrow"><b>1</b><span>Energy &amp; CO₂ Savings Simulator</span><span>Enerģijas un CO₂ ietaupījuma simulators</span></div>
+      <div class="nrow"><b>2</b><span>Energy Efficiency &amp; GHG Emissions Audit</span><span>Energoefektivitātes un SEG emisiju audits</span></div>
+      <div class="nrow"><b>3</b><span>Energy Monitoring System</span><span>Enerģijas monitoringa sistēma</span></div>
+      <div class="nrow"><b>4</b><span>Automated Control &amp; Renewable Energy Integration</span><span>Automatizēta vadība un atjaunīgo energoresursu integrācija</span></div>
+      <div class="nrow"><b>5</b><span>AI Energy Optimisation</span><span>MI enerģijas optimizācija</span></div>
+      <div class="nrow"><b>+</b><span>EU Funding Support</span><span>ES fondu piesaiste</span></div>
+    </div>
+    <div class="kw">
+      <h3>Words the calls actually use</h3>
+      <div class="chips-light">
+        <span>energoefektivitāte</span><span>atjaunīgie energoresursi</span><span>siltumnīcefekta gāzu emisiju samazināšana</span><span>CO₂ emisiju samazinājums</span><span>automatizētas vadības un enerģijas monitoringa sistēmas</span><span>gandrīz nulles enerģijas ēka</span><span>decarbonisation</span><span>clean energy transition</span>
+      </div>
+      <p class="kw-note"><b>Watch out:</b> neither the EKII nor the LIFE call text uses “climate neutrality”. Keep it as our goal and story, and use “GHG emission reduction” and “energy efficiency” in product names.</p>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Sources: EKII call II (2026), EU LIFE 2026 call page · names are proposals for the team</span><span>13</span></div>
+</section>
+
+<!-- Have vs build -->
+<section class="slide" id="s14" aria-label="Slide 14: What we have versus what we need to build">
+  <div class="head-row">
+    <div class="s-head">
+      <div class="eyebrow">Platform readiness</div>
+      <h2>What we have, what we still build</h2>
+    </div>
+    <div class="legend">
+      <span><span class="pill have">Have</span>running in the pilot</span>
+      <span><span class="pill part">Partial</span>pilot only or open</span>
+      <span><span class="pill build">Build</span>not started</span>
+    </div>
+  </div>
+  <div class="matrix compact">
+    <div>
+      <div class="mgroup">
+        <h3><em>1</em> Web simulation</h3>
+        <div class="mrow"><span>Price, weather and end-use data to feed it</span><span class="pill have">Have</span></div>
+        <div class="mrow"><span>Public simulator page and benchmarks</span><span class="pill build">Build</span></div>
+      </div>
+      <div class="mgroup">
+        <h3><em>2</em> Audit &amp; report</h3>
+        <div class="mrow"><span>Energy breakdown by end use</span><span class="pill have">Have</span></div>
+        <div class="mrow"><span>Audit without sensors (bills, manual input)</span><span class="pill build">Build</span></div>
+        <div class="mrow"><span>CO₂ templates, emission factors, report</span><span class="pill build">Build</span></div>
+      </div>
+      <div class="mgroup">
+        <h3><em>3</em> EMS, read mode</h3>
+        <div class="mrow"><span>Multi-protocol ingestion, dashboards, alerts</span><span class="pill have">Have</span></div>
+        <div class="mrow"><span>Main utility meter reading</span><span class="pill part">Open</span></div>
+        <div class="mrow"><span>Hourly CO₂ and renewable share tracking</span><span class="pill build">Build</span></div>
+        <div class="mrow"><span>Standard sensor kit, schematic per site</span><span class="pill build">Build</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="mgroup">
+        <h3><em>4</em> Write mode</h3>
+        <div class="mrow"><span>AHU and heat pump commands (not yet enabled)</span><span class="pill part">Partial</span></div>
+        <div class="mrow"><span>Price-driven hot water scheduling</span><span class="pill have">Have</span></div>
+        <div class="mrow"><span>PV and storage integration</span><span class="pill build">Build</span></div>
+      </div>
+      <div class="mgroup">
+        <h3><em>5</em> AI, ML &amp; LLM</h3>
+        <div class="mrow"><span>ML forecasts and efficiency advice</span><span class="pill have">Have</span></div>
+        <div class="mrow"><span>Fault prediction, optimisation commands</span><span class="pill build">Build</span></div>
+        <div class="mrow"><span>LLM assistant and report drafting</span><span class="pill build">Build</span></div>
+      </div>
+      <div class="mgroup fund">
+        <h3><em>+</em> Funding</h3>
+        <div class="mrow"><span>Auditable savings from source data</span><span class="pill have">Have</span></div>
+        <div class="mrow"><span>Call tracking, application templates</span><span class="pill build">Build</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Status from the vatp-ipcei-web repo and the System Overview · dev team to confirm</span><span>14</span></div>
+</section>
+
+<!-- Data thread -->
+<section class="slide" id="s15" aria-label="Slide 15: One data thread through every product">
+  <div class="s-head">
+    <div class="eyebrow">Why the products belong together</div>
+    <h2>One data thread from first estimate to proven CO₂ cut</h2>
+  </div>
+  <div class="thread">
+    <div class="tnode"><span class="k">Product 1</span><span class="t">Estimated</span><p>A first figure from a few inputs on the website.</p></div>
+    <div class="tnode"><span class="k">Product 2</span><span class="t">Baseline</span><p>Real use by end use, with the CO₂ footprint.</p></div>
+    <div class="tnode"><span class="k">Product 3</span><span class="t">Measured</span><p>The baseline confirmed or corrected by hourly data.</p></div>
+    <div class="tnode"><span class="k">Product 4</span><span class="t">Verified</span><p>Savings proven against the same baseline, month after month.</p></div>
+  </div>
+  <div class="formula">
+    <pre><b>actual</b>   = Σ kWh in hour × price in that hour
+<b>baseline</b> = Σ kWh that day × mean price that day
+<b>saving</b>   = baseline − actual</pre>
+    <p>The pilot already works this way for hot water scheduling. Savings are calculated from source data on every read, so anyone can check them by hand. Swap the hourly price for the hourly grid emission factor and the same method proves CO₂ reduction, the figure funding calls score.</p>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>15</span></div>
+</section>
+
+<!-- Open questions -->
+<section class="slide" id="s16" aria-label="Slide 16: Open questions">
+  <div class="s-head">
+    <div class="eyebrow">For discussion</div>
+    <h2>Open questions</h2>
+  </div>
+  <div class="qgrid dense">
+    <div class="qitem"><span class="qn">Q1</span><div><b>What exactly do we sell outward?</b><span class="qtag">Meeting</span></div><p>The whole family under one name, or each product on its own?</p></div>
+    <div class="qitem"><span class="qn">Q2</span><div><b>Can we read main electricity meters?</b><span class="qtag">Meeting</span></div><p>The pilot reads Shelly sub-meters. Utility meters are still unconfirmed.</p></div>
+    <div class="qitem"><span class="qn">Q3</span><div><b>When do CO₂ programmes open?</b><span class="qtag">Meeting</span></div><p>CO₂ stays our goal either way, but timing shapes the funding add-on.</p></div>
+    <div class="qitem"><span class="qn">Q4</span><div><b>One shared platform or one per client?</b><span class="qtag">Platform</span></div><p>Variant A or B, still open since the February deck.</p></div>
+    <div class="qitem"><span class="qn">Q5</span><div><b>When do we switch write mode on?</b><span class="qtag">Product 4</span></div><p>Who approves changes on a client's plant, and who installs?</p></div>
+    <div class="qitem"><span class="qn">Q6</span><div><b>Who signs the audit?</b><span class="qtag">Product 2</span></div><p>A certified energy auditor in-house, or a partner?</p></div>
+    <div class="qitem"><span class="qn">Q7</span><div><b>What does the subscription include?</b><span class="qtag">Product 4</span></div><p>Monitoring and reports only, or also tuning, support and AI?</p></div>
+  </div>
+  <div class="slide-foot"><span>Q1 to Q3 raised at the product meeting, 13 Oct 2026</span><span>16</span></div>
+</section>
+
+<!-- Next steps -->
+<section class="slide" id="s17" aria-label="Slide 17: Next steps">
+  <div class="s-head">
+    <div class="eyebrow">After today</div>
+    <h2>Next steps</h2>
+  </div>
+  <div class="next">
+    <div class="ncol">
+      <h3>Decide</h3>
+      <div class="task"><span>Confirm the five products, the sales story and the funding add-on</span></div>
+      <div class="task"><span>Pick product names using EU call wording<small>Naming slide</small></span></div>
+      <div class="task"><span>Answer Q1 to Q3 from the meeting</span></div>
+    </div>
+    <div class="ncol">
+      <h3>Check</h3>
+      <div class="task"><span>Dev team confirms the have / build list</span></div>
+      <div class="task"><span>Track EKII, CFLA and ALTUM call calendars for CO₂-focused calls</span></div>
+      <div class="task"><span>Find a first client for the audit and EMS read mode</span></div>
+    </div>
+    <div class="ncol">
+      <h3>Prepare</h3>
+      <div class="task"><span>Concept for the web simulator</span></div>
+      <div class="task"><span>Audit and CO₂ report templates</span></div>
+      <div class="task"><span>Latvian version of this deck</span></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Climate neutrality · renewable energy · draft for team review</span><span>17</span></div>
+</section>
+
+
+</main>
+
+<nav class="nav" aria-label="Slide navigation">
+  <button type="button" id="prev" aria-label="Previous slide">← Prev</button>
+  <span class="count" id="count" aria-live="polite">1 / 17</span>
+  <button type="button" id="next" aria-label="Next slide">Next →</button>
+  <button type="button" id="fs" aria-label="Toggle full screen">⤢</button>
+</nav>
+
+<script>
+(function () {
+  // Cover heat map: illustrative office-type weekly load (weekdays occupied 07–18, weekend low).
+  var heat = document.getElementById('heat');
+  var days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  var html = '';
+  for (var d = 0; d < 7; d++) {
+    html += '<span class="d">' + days[d] + '</span>';
+    for (var h = 0; h < 24; h++) {
+      var weekend = d >= 5;
+      var base = 0.14 + 0.04 * Math.sin((h + d) * 1.7);
+      var v = base;
+      if (!weekend && h >= 6 && h <= 18) {
+        var ramp = h === 6 ? 0.55 : h === 7 ? 0.8 : 1;
+        v = 0.45 + 0.5 * ramp * (0.85 + 0.15 * Math.sin(h * 0.9 + d));
+        if (h === 12) v -= 0.08;
+      } else if (weekend && h >= 9 && h <= 15) {
+        v = 0.26 + 0.05 * Math.sin(h);
+      }
+      v = Math.max(0.06, Math.min(0.98, v));
+      html += '<span class="c" style="--v:' + v.toFixed(2) + '"></span>';
+    }
+  }
+  heat.innerHTML = html;
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var idx = 0;
+  var body = document.body;
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var count = document.getElementById('count');
+  var progress = document.getElementById('progress');
+
+  function mode() {
+    var w = window.innerWidth, h = window.innerHeight;
+    var deck = w >= 860 && h >= 480;
+    body.classList.toggle('deck', deck);
+    body.classList.toggle('flow', !deck);
+    if (deck) {
+      var s = Math.min((w - 32) / 1280, (h - 76) / 720);
+      document.documentElement.style.setProperty('--scale', s.toFixed(4));
+    }
+  }
+
+  function show(i, fromHash) {
+    idx = Math.max(0, Math.min(total - 1, i));
+    slides.forEach(function (s, n) {
+      var on = n === idx;
+      s.classList.toggle('active', on);
+      if (body.classList.contains('deck')) s.setAttribute('aria-hidden', on ? 'false' : 'true');
+      else s.removeAttribute('aria-hidden');
+    });
+    count.textContent = (idx + 1) + ' / ' + total;
+    prev.disabled = idx === 0;
+    next.disabled = idx === total - 1;
+    progress.style.width = ((idx + 1) / total * 100) + '%';
+    if (!fromHash) {
+      try { history.replaceState(null, '', '#s' + (idx + 1)); } catch (e) {}
+    }
+  }
+
+  function fromHash() {
+    var m = /^#s(\d+)$/.exec(location.hash || '');
+    return m ? parseInt(m[1], 10) - 1 : 0;
+  }
+
+  prev.addEventListener('click', function () { show(idx - 1); });
+  next.addEventListener('click', function () { show(idx + 1); });
+  document.getElementById('fs').addEventListener('click', function () {
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+    } catch (e) {}
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!body.classList.contains('deck')) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'ArrowDown') { e.preventDefault(); show(idx + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'ArrowUp') { e.preventDefault(); show(idx - 1); }
+    else if (k === 'Home') { e.preventDefault(); show(0); }
+    else if (k === 'End') { e.preventDefault(); show(total - 1); }
+  });
+
+  // Click right / left half of the slide to advance / go back (ignores clicks on controls).
+  document.getElementById('viewport').addEventListener('click', function (e) {
+    if (!body.classList.contains('deck')) return;
+    if (e.target.closest('button, a, pre')) return;
+    if (window.getSelection && String(window.getSelection())) return;
+    show(e.clientX > window.innerWidth / 2 ? idx + 1 : idx - 1);
+  });
+
+  window.addEventListener('resize', function () { mode(); show(idx, true); });
+  window.addEventListener('hashchange', function () { show(fromHash(), true); });
+
+  mode();
+  show(fromHash(), true);
+})();
+</script>
+</body>
+</html>
