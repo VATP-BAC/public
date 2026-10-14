@@ -1,0 +1,580 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Where the Energy Goes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Geist+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Layout: one idea per slide on a 1280×720 canvas, scaled to fit; generous margins, big serif statements,
+   small mono labels. Stacks as a scrolling page on narrow screens. Palette from the EMS platform (fern, ember, sand). */
+:root {
+  --bg: #f5ecdc;
+  --paper: #fffaf1;
+  --line: #e2d7c2;
+  --line-strong: #cfc2a6;
+  --ink: #1d1a13;
+  --ink-2: #5f5848;
+  --ink-3: #6e6655;
+  --fern: #2f5c4f;
+  --fern-soft: rgba(47, 92, 79, 0.10);
+  --ember: #c65b2b;
+  --ember-soft: rgba(198, 91, 43, 0.10);
+  --forest: #173d30;
+  --forest-2: #1f4a3b;
+  --on-forest: #eef3ec;
+  --on-forest-2: rgba(238, 243, 236, 0.66);
+  --mint: #9fd1bf;
+  --shade: rgba(60, 45, 20, 0.10);
+  --stage: #ebe1cd;
+
+  --f-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --f-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17130c; --paper: #221c13; --line: #362e20; --line-strong: #4a402d;
+    --ink: #f1e9da; --ink-2: #bfb5a0; --ink-3: #9c937e;
+    --fern: #6fae9c; --fern-soft: rgba(111, 174, 156, 0.14);
+    --ember: #e07a5f; --ember-soft: rgba(224, 122, 95, 0.14);
+    --forest: #10291f; --forest-2: #173528; --on-forest: #eef3ec; --on-forest-2: rgba(238, 243, 236, 0.64);
+    --mint: #8cc4b0; --shade: rgba(0, 0, 0, 0.4); --stage: #0f0c07;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17130c; --paper: #221c13; --line: #362e20; --line-strong: #4a402d;
+  --ink: #f1e9da; --ink-2: #bfb5a0; --ink-3: #9c937e;
+  --fern: #6fae9c; --fern-soft: rgba(111, 174, 156, 0.14);
+  --ember: #e07a5f; --ember-soft: rgba(224, 122, 95, 0.14);
+  --forest: #10291f; --forest-2: #173528; --on-forest: #eef3ec; --on-forest-2: rgba(238, 243, 236, 0.64);
+  --mint: #8cc4b0; --shade: rgba(0, 0, 0, 0.4); --stage: #0f0c07;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-sans); font-size: 18px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p { margin: 0; }
+h1, h2 { font-family: var(--f-display); font-weight: 400; letter-spacing: -0.015em; line-height: 1.04; text-wrap: balance; }
+em.serif { font-family: var(--f-display); font-style: italic; }
+:focus-visible { outline: 2px solid var(--fern); outline-offset: 2px; }
+
+/* ---------- Deck shell ---------- */
+.slide { position: relative; background: var(--bg); display: flex; flex-direction: column; padding: 64px 84px 44px; overflow: hidden; }
+body.deck { overflow: hidden; background: var(--stage); }
+body.deck .viewport { position: fixed; inset: 0; }
+body.deck .slide {
+  position: absolute; left: 50%; top: calc(50% - 24px); width: 1280px; height: 720px; border-radius: 16px;
+  transform: translate(-50%, -50%) scale(var(--scale, 1)); transform-origin: center;
+  box-shadow: 0 40px 90px -40px var(--shade);
+  visibility: hidden; opacity: 0; transition: opacity 260ms ease;
+}
+body.deck .slide.active { visibility: visible; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { body.deck .slide { transition: none; } }
+body.flow .viewport { display: grid; gap: 18px; padding: 16px; }
+body.flow .slide { border-radius: 14px; padding: 32px 22px 26px; border: 1px solid var(--line); }
+body.flow .nav, body.flow .progress { display: none; }
+
+.foot { margin-top: auto; display: flex; justify-content: space-between; gap: 16px; font: 500 11.5px var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.label { font: 500 12.5px var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fern); }
+.label.ember { color: var(--ember); }
+.body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 34px; min-height: 0; }
+
+.nav { position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; gap: 4px; align-items: center; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px; z-index: 5; box-shadow: 0 8px 24px -12px var(--shade); }
+.nav button { font: 500 13px var(--f-mono); color: var(--ink); background: none; border: 0; border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+.nav button:hover { background: var(--bg); }
+.nav button:disabled { opacity: 0.3; cursor: default; background: none; }
+.nav .count { font: 500 12.5px var(--f-mono); color: var(--ink-2); min-width: 58px; text-align: center; font-variant-numeric: tabular-nums; }
+.progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--fern); z-index: 6; transition: width 260ms ease; }
+
+/* ---------- Cover ---------- */
+.cover { background: var(--forest); color: var(--on-forest); }
+.cover .label { color: var(--mint); }
+.cover .foot { color: var(--on-forest-2); }
+.cover h1 { font-size: 112px; line-height: 0.95; max-width: 9ch; }
+.cover .sub { font-size: 22px; color: var(--on-forest-2); max-width: 40ch; }
+.cover-wrap { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; align-items: center; }
+.cover-left { display: grid; gap: 30px; }
+.meter { display: grid; gap: 14px; justify-items: stretch; }
+.meter-bar { display: flex; height: 84px; border-radius: 10px; overflow: hidden; gap: 3px; }
+.meter-bar span { background: color-mix(in srgb, var(--mint) var(--o), var(--forest-2)); }
+.meter-cap { display: flex; justify-content: space-between; font: 500 11.5px var(--f-mono); letter-spacing: 0.06em; color: var(--on-forest-2); text-transform: uppercase; }
+.meter-solid { height: 84px; border-radius: 10px; background: var(--forest-2); border: 1px dashed rgba(238,243,236,0.25); display: grid; place-items: center; font: 500 13px var(--f-mono); color: var(--on-forest-2); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ---------- Agenda ---------- */
+.qs { display: grid; gap: 0; border-top: 1px solid var(--line-strong); }
+.q { display: grid; grid-template-columns: 90px 1fr auto; align-items: baseline; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line-strong); }
+.q .n { font: 500 14px var(--f-mono); color: var(--fern); }
+.q h2 { font-size: 46px; }
+.q .s { font: 500 12px var(--f-mono); color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+.aside { font-size: 17px; color: var(--ink-2); max-width: 60ch; }
+
+/* ---------- Statement ---------- */
+.statement h2 { font-size: 76px; max-width: 18ch; }
+.statement .sub { font-size: 22px; color: var(--ink-2); max-width: 46ch; }
+.statement h2 em { font-style: italic; color: var(--fern); }
+
+/* ---------- Bill vs reality ---------- */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+.bill { display: grid; gap: 14px; }
+.bill .what { font: 500 12px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.bill .bar { height: 64px; border-radius: 10px; }
+.bill .one { background: var(--ink); opacity: 0.85; display: flex; align-items: center; padding: 0 18px; color: var(--bg); font: 500 14px var(--f-mono); }
+.bill .many { display: flex; gap: 3px; overflow: hidden; }
+.bill .many span { height: 100%; }
+.keys { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--ink-2); }
+.keys i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+.symptoms { display: grid; gap: 18px; }
+.sym { display: grid; grid-template-columns: 22px 1fr; gap: 12px; font-size: 19px; }
+.sym::before { content: ""; width: 10px; height: 10px; margin-top: 10px; border-radius: 50%; border: 2px solid var(--ember); }
+.note { font: 500 11.5px var(--f-mono); color: var(--ink-3); letter-spacing: 0.04em; }
+
+/* ---------- Evidence ---------- */
+.evidence { display: grid; grid-template-columns: 1.1fr 1fr; gap: 70px; align-items: center; }
+.big { font-family: var(--f-display); font-size: 220px; line-height: 0.85; color: var(--fern); letter-spacing: -0.03em; }
+.big small { font-size: 0.45em; }
+.ev-text { display: grid; gap: 18px; }
+.ev-text p { font-size: 22px; }
+.ev-second { border-top: 1px solid var(--line-strong); padding-top: 18px; display: grid; gap: 6px; }
+.ev-second b { font-family: var(--f-display); font-weight: 400; font-size: 34px; color: var(--ember); }
+.ev-second p { font-size: 17px; color: var(--ink-2); }
+
+/* ---------- ICP ---------- */
+.icp { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 22px; }
+.seg { border-top: 2px solid var(--line-strong); padding-top: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.seg.first { border-top-color: var(--fern); }
+.seg .when { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.seg.first .when { color: var(--fern); }
+.seg h3 { font-family: var(--f-display); font-weight: 400; font-size: 32px; line-height: 1.05; }
+.seg p { font-size: 16px; color: var(--ink-2); }
+.checks { display: grid; gap: 8px; margin-top: 6px; }
+.checks div { display: grid; grid-template-columns: 20px 1fr; gap: 8px; font-size: 15.5px; }
+.checks div::before { content: "✓"; color: var(--fern); font-weight: 600; }
+
+/* ---------- Product ---------- */
+.flow-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+.node { padding: 0 22px 0 0; display: grid; gap: 10px; align-content: start; position: relative; min-width: 0; }
+.node .dot { width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid var(--fern); display: grid; place-items: center; background: var(--bg); position: relative; z-index: 1; }
+.node .dot svg { width: 22px; height: 22px; stroke: var(--fern); fill: none; stroke-width: 1.6; }
+.node.later .dot { border-style: dashed; border-color: var(--ember); }
+.node.later .dot svg { stroke: var(--ember); }
+.flow-row::before { content: ""; position: absolute; left: 23px; right: 50%; top: 23px; height: 1.5px; background: var(--fern); }
+.flow-row::after { content: ""; position: absolute; left: 50%; right: 25%; top: 23px; border-top: 1.5px dashed var(--ember); }
+.node h3 { font-family: var(--f-display); font-weight: 400; font-size: 28px; line-height: 1.05; margin-top: 8px; }
+.node p { font-size: 16px; color: var(--ink-2); }
+.node .tag { font: 500 11px var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fern); }
+.node.later .tag { color: var(--ember); }
+
+/* ---------- Problem → solution ---------- */
+.ps { display: grid; grid-template-columns: 1fr 40px 1.15fr; border-top: 1px solid var(--line-strong); }
+.ps > div { padding: 15px 0; border-bottom: 1px solid var(--line); font-size: 18px; }
+.ps .arrow { color: var(--fern); font-family: var(--f-mono); text-align: center; }
+.ps .p { color: var(--ink-2); }
+.ps .hd { font: 500 11.5px var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); padding: 12px 0; border-bottom: 1px solid var(--line-strong); }
+
+/* ---------- Value proposition ---------- */
+.vp { font-family: var(--f-display); font-size: 50px; line-height: 1.12; max-width: 26ch; text-wrap: balance; }
+.vp em { color: var(--fern); }
+.triad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.tri { display: grid; gap: 8px; border-top: 1px solid var(--line-strong); padding-top: 16px; }
+.tri b { font-family: var(--f-display); font-weight: 400; font-size: 34px; color: var(--fern); }
+.tri p { font-size: 16.5px; color: var(--ink-2); }
+
+/* ---------- Pilot ---------- */
+.pilot { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); }
+.stat { padding: 26px 22px 24px 0; display: grid; gap: 6px; }
+.stat + .stat { padding-left: 22px; border-left: 1px solid var(--line); }
+.stat b { font-family: var(--f-display); font-weight: 400; font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 15.5px; color: var(--ink-2); }
+.pilot-note { display: flex; gap: 40px; flex-wrap: wrap; font-size: 17px; color: var(--ink-2); }
+.pilot-note div { display: grid; gap: 4px; max-width: 46ch; }
+.pilot-note b { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.pilot-note .warn b { color: var(--ember); }
+
+/* ---------- Sales path ---------- */
+.path { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 20px; }
+.stage { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px 24px 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.stage.main { background: var(--forest); border-color: var(--forest); color: var(--on-forest); }
+.stage .price { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.stage.main .price { color: var(--mint); }
+.stage h3 { font-family: var(--f-display); font-weight: 400; font-size: 32px; line-height: 1.05; }
+.stage p { font-size: 16px; color: var(--ink-2); }
+.stage.main p { color: var(--on-forest-2); }
+.stage .gets { font-size: 15px; border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 3px; }
+.stage.main .gets { border-top-color: rgba(238,243,236,0.16); }
+.stage .gets b { font: 500 11px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.stage.main .gets b { color: var(--on-forest-2); }
+.revenue { display: grid; grid-template-columns: auto 1fr; gap: 6px 24px; font-size: 16.5px; color: var(--ink-2); }
+.revenue b { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); padding-top: 3px; }
+
+/* ---------- First clients ---------- */
+.ladder { display: grid; gap: 0; border-top: 1px solid var(--line-strong); }
+.rung { display: grid; grid-template-columns: 120px 1fr 1.2fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.rung .when { font: 500 12px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.rung h3 { font-family: var(--f-display); font-weight: 400; font-size: 30px; line-height: 1.05; }
+.rung p { font-size: 16.5px; color: var(--ink-2); }
+.callout { display: flex; gap: 14px; align-items: baseline; background: var(--ember-soft); border-radius: 12px; padding: 14px 20px; font-size: 17px; }
+.callout b { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ember); white-space: nowrap; }
+
+/* ---------- Agree ---------- */
+.agree { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
+.ag { display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line-strong); align-items: baseline; }
+.ag .k { font: 500 12px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.ag p { font-size: 18px; }
+.closing { background: var(--forest); color: var(--on-forest); }
+.closing .label { color: var(--mint); }
+.closing .foot { color: var(--on-forest-2); }
+.closing .ag { border-top-color: rgba(238,243,236,0.18); }
+.closing .ag .k { color: var(--mint); }
+.closing h2 { font-size: 64px; }
+
+/* ---------- Flow (narrow) ---------- */
+body.flow .cover h1 { font-size: 58px; }
+body.flow .statement h2 { font-size: 40px; }
+body.flow .q h2 { font-size: 28px; }
+body.flow .q { grid-template-columns: 40px 1fr; }
+body.flow .q .s { grid-column: 2; }
+body.flow .big { font-size: 120px; }
+body.flow .vp { font-size: 30px; }
+body.flow .closing h2 { font-size: 38px; }
+body.flow .cover-wrap, body.flow .split, body.flow .evidence, body.flow .icp, body.flow .flow-row,
+body.flow .triad, body.flow .path, body.flow .agree, body.flow .pilot { grid-template-columns: 1fr; gap: 24px; }
+body.flow .flow-row::before, body.flow .flow-row::after { display: none; }
+body.flow .stat + .stat { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+body.flow .ps { grid-template-columns: 1fr; }
+body.flow .ps .arrow, body.flow .ps .hd { display: none; }
+body.flow .ps .s { padding-top: 0; color: var(--fern); }
+body.flow .rung, body.flow .ag { grid-template-columns: 1fr; gap: 6px; }
+</style>
+
+<div class="progress" id="progress" aria-hidden="true"></div>
+<main class="viewport" id="viewport">
+
+<!-- 1 Cover -->
+<section class="slide cover" aria-label="Cover">
+  <span class="label">Product proposal · October 2026</span>
+  <div class="cover-wrap">
+    <div class="cover-left">
+      <h1>Where the energy goes</h1>
+      <p class="sub">What we sell, what problem it solves, and how we plan to sell it.</p>
+    </div>
+    <div class="meter" aria-label="Illustration: one monthly bill versus a breakdown by machine">
+      <div class="meter-cap"><span>What the owner sees today</span></div>
+      <div class="meter-solid">One monthly bill</div>
+      <div class="meter-cap"><span>What we show</span></div>
+      <div class="meter-bar">
+        <span style="flex:30;--o:92%"></span><span style="flex:18;--o:74%"></span><span style="flex:16;--o:60%"></span><span style="flex:12;--o:48%"></span><span style="flex:10;--o:38%"></span><span style="flex:8;--o:30%"></span><span style="flex:6;--o:22%"></span>
+      </div>
+      <div class="meter-cap"><span>Per machine, per hour</span><span>Illustrative</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>Draft for discussion</span><span>01</span></div>
+</section>
+
+<!-- 2 Questions -->
+<section class="slide" aria-label="Three questions">
+  <span class="label">This deck answers three questions</span>
+  <div class="body">
+    <div class="qs">
+      <div class="q"><span class="n">01</span><h2>What problem does it solve?</h2><span class="s">Slides 3–5</span></div>
+      <div class="q"><span class="n">02</span><h2>What is the product?</h2><span class="s">Slides 6–9</span></div>
+      <div class="q"><span class="n">03</span><h2>How do we sell it?</h2><span class="s">Slides 10–12</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>Where the energy goes</span><span>02</span></div>
+</section>
+
+<!-- 3 Problem statement -->
+<section class="slide statement" aria-label="The problem">
+  <span class="label ember">01 · The problem</span>
+  <div class="body">
+    <h2>Building owners pay for energy they <em>cannot see</em>.</h2>
+    <p class="sub">They get one bill a month. They can't tell which machine uses what, when it runs for no reason, or whether last year's upgrade actually saved anything.</p>
+  </div>
+  <div class="foot"><span>Where the energy goes</span><span>03</span></div>
+</section>
+
+<!-- 4 Bill vs reality -->
+<section class="slide" aria-label="What that looks like">
+  <span class="label ember">01 · The problem</span>
+  <div class="body">
+    <div class="split">
+      <div class="bill">
+        <span class="what">What the owner gets</span>
+        <div class="bar one">Electricity · one total · once a month</div>
+        <span class="what" style="margin-top:22px">What is really behind it</span>
+        <div class="bar many">
+          <span style="flex:28;background:var(--fern)"></span>
+          <span style="flex:20;background:color-mix(in srgb,var(--fern) 70%,var(--bg))"></span>
+          <span style="flex:17;background:color-mix(in srgb,var(--fern) 45%,var(--bg))"></span>
+          <span style="flex:13;background:color-mix(in srgb,var(--fern) 28%,var(--bg))"></span>
+          <span style="flex:22;background:var(--ember)"></span>
+        </div>
+        <div class="keys">
+          <span><i style="background:var(--fern)"></i>Heating</span>
+          <span><i style="background:color-mix(in srgb,var(--fern) 70%,var(--bg))"></i>Cooling</span>
+          <span><i style="background:color-mix(in srgb,var(--fern) 45%,var(--bg))"></i>Ventilation</span>
+          <span><i style="background:color-mix(in srgb,var(--fern) 28%,var(--bg))"></i>Hot water</span>
+          <span><i style="background:var(--ember)"></i>Pumps and controls nobody looks at</span>
+        </div>
+        <span class="note">Split is illustrative. The pumps-and-controls share uses our pilot's 22% (next slide).</span>
+      </div>
+      <div class="symptoms">
+        <div class="sym"><span>Heating and ventilation run at night and on weekends because nobody changed the schedule.</span></div>
+        <div class="sym"><span>Heating and cooling fight each other in the same building.</span></div>
+        <div class="sym"><span>A broken valve or pump is found months later, through the bill or a complaint.</span></div>
+        <div class="sym"><span>Banks, customers and the EU ask for CO₂ figures that nobody has.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Where the energy goes</span><span>04</span></div>
+</section>
+
+<!-- 5 Evidence -->
+<section class="slide" aria-label="We saw it in our own building">
+  <span class="label ember">01 · The problem</span>
+  <div class="body">
+    <div class="evidence">
+      <div class="big">22<small>%</small></div>
+      <div class="ev-text">
+        <p>of the heat pumps' electricity in our own pilot building went to pumps and control circuits. Nobody could see it until we put a meter on each circuit.</p>
+        <div class="ev-second">
+          <b>99% of hours</b>
+          <p>The heat pump's own “cooling hours” counter ticked almost every hour, whether it was cooling or not. The building's built-in figures can't be trusted on their own.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Source: our pilot building at VATP, Ventspils, 14 to 30 days of metered data</span><span>05</span></div>
+</section>
+
+<!-- 6 Product statement -->
+<section class="slide statement" aria-label="The product">
+  <span class="label">02 · The product</span>
+  <div class="body">
+    <h2>Measure every machine. Then make it <em>use less</em>.</h2>
+    <p class="sub">A system that shows where a building's energy goes, machine by machine and hour by hour, and then runs the heating, ventilation and heat pumps to waste less of it.</p>
+  </div>
+  <div class="foot"><span>Where the energy goes</span><span>06</span></div>
+</section>
+
+<!-- 7 How it works -->
+<section class="slide" aria-label="How it works">
+  <span class="label">02 · The product</span>
+  <div class="body">
+    <h2 style="font-size:52px">How it works</h2>
+    <div class="flow-row">
+      <div class="node">
+        <span class="dot"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-4M8 6l-1-2M16 6l1-2"/></svg></span>
+        <span class="tag">Measure</span>
+        <h3>Meters and sensors</h3>
+        <p>On every heat pump, air handler, pump circuit and room. Most buildings already have equipment we can read.</p>
+      </div>
+      <div class="node">
+        <span class="dot"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="7" rx="1.5"/><rect x="5" y="13" width="14" height="7" rx="1.5"/><path d="M8 7.5h2M8 16.5h2"/></svg></span>
+        <span class="tag">Collect</span>
+        <h3>A server in the building</h3>
+        <p>Data stays on site and the system keeps working without internet.</p>
+      </div>
+      <div class="node">
+        <span class="dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 5-6"/></svg></span>
+        <span class="tag">Show</span>
+        <h3>Screens and reports</h3>
+        <p>kWh, euros and CO₂ per machine, per hour. Alerts when something breaks.</p>
+      </div>
+      <div class="node later">
+        <span class="dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></span>
+        <span class="tag">Control · next step</span>
+        <h3>Automatic control</h3>
+        <p>Schedules, setpoints and heat pumps run to use less, within safety limits.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Control is built in the pilot, not yet switched on</span><span>07</span></div>
+</section>
+
+<!-- 8 Problem -> solution -->
+<section class="slide" aria-label="Problem and answer">
+  <span class="label">02 · The product</span>
+  <div class="body">
+    <h2 style="font-size:52px">Each problem, and what we do about it</h2>
+    <div class="ps">
+      <div class="hd">The problem</div><div class="hd"></div><div class="hd">What we do</div>
+      <div class="p">One bill, no breakdown</div><div class="arrow">→</div><div class="s">A meter per machine: kWh and euros every hour</div>
+      <div class="p">Equipment runs when nobody needs it</div><div class="arrow">→</div><div class="s">Schedules and automatic control</div>
+      <div class="p">Faults found months later</div><div class="arrow">→</div><div class="s">An alert on the first unusual reading</div>
+      <div class="p">No CO₂ figures</div><div class="arrow">→</div><div class="s">CO₂ calculated from the same meter data</div>
+      <div class="p">Savings claims nobody can check</div><div class="arrow">→</div><div class="s">Savings calculated from raw readings that anyone can recheck</div>
+    </div>
+  </div>
+  <div class="foot"><span>Where the energy goes</span><span>08</span></div>
+</section>
+
+<!-- 9 Value proposition -->
+<section class="slide" aria-label="Value proposition">
+  <span class="label">02 · Value proposition · proposal</span>
+  <div class="body">
+    <p class="vp">We show owners exactly where their building's energy goes, <em>cut the waste automatically</em>, and prove the savings with their own meter data.</p>
+    <div class="triad">
+      <div class="tri"><b>See</b><p>Every machine's use, in euros and CO₂, by the hour.</p></div>
+      <div class="tri"><b>Save</b><p>Fix schedules, catch faults, then let the system run the plant.</p></div>
+      <div class="tri"><b>Prove</b><p>Savings anyone can check, for the owner, the bank or a funding body.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Where the energy goes</span><span>09</span></div>
+</section>
+
+<!-- 10 ICP -->
+<section class="slide" aria-label="Ideal client">
+  <span class="label">03 · Who we sell to · proposal</span>
+  <div class="body">
+    <h2 style="font-size:52px">Ideal client: a production site that runs its own plant</h2>
+    <div class="icp">
+      <div class="seg first">
+        <span class="when">Start here</span>
+        <h3>Production sites</h3>
+        <p>Factories and industrial buildings with their own heating, cooling and ventilation.</p>
+        <div class="checks">
+          <div>Energy is a cost line management watches</div>
+          <div>One person decides, often the owner or the plant manager</div>
+          <div>Their customers already ask for CO₂ figures</div>
+        </div>
+      </div>
+      <div class="seg">
+        <span class="when">Next</span>
+        <h3>New buildings</h3>
+        <p>Developers who can plan meters and control in from the start, at lower cost than adding them later.</p>
+      </div>
+      <div class="seg">
+        <span class="when">Later</span>
+        <h3>Apartment buildings</h3>
+        <p>Large need, but decisions go through residents, so sales take longer.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Client types from the 13 Oct meeting · order is a proposal</span><span>10</span></div>
+</section>
+
+<!-- 11 Sales path -->
+<section class="slide" aria-label="How we sell it">
+  <span class="label">03 · How we sell it</span>
+  <div class="body">
+    <h2 style="font-size:52px">Three steps from first click to monthly client</h2>
+    <div class="path">
+      <div class="stage">
+        <span class="price">Free</span>
+        <h3>Online estimate</h3>
+        <p>A simple calculator on our website. The owner enters the building and bills and sees what they could save.</p>
+        <div class="gets"><b>We get</b>A contact who is already interested</div>
+      </div>
+      <div class="stage">
+        <span class="price">One-off fee</span>
+        <h3>Audit and report</h3>
+        <p>A site visit and a clear report: where the energy goes, the CO₂ figure, what to fix first, and which grants fit.</p>
+        <div class="gets"><b>We get</b>Paid work and a ready list of next projects</div>
+      </div>
+      <div class="stage main">
+        <span class="price">Installation + monthly</span>
+        <h3>Install and subscribe</h3>
+        <p>Meters and the system go in. After a few months of data we switch on control. The client pays monthly to keep it running.</p>
+        <div class="gets"><b>We get</b>Recurring revenue and a reference site</div>
+      </div>
+    </div>
+    <div class="revenue"><b>Revenue</b><span>One-off: audits and installations. Recurring: the monthly subscription, plus optional AI tools later.</span></div>
+  </div>
+  <div class="foot"><span>Sales path agreed at the 13 Oct meeting</span><span>11</span></div>
+</section>
+
+<!-- 12 First clients -->
+<section class="slide" aria-label="Where we start">
+  <span class="label">03 · How we sell it</span>
+  <div class="body">
+    <h2 style="font-size:52px">Where we start</h2>
+    <div class="ladder">
+      <div class="rung"><span class="when">First</span><h3>Our own pilot as the showroom</h3><p>Prospects see a real building, real screens and real numbers in Ventspils.</p></div>
+      <div class="rung"><span class="when">Then</span><h3>Production sites around Ventspils</h3><p>Companies in the industrial area and the free port, close enough to visit and support.</p></div>
+      <div class="rung"><span class="when">After</span><h3>The rest of Latvia</h3><p>Once a few reference sites show results we can quote.</p></div>
+    </div>
+    <div class="callout"><b>EU funding</b><span>We help clients apply, and it can close a deal. It is not the reason anyone buys.</span></div>
+  </div>
+  <div class="foot"><span>Where the energy goes</span><span>12</span></div>
+</section>
+
+<!-- 13 Decide -->
+<section class="slide closing" aria-label="What we need to agree">
+  <span class="label">To agree today</span>
+  <div class="body">
+    <h2>Four sentences to agree on</h2>
+    <div class="agree">
+      <div class="ag"><span class="k">Problem</span><p>Building owners pay for energy they cannot see.</p></div>
+      <div class="ag"><span class="k">Solution</span><p>Measure every machine, show it clearly, then control the equipment to use less.</p></div>
+      <div class="ag"><span class="k">Value</span><p>See where it goes, cut the waste, and prove the savings with the client's own data.</p></div>
+      <div class="ag"><span class="k">Ideal client</span><p>Production sites with their own heating, cooling and ventilation, starting near Ventspils.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Where the energy goes · draft for discussion</span><span>13</span></div>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Slide navigation">
+  <button type="button" id="prev" aria-label="Previous slide">←</button>
+  <span class="count" id="count" aria-live="polite">1 / 13</span>
+  <button type="button" id="next" aria-label="Next slide">→</button>
+  <button type="button" id="fs" aria-label="Toggle full screen">⤢</button>
+</nav>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length, idx = 0, body = document.body;
+  var prev = document.getElementById('prev'), next = document.getElementById('next');
+  var count = document.getElementById('count'), progress = document.getElementById('progress');
+  slides.forEach(function (s, i) { s.id = 's' + (i + 1); });
+
+  function mode() {
+    var w = window.innerWidth, h = window.innerHeight, deck = w >= 860 && h >= 480;
+    body.classList.toggle('deck', deck); body.classList.toggle('flow', !deck);
+    if (deck) document.documentElement.style.setProperty('--scale', Math.min((w - 32) / 1280, (h - 72) / 720).toFixed(4));
+  }
+  function show(i, quiet) {
+    idx = Math.max(0, Math.min(total - 1, i));
+    slides.forEach(function (s, n) {
+      s.classList.toggle('active', n === idx);
+      if (body.classList.contains('deck')) s.setAttribute('aria-hidden', n === idx ? 'false' : 'true'); else s.removeAttribute('aria-hidden');
+    });
+    count.textContent = (idx + 1) + ' / ' + total;
+    prev.disabled = idx === 0; next.disabled = idx === total - 1;
+    progress.style.width = ((idx + 1) / total * 100) + '%';
+    if (!quiet) { try { history.replaceState(null, '', '#s' + (idx + 1)); } catch (e) {} }
+  }
+  function fromHash() { var m = /^#s(\d+)$/.exec(location.hash || ''); return m ? parseInt(m[1], 10) - 1 : 0; }
+
+  prev.addEventListener('click', function () { show(idx - 1); });
+  next.addEventListener('click', function () { show(idx + 1); });
+  document.getElementById('fs').addEventListener('click', function () {
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+    } catch (e) {}
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!body.classList.contains('deck')) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'ArrowDown') { e.preventDefault(); show(idx + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'ArrowUp') { e.preventDefault(); show(idx - 1); }
+    else if (k === 'Home') { e.preventDefault(); show(0); }
+    else if (k === 'End') { e.preventDefault(); show(total - 1); }
+  });
+  document.getElementById('viewport').addEventListener('click', function (e) {
+    if (!body.classList.contains('deck') || e.target.closest('button, a')) return;
+    if (window.getSelection && String(window.getSelection())) return;
+    show(e.clientX > window.innerWidth / 2 ? idx + 1 : idx - 1);
+  });
+  window.addEventListener('resize', function () { mode(); show(idx, true); });
+  window.addEventListener('hashchange', function () { show(fromHash(), true); });
+  mode(); show(fromHash(), true);
+})();
+</script>
+
+</body></html>
