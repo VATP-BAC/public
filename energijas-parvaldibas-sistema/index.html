@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Enerģijas pārvaldības sistēma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Geist+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Layout: one idea per slide on a 1280×720 canvas, scaled to fit; generous margins, big serif statements,
+   small mono labels. Stacks as a scrolling page on narrow screens. Palette from the EMS platform (fern, ember, sand). */
+:root {
+  --bg: #f5ecdc;
+  --paper: #fffaf1;
+  --line: #e2d7c2;
+  --line-strong: #cfc2a6;
+  --ink: #1d1a13;
+  --ink-2: #5f5848;
+  --ink-3: #6e6655;
+  --fern: #2f5c4f;
+  --fern-soft: rgba(47, 92, 79, 0.10);
+  --ember: #c65b2b;
+  --ember-soft: rgba(198, 91, 43, 0.10);
+  --forest: #173d30;
+  --forest-2: #1f4a3b;
+  --on-forest: #eef3ec;
+  --on-forest-2: rgba(238, 243, 236, 0.66);
+  --mint: #9fd1bf;
+  --shade: rgba(60, 45, 20, 0.10);
+  --stage: #ebe1cd;
+
+  --f-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --f-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17130c; --paper: #221c13; --line: #362e20; --line-strong: #4a402d;
+    --ink: #f1e9da; --ink-2: #bfb5a0; --ink-3: #9c937e;
+    --fern: #6fae9c; --fern-soft: rgba(111, 174, 156, 0.14);
+    --ember: #e07a5f; --ember-soft: rgba(224, 122, 95, 0.14);
+    --forest: #10291f; --forest-2: #173528; --on-forest: #eef3ec; --on-forest-2: rgba(238, 243, 236, 0.64);
+    --mint: #8cc4b0; --shade: rgba(0, 0, 0, 0.4); --stage: #0f0c07;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17130c; --paper: #221c13; --line: #362e20; --line-strong: #4a402d;
+  --ink: #f1e9da; --ink-2: #bfb5a0; --ink-3: #9c937e;
+  --fern: #6fae9c; --fern-soft: rgba(111, 174, 156, 0.14);
+  --ember: #e07a5f; --ember-soft: rgba(224, 122, 95, 0.14);
+  --forest: #10291f; --forest-2: #173528; --on-forest: #eef3ec; --on-forest-2: rgba(238, 243, 236, 0.64);
+  --mint: #8cc4b0; --shade: rgba(0, 0, 0, 0.4); --stage: #0f0c07;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-sans); font-size: 18px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p { margin: 0; }
+h1, h2 { font-family: var(--f-display); font-weight: 400; letter-spacing: -0.015em; line-height: 1.04; text-wrap: balance; }
+em.serif { font-family: var(--f-display); font-style: italic; }
+:focus-visible { outline: 2px solid var(--fern); outline-offset: 2px; }
+
+/* ---------- Deck shell ---------- */
+.slide { position: relative; background: var(--bg); display: flex; flex-direction: column; padding: 64px 84px 44px; overflow: hidden; }
+body.deck { overflow: hidden; background: var(--stage); }
+body.deck .viewport { position: fixed; inset: 0; }
+body.deck .slide {
+  position: absolute; left: 50%; top: calc(50% - 24px); width: 1280px; height: 720px; border-radius: 16px;
+  transform: translate(-50%, -50%) scale(var(--scale, 1)); transform-origin: center;
+  box-shadow: 0 40px 90px -40px var(--shade);
+  visibility: hidden; opacity: 0; transition: opacity 260ms ease;
+}
+body.deck .slide.active { visibility: visible; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { body.deck .slide { transition: none; } }
+body.flow .viewport { display: grid; gap: 18px; padding: 16px; }
+body.flow .slide { border-radius: 14px; padding: 32px 22px 26px; border: 1px solid var(--line); }
+body.flow .nav, body.flow .progress { display: none; }
+
+.foot { margin-top: auto; display: flex; justify-content: space-between; gap: 16px; font: 500 11.5px var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.label { font: 500 12.5px var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fern); }
+.label.ember { color: var(--ember); }
+.body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 34px; min-height: 0; }
+
+.nav { position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; gap: 4px; align-items: center; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px; z-index: 5; box-shadow: 0 8px 24px -12px var(--shade); }
+.nav button { font: 500 13px var(--f-mono); color: var(--ink); background: none; border: 0; border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+.nav button:hover { background: var(--bg); }
+.nav button:disabled { opacity: 0.3; cursor: default; background: none; }
+.nav .count { font: 500 12.5px var(--f-mono); color: var(--ink-2); min-width: 58px; text-align: center; font-variant-numeric: tabular-nums; }
+.progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--fern); z-index: 6; transition: width 260ms ease; }
+
+/* ---------- Cover ---------- */
+.cover { background: var(--forest); color: var(--on-forest); }
+.cover .label { color: var(--mint); }
+.cover .foot { color: var(--on-forest-2); }
+.cover h1 { font-size: 112px; line-height: 0.95; max-width: 9ch; }
+.cover .sub { font-size: 22px; color: var(--on-forest-2); max-width: 40ch; }
+.cover-wrap { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; align-items: center; }
+.cover-left { display: grid; gap: 30px; }
+.meter { display: grid; gap: 14px; justify-items: stretch; }
+.meter-bar { display: flex; height: 84px; border-radius: 10px; overflow: hidden; gap: 3px; }
+.meter-bar span { background: color-mix(in srgb, var(--mint) var(--o), var(--forest-2)); }
+.meter-cap { display: flex; justify-content: space-between; font: 500 11.5px var(--f-mono); letter-spacing: 0.06em; color: var(--on-forest-2); text-transform: uppercase; }
+.meter-solid { height: 84px; border-radius: 10px; background: var(--forest-2); border: 1px dashed rgba(238,243,236,0.25); display: grid; place-items: center; font: 500 13px var(--f-mono); color: var(--on-forest-2); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ---------- Agenda ---------- */
+.qs { display: grid; gap: 0; border-top: 1px solid var(--line-strong); }
+.q { display: grid; grid-template-columns: 90px 1fr auto; align-items: baseline; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line-strong); }
+.q .n { font: 500 14px var(--f-mono); color: var(--fern); }
+.q h2 { font-size: 46px; }
+.q .s { font: 500 12px var(--f-mono); color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+.aside { font-size: 17px; color: var(--ink-2); max-width: 60ch; }
+
+/* ---------- Statement ---------- */
+.statement h2 { font-size: 76px; max-width: 18ch; }
+.statement .sub { font-size: 22px; color: var(--ink-2); max-width: 46ch; }
+.statement h2 em { font-style: italic; color: var(--fern); }
+
+/* ---------- Bill vs reality ---------- */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+.bill { display: grid; gap: 14px; }
+.bill .what { font: 500 12px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.bill .bar { height: 64px; border-radius: 10px; }
+.bill .one { background: var(--ink); opacity: 0.85; display: flex; align-items: center; padding: 0 18px; color: var(--bg); font: 500 14px var(--f-mono); }
+.bill .many { display: flex; gap: 3px; overflow: hidden; }
+.bill .many span { height: 100%; }
+.keys { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--ink-2); }
+.keys i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+.symptoms { display: grid; gap: 18px; }
+.sym { display: grid; grid-template-columns: 22px 1fr; gap: 12px; font-size: 19px; }
+.sym::before { content: ""; width: 10px; height: 10px; margin-top: 10px; border-radius: 50%; border: 2px solid var(--ember); }
+.note { font: 500 11.5px var(--f-mono); color: var(--ink-3); letter-spacing: 0.04em; }
+
+/* ---------- Evidence ---------- */
+.evidence { display: grid; grid-template-columns: 1.1fr 1fr; gap: 70px; align-items: center; }
+.big { font-family: var(--f-display); font-size: 220px; line-height: 0.85; color: var(--fern); letter-spacing: -0.03em; }
+.big small { font-size: 0.45em; }
+.ev-text { display: grid; gap: 18px; }
+.ev-text p { font-size: 22px; }
+.ev-second { border-top: 1px solid var(--line-strong); padding-top: 18px; display: grid; gap: 6px; }
+.ev-second b { font-family: var(--f-display); font-weight: 400; font-size: 34px; color: var(--ember); }
+.ev-second p { font-size: 17px; color: var(--ink-2); }
+
+/* ---------- ICP ---------- */
+.icp { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 22px; }
+.seg { border-top: 2px solid var(--line-strong); padding-top: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.seg.first { border-top-color: var(--fern); }
+.seg .when { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.seg.first .when { color: var(--fern); }
+.seg h3 { font-family: var(--f-display); font-weight: 400; font-size: 32px; line-height: 1.05; }
+.seg p { font-size: 16px; color: var(--ink-2); }
+.checks { display: grid; gap: 8px; margin-top: 6px; }
+.checks div { display: grid; grid-template-columns: 20px 1fr; gap: 8px; font-size: 15.5px; }
+.checks div::before { content: "✓"; color: var(--fern); font-weight: 600; }
+
+/* ---------- Product ---------- */
+.flow-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+.node { padding: 0 22px 0 0; display: grid; gap: 10px; align-content: start; position: relative; min-width: 0; }
+.node .dot { width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid var(--fern); display: grid; place-items: center; background: var(--bg); position: relative; z-index: 1; }
+.node .dot svg { width: 22px; height: 22px; stroke: var(--fern); fill: none; stroke-width: 1.6; }
+.node.later .dot { border-style: dashed; border-color: var(--ember); }
+.node.later .dot svg { stroke: var(--ember); }
+.flow-row::before { content: ""; position: absolute; left: 23px; right: 50%; top: 23px; height: 1.5px; background: var(--fern); }
+.flow-row::after { content: ""; position: absolute; left: 50%; right: 25%; top: 23px; border-top: 1.5px dashed var(--ember); }
+.node h3 { font-family: var(--f-display); font-weight: 400; font-size: 28px; line-height: 1.05; margin-top: 8px; }
+.node p { font-size: 16px; color: var(--ink-2); }
+.node .tag { font: 500 11px var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fern); }
+.node.later .tag { color: var(--ember); }
+
+/* ---------- Problem → solution ---------- */
+.ps { display: grid; grid-template-columns: 1fr 40px 1.15fr; border-top: 1px solid var(--line-strong); }
+.ps > div { padding: 15px 0; border-bottom: 1px solid var(--line); font-size: 18px; }
+.ps .arrow { color: var(--fern); font-family: var(--f-mono); text-align: center; }
+.ps .p { color: var(--ink-2); }
+.ps .hd { font: 500 11.5px var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); padding: 12px 0; border-bottom: 1px solid var(--line-strong); }
+
+/* ---------- Value proposition ---------- */
+.vp { font-family: var(--f-display); font-size: 50px; line-height: 1.12; max-width: 26ch; text-wrap: balance; }
+.vp em { color: var(--fern); }
+.triad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.tri { display: grid; gap: 8px; border-top: 1px solid var(--line-strong); padding-top: 16px; }
+.tri b { font-family: var(--f-display); font-weight: 400; font-size: 34px; color: var(--fern); }
+.tri p { font-size: 16.5px; color: var(--ink-2); }
+
+/* ---------- Pilot ---------- */
+.pilot { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); }
+.stat { padding: 26px 22px 24px 0; display: grid; gap: 6px; }
+.stat + .stat { padding-left: 22px; border-left: 1px solid var(--line); }
+.stat b { font-family: var(--f-display); font-weight: 400; font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 15.5px; color: var(--ink-2); }
+.pilot-note { display: flex; gap: 40px; flex-wrap: wrap; font-size: 17px; color: var(--ink-2); }
+.pilot-note div { display: grid; gap: 4px; max-width: 46ch; }
+.pilot-note b { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.pilot-note .warn b { color: var(--ember); }
+
+/* ---------- Sales path ---------- */
+.path { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 20px; }
+.stage { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px 24px 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.stage.main { background: var(--forest); border-color: var(--forest); color: var(--on-forest); }
+.stage .price { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.stage.main .price { color: var(--mint); }
+.stage h3 { font-family: var(--f-display); font-weight: 400; font-size: 32px; line-height: 1.05; }
+.stage p { font-size: 16px; color: var(--ink-2); }
+.stage.main p { color: var(--on-forest-2); }
+.stage .gets { font-size: 15px; border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 3px; }
+.stage.main .gets { border-top-color: rgba(238,243,236,0.16); }
+.stage .gets b { font: 500 11px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.stage.main .gets b { color: var(--on-forest-2); }
+.revenue { display: grid; grid-template-columns: auto 1fr; gap: 6px 24px; font-size: 16.5px; color: var(--ink-2); }
+.revenue b { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); padding-top: 3px; }
+
+/* ---------- First clients ---------- */
+.ladder { display: grid; gap: 0; border-top: 1px solid var(--line-strong); }
+.rung { display: grid; grid-template-columns: 120px 1fr 1.2fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.rung .when { font: 500 12px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.rung h3 { font-family: var(--f-display); font-weight: 400; font-size: 30px; line-height: 1.05; }
+.rung p { font-size: 16.5px; color: var(--ink-2); }
+.callout { display: flex; gap: 14px; align-items: baseline; background: var(--ember-soft); border-radius: 12px; padding: 14px 20px; font-size: 17px; }
+.callout b { font: 500 11.5px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ember); white-space: nowrap; }
+
+/* ---------- Agree ---------- */
+.agree { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
+.ag { display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line-strong); align-items: baseline; }
+.ag .k { font: 500 12px var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fern); }
+.ag p { font-size: 18px; }
+.closing { background: var(--forest); color: var(--on-forest); }
+.closing .label { color: var(--mint); }
+.closing .foot { color: var(--on-forest-2); }
+.closing .ag { border-top-color: rgba(238,243,236,0.18); }
+.closing .ag .k { color: var(--mint); }
+.closing h2 { font-size: 64px; }
+
+/* ---------- Flow (narrow) ---------- */
+body.flow .cover h1 { font-size: 58px; }
+body.flow .statement h2 { font-size: 40px; }
+body.flow .q h2 { font-size: 28px; }
+body.flow .q { grid-template-columns: 40px 1fr; }
+body.flow .q .s { grid-column: 2; }
+body.flow .big { font-size: 120px; }
+body.flow .vp { font-size: 30px; }
+body.flow .closing h2 { font-size: 38px; }
+body.flow .cover-wrap, body.flow .split, body.flow .evidence, body.flow .icp, body.flow .flow-row,
+body.flow .triad, body.flow .path, body.flow .agree, body.flow .pilot { grid-template-columns: 1fr; gap: 24px; }
+body.flow .flow-row::before, body.flow .flow-row::after { display: none; }
+body.flow .stat + .stat { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+body.flow .ps { grid-template-columns: 1fr; }
+body.flow .ps .arrow, body.flow .ps .hd { display: none; }
+body.flow .ps .s { padding-top: 0; color: var(--fern); }
+body.flow .rung, body.flow .ag { grid-template-columns: 1fr; gap: 6px; }
+
+/* ---------- LV version additions ---------- */
+.cover h1 { font-size: 92px; max-width: 11ch; }
+.mv { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.mv-item { display: grid; gap: 18px; border-top: 2px solid var(--fern); padding-top: 22px; align-content: start; }
+.mv-item + .mv-item { border-top-color: var(--ember); }
+.mv-item .k { font: 500 13px var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fern); }
+.mv-item + .mv-item .k { color: var(--ember); }
+.mv-item p { font-family: var(--f-display); font-size: 44px; line-height: 1.12; text-wrap: balance; }
+.parts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.part { border-top: 2px solid var(--fern); padding-top: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.part .n { font: 500 13px var(--f-mono); color: var(--fern); }
+.part h3 { font-family: var(--f-display); font-weight: 400; font-size: 25px; line-height: 1.08; }
+.part p { font-size: 15px; color: var(--ink-2); }
+.part.sep { border-top: 2px dashed var(--ember); }
+.part.sep .n { color: var(--ember); }
+.closing .agree { grid-template-columns: 1fr; }
+.closing .ag { padding: 13px 0; }
+body.flow .mv, body.flow .parts { grid-template-columns: 1fr; gap: 24px; }
+body.flow .mv-item p { font-size: 28px; }
+body.flow .cover h1 { font-size: 48px; }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<main class="viewport" id="viewport">
+
+<!-- 1 Vāks -->
+<section class="slide cover" aria-label="Vāks">
+  <span class="label">Produkta piedāvājums · 2026. gada oktobris</span>
+  <div class="cover-wrap">
+    <div class="cover-left">
+      <h1>Enerģijas pārvaldības sistēma</h1>
+      <p class="sub">Kas ir mūsu produkts, kādu problēmu tas risina un kā mēs to pārdosim.</p>
+    </div>
+    <div class="meter" aria-label="Ilustrācija: viens mēneša rēķins pret patēriņu pa iekārtām">
+      <div class="meter-cap"><span>Ko īpašnieks redz šodien</span></div>
+      <div class="meter-solid">Viens rēķins mēnesī</div>
+      <div class="meter-cap"><span>Ko parāda mūsu sistēma</span></div>
+      <div class="meter-bar">
+        <span style="flex:30;--o:92%"></span><span style="flex:18;--o:74%"></span><span style="flex:16;--o:60%"></span><span style="flex:12;--o:48%"></span><span style="flex:10;--o:38%"></span><span style="flex:8;--o:30%"></span><span style="flex:6;--o:22%"></span>
+      </div>
+      <div class="meter-cap"><span>Pa iekārtām, pa stundām</span><span>Ilustratīvi</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>Diskusijai</span><span>01</span></div>
+</section>
+
+<!-- 2 Misija un vīzija -->
+<section class="slide" aria-label="Misija un vīzija">
+  <span class="label">Kāpēc mēs to darām</span>
+  <div class="body">
+    <div class="mv">
+      <div class="mv-item">
+        <span class="k">Misija</span>
+        <p>Palīdzēt ēku īpašniekiem redzēt, kur aiziet viņu enerģija, un patērēt to mazāk.</p>
+      </div>
+      <div class="mv-item">
+        <span class="k">Vīzija</span>
+        <p>Ēkas, kas pašas pārvalda savu enerģiju un ar datiem pierāda ceļu uz klimatneitralitāti.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma</span><span>02</span></div>
+</section>
+
+<!-- 3 Jautājumi -->
+<section class="slide" aria-label="Trīs jautājumi">
+  <span class="label">Šī prezentācija atbild uz trim jautājumiem</span>
+  <div class="body">
+    <div class="qs">
+      <div class="q"><span class="n">01</span><h2>Kādu problēmu tas risina?</h2><span class="s">4.–5. slaids</span></div>
+      <div class="q"><span class="n">02</span><h2>Kas ir produkts?</h2><span class="s">6.–9. slaids</span></div>
+      <div class="q"><span class="n">03</span><h2>Kā mēs to pārdosim?</h2><span class="s">10.–11. slaids</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma</span><span>03</span></div>
+</section>
+
+<!-- 4 Problēma -->
+<section class="slide statement" aria-label="Problēma">
+  <span class="label ember">01 · Problēma</span>
+  <div class="body">
+    <h2>Ēku īpašnieki <em>neredz</em>, kas notiek ar enerģiju viņu ēkā.</h2>
+    <p class="sub">Viņi saņem vienu rēķinu mēnesī. Nav redzams, kura iekārta cik patērē, kad tā strādā lieki un vai ieguldījumi energoefektivitātē tiešām atmaksājas.</p>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma</span><span>04</span></div>
+</section>
+
+<!-- 5 Kā tas izskatās -->
+<section class="slide" aria-label="Kā tas izskatās">
+  <span class="label ember">01 · Problēma</span>
+  <div class="body">
+    <div class="split">
+      <div class="bill">
+        <span class="what">Ko īpašnieks saņem</span>
+        <div class="bar one">Elektrība · viena summa · reizi mēnesī</div>
+        <span class="what" style="margin-top:22px">Kas patiesībā ir aiz tās</span>
+        <div class="bar many">
+          <span style="flex:28;background:var(--fern)"></span>
+          <span style="flex:20;background:color-mix(in srgb,var(--fern) 70%,var(--bg))"></span>
+          <span style="flex:17;background:color-mix(in srgb,var(--fern) 45%,var(--bg))"></span>
+          <span style="flex:13;background:color-mix(in srgb,var(--fern) 28%,var(--bg))"></span>
+          <span style="flex:16;background:var(--ember)"></span>
+        </div>
+        <div class="keys">
+          <span><i style="background:var(--fern)"></i>Apkure</span>
+          <span><i style="background:color-mix(in srgb,var(--fern) 70%,var(--bg))"></i>Dzesēšana</span>
+          <span><i style="background:color-mix(in srgb,var(--fern) 45%,var(--bg))"></i>Ventilācija</span>
+          <span><i style="background:color-mix(in srgb,var(--fern) 28%,var(--bg))"></i>Karstais ūdens</span>
+          <span><i style="background:var(--ember)"></i>Sūkņi un vadība, ko neviens neredz</span>
+        </div>
+        <span class="note">Sadalījums ir ilustratīvs.</span>
+      </div>
+      <div class="symptoms">
+        <div class="sym"><span>Apkure un ventilācija strādā naktīs un brīvdienās, jo grafiks nav mainīts.</span></div>
+        <div class="sym"><span>Apkure un dzesēšana vienā ēkā strādā viena pret otru.</span></div>
+        <div class="sym"><span>Bojātu vārstu vai sūkni pamana tikai pēc mēnešiem, pēc rēķina vai sūdzības.</span></div>
+        <div class="sym"><span>Klienti, bankas un ES prasa CO₂ datus, kuru nav.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma</span><span>05</span></div>
+</section>
+
+<!-- 6 Produkts -->
+<section class="slide statement" aria-label="Produkts">
+  <span class="label">02 · Produkts</span>
+  <div class="body">
+    <h2>Enerģijas pārvaldības sistēma</h2>
+    <p class="sub">Sistēma, kas mēra ēkas enerģijas patēriņu pa iekārtām, parāda, kur tā aiziet, un vada iekārtas tā, lai tās patērētu mazāk. Tā aptver visu ceļu: no pirmā aprēķina līdz automātiskai vadībai.</p>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma</span><span>06</span></div>
+</section>
+
+<!-- 7 Sastāvdaļas -->
+<section class="slide" aria-label="No kā sastāv sistēma">
+  <span class="label">02 · Produkts</span>
+  <div class="body">
+    <h2 style="font-size:50px">No kā sastāv enerģijas pārvaldības sistēma</h2>
+    <div class="parts">
+      <div class="part">
+        <span class="n">1</span>
+        <h3>Tīmekļa simulācija</h3>
+        <p>Mūsu mājaslapā, ārpus sistēmas. Īpašnieks ievada ēkas datus un redz iespējamo ietaupījumu.</p>
+      </div>
+      <div class="part">
+        <span class="n">2</span>
+        <h3>Audits un ziņojums</h3>
+        <p>Klimatneitralitāte un energoefektivitāte, CO₂ aprēķins, gaidāmās ES prasības un fondu iespējas.</p>
+      </div>
+      <div class="part">
+        <span class="n">3</span>
+        <h3>Sensori un uzraudzība</h3>
+        <p>Sistēma tikai nolasa datus. Kamēr tie krājas, strādājam pie ES fondu piesaistes.</p>
+      </div>
+      <div class="part">
+        <span class="n">4</span>
+        <h3>Vadība un atjaunīgā enerģija</h3>
+        <p>Ventilācijas un siltumsūkņu automatizācija, atjaunīgo energoresursu sistēmu uzstādīšana.</p>
+      </div>
+      <div class="part sep">
+        <span class="n">+</span>
+        <h3>MI, ML un LLM</h3>
+        <p>Atsevišķs produkts: prognozes, optimizācija un asistents, kas balstās uz sistēmas datiem.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Produkta sastāvs, par kuru vienojāmies 13. oktobrī</span><span>07</span></div>
+</section>
+
+<!-- 8 Problēma → risinājums -->
+<section class="slide" aria-label="Problēma un risinājums">
+  <span class="label">02 · Produkts</span>
+  <div class="body">
+    <h2 style="font-size:50px">Katra problēma un mūsu atbilde</h2>
+    <div class="ps">
+      <div class="hd">Problēma</div><div class="hd"></div><div class="hd">Ko dara sistēma</div>
+      <div class="p">Viens rēķins, bez sadalījuma</div><div class="arrow">→</div><div class="s">Skaitītājs katrai iekārtai: kWh un eiro katru stundu</div>
+      <div class="p">Iekārtas strādā, kad tās nevienam nevajag</div><div class="arrow">→</div><div class="s">Grafiki un automātiska vadība</div>
+      <div class="p">Bojājumus pamana pēc mēnešiem</div><div class="arrow">→</div><div class="s">Brīdinājums jau pie pirmā neparastā rādījuma</div>
+      <div class="p">Nav CO₂ datu</div><div class="arrow">→</div><div class="s">CO₂ aprēķins no tiem pašiem skaitītāju datiem</div>
+      <div class="p">Ietaupījumu neviens nevar pārbaudīt</div><div class="arrow">→</div><div class="s">Ietaupījums aprēķināts no reāliem rādījumiem, ko var pārbaudīt jebkurš</div>
+    </div>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma</span><span>08</span></div>
+</section>
+
+<!-- 9 Vērtības piedāvājums -->
+<section class="slide" aria-label="Vērtības piedāvājums">
+  <span class="label">02 · Vērtības piedāvājums</span>
+  <div class="body">
+    <p class="vp">Mēs parādām, kur aiziet ēkas enerģija, <em>automātiski samazinām lieko patēriņu</em> un pierādām ietaupījumu ar pašu klienta datiem.</p>
+    <div class="triad">
+      <div class="tri"><b>Redzēt</b><p>Katras iekārtas patēriņš eiro un CO₂, pa stundām.</p></div>
+      <div class="tri"><b>Ietaupīt</b><p>Sakārtot grafikus, atrast bojājumus, tad ļaut sistēmai vadīt iekārtas.</p></div>
+      <div class="tri"><b>Pierādīt</b><p>Ietaupījums, ko var pārbaudīt īpašnieks, banka vai fonds.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma</span><span>09</span></div>
+</section>
+
+<!-- 10 ICP -->
+<section class="slide" aria-label="Ideālais klients">
+  <span class="label">03 · Ideālais klients</span>
+  <div class="body">
+    <h2 style="font-size:50px">Ražotne, kas pati uztur savas iekārtas</h2>
+    <div class="icp">
+      <div class="seg first">
+        <span class="when">Sākam šeit</span>
+        <h3>Ražotnes</h3>
+        <p>Ražošanas ēkas ar savu apkuri, dzesēšanu un ventilāciju.</p>
+        <div class="checks">
+          <div>Enerģija ir izmaksu pozīcija, ko vadība seko</div>
+          <div>Lēmumu pieņem viens cilvēks: īpašnieks vai ražotnes vadītājs</div>
+          <div>Klienti vai banka jau prasa CO₂ datus</div>
+        </div>
+      </div>
+      <div class="seg">
+        <span class="when">Tālāk</span>
+        <h3>Jaunas ēkas</h3>
+        <p>Attīstītāji var ieplānot skaitītājus un vadību jau projektā, lētāk nekā pievienot vēlāk.</p>
+      </div>
+      <div class="seg">
+        <span class="when">Vēlāk</span>
+        <h3>Daudzdzīvokļu mājas</h3>
+        <p>Liela vajadzība, bet lēmumi iet caur iedzīvotājiem, tāpēc pārdošana ir lēnāka.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Klientu grupas no 13. oktobra sanāksmes</span><span>10</span></div>
+</section>
+
+<!-- 11 Pārdošana -->
+<section class="slide" aria-label="Kā mēs pārdosim">
+  <span class="label">03 · Kā mēs pārdosim</span>
+  <div class="body">
+    <h2 style="font-size:50px">Trīs soļi līdz klientam ar abonementu</h2>
+    <div class="path">
+      <div class="stage">
+        <span class="price">Bez maksas</span>
+        <h3>Tīmekļa simulācija</h3>
+        <p>Vienkāršs aprēķins mūsu mājaslapā. Īpašnieks ievada ēku un rēķinus un redz iespējamo ietaupījumu.</p>
+        <div class="gets"><b>Mēs iegūstam</b>Kontaktu, kurš jau ir ieinteresēts</div>
+      </div>
+      <div class="stage">
+        <span class="price">Vienreizēja maksa</span>
+        <h3>Atskaite un audits</h3>
+        <p>Vizīte uz vietas un skaidrs ziņojums: kur aiziet enerģija, CO₂, ko labot vispirms un kuri fondi der.</p>
+        <div class="gets"><b>Mēs iegūstam</b>Apmaksātu darbu un nākamo projektu sarakstu</div>
+      </div>
+      <div class="stage main">
+        <span class="price">Ieviešana + ikmēneša maksa</span>
+        <h3>Ieviešana un abonements</h3>
+        <p>Uzstādām sensorus un sistēmu. Kad ir dati, ieslēdzam vadību. Klients maksā katru mēnesi par sistēmas darbību.</p>
+        <div class="gets"><b>Mēs iegūstam</b>Regulārus ienākumus un atsauksmes objektu</div>
+      </div>
+    </div>
+    <div class="callout"><b>ES fondi</b><span>Palīdzam klientam pieteikties, un tas var palīdzēt noslēgt darījumu. Taču tas nav galvenais iemesls pirkt.</span></div>
+  </div>
+  <div class="foot"><span>Pārdošanas ceļš no 13. oktobra sanāksmes</span><span>11</span></div>
+</section>
+
+<!-- 12 Kopsavilkums -->
+<section class="slide closing" aria-label="Kopsavilkums">
+  <span class="label">Kopsavilkums</span>
+  <div class="body">
+    <h2>Enerģijas pārvaldības sistēma piecos teikumos</h2>
+    <div class="agree">
+      <div class="ag"><span class="k">Misija</span><p>Palīdzēt ēku īpašniekiem redzēt, kur aiziet enerģija, un patērēt to mazāk.</p></div>
+      <div class="ag"><span class="k">Problēma</span><p>Īpašnieki neredz, kas notiek ar enerģiju viņu ēkā.</p></div>
+      <div class="ag"><span class="k">Produkts</span><p>Mēram, parādām un vadām iekārtas, no pirmā aprēķina līdz automātikai.</p></div>
+      <div class="ag"><span class="k">Ideālais klients</span><p>Ražotnes ar savu apkuri, dzesēšanu un ventilāciju.</p></div>
+      <div class="ag"><span class="k">Pārdošana</span><p>Simulācija, audits, tad ieviešana ar ikmēneša abonementu.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Enerģijas pārvaldības sistēma · diskusijai</span><span>12</span></div>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Slaidu navigācija">
+  <button type="button" id="prev" aria-label="Iepriekšējais slaids">←</button>
+  <span class="count" id="count" aria-live="polite">1 / 12</span>
+  <button type="button" id="next" aria-label="Nākamais slaids">→</button>
+  <button type="button" id="fs" aria-label="Pilnekrāna režīms">⤢</button>
+</nav>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length, idx = 0, body = document.body;
+  var prev = document.getElementById('prev'), next = document.getElementById('next');
+  var count = document.getElementById('count'), progress = document.getElementById('progress');
+  slides.forEach(function (s, i) { s.id = 's' + (i + 1); });
+
+  function mode() {
+    var w = window.innerWidth, h = window.innerHeight, deck = w >= 860 && h >= 480;
+    body.classList.toggle('deck', deck); body.classList.toggle('flow', !deck);
+    if (deck) document.documentElement.style.setProperty('--scale', Math.min((w - 32) / 1280, (h - 72) / 720).toFixed(4));
+  }
+  function show(i, quiet) {
+    idx = Math.max(0, Math.min(total - 1, i));
+    slides.forEach(function (s, n) {
+      s.classList.toggle('active', n === idx);
+      if (body.classList.contains('deck')) s.setAttribute('aria-hidden', n === idx ? 'false' : 'true'); else s.removeAttribute('aria-hidden');
+    });
+    count.textContent = (idx + 1) + ' / ' + total;
+    prev.disabled = idx === 0; next.disabled = idx === total - 1;
+    progress.style.width = ((idx + 1) / total * 100) + '%';
+    if (!quiet) { try { history.replaceState(null, '', '#s' + (idx + 1)); } catch (e) {} }
+  }
+  function fromHash() { var m = /^#s(\d+)$/.exec(location.hash || ''); return m ? parseInt(m[1], 10) - 1 : 0; }
+
+  prev.addEventListener('click', function () { show(idx - 1); });
+  next.addEventListener('click', function () { show(idx + 1); });
+  document.getElementById('fs').addEventListener('click', function () {
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+    } catch (e) {}
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!body.classList.contains('deck')) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'ArrowDown') { e.preventDefault(); show(idx + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'ArrowUp') { e.preventDefault(); show(idx - 1); }
+    else if (k === 'Home') { e.preventDefault(); show(0); }
+    else if (k === 'End') { e.preventDefault(); show(total - 1); }
+  });
+  document.getElementById('viewport').addEventListener('click', function (e) {
+    if (!body.classList.contains('deck') || e.target.closest('button, a')) return;
+    if (window.getSelection && String(window.getSelection())) return;
+    show(e.clientX > window.innerWidth / 2 ? idx + 1 : idx - 1);
+  });
+  window.addEventListener('resize', function () { mode(); show(idx, true); });
+  window.addEventListener('hashchange', function () { show(fromHash(), true); });
+  mode(); show(fromHash(), true);
+})();
+</script>
+</body>
+</html>
