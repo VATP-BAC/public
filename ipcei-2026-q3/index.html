@@ -255,6 +255,21 @@
 
   body.scene-mode .window { opacity: 0; transform: translate(-50%, -46%) scale(.96); filter: blur(4px); pointer-events: none; }
 
+
+  /* Speaker notes (press N) + stage toast */
+  .notes { position: fixed; left: 50%; bottom: 14px; transform: translate(-50%, 130%); width: min(900px, 92vw); z-index: 8;
+    background: rgba(13,26,21,.96); border: 1px solid rgba(140,196,173,.4); border-radius: 16px; padding: 14px 20px;
+    transition: transform .4s var(--ease); font-size: 16px; line-height: 1.5; }
+  .notes b { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); margin-bottom: 4px; }
+  body.show-notes .notes { transform: translate(-50%, 0); }
+  .toast { position: fixed; left: 50%; bottom: 70px; transform: translate(-50%, 10px); z-index: 7; opacity: 0; pointer-events: none;
+    font-family: 'Instrument Serif', serif; font-size: clamp(28px, 4.4vh, 48px); color: var(--cream);
+    padding: 6px 26px; border-radius: 999px; background: rgba(13,26,21,.85); border: 1px solid rgba(140,196,173,.35);
+    transition: opacity .5s, transform .6s var(--ease); }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+  .toast span { font-family: 'Manrope', sans-serif; font-size: .38em; letter-spacing: .14em; color: var(--mint); margin-right: 12px; vertical-align: middle; }
+  .layer video { display: block; width: 100%; height: 100%; object-fit: cover; }
+
   @media (prefers-reduced-motion: reduce) {
     :root { --cam: 0s; }
     *, *::before, *::after { animation: none !important; transition-duration: 0s !important; }
@@ -301,11 +316,14 @@
     <div class="hint"><span id="cueStage"></span><span>→ / atstarpe</span></div>
   </aside>
 
+  <div class="notes" id="notes" aria-live="polite"><b>Ko teikt</b><p id="notesText"></p></div>
+  <div class="toast" id="toast"></div>
+
   <!-- Intro -->
   <section class="scene" id="scene-intro">
     <div class="kick">IPCEI-CIS · Nākamās paaudzes mikroražotnes · 2026. g. 3. ceturksnis</div>
-    <h1>Ieskats <em>HVAC AI</em><br>platformā</h1>
-    <p class="sub">Interaktīva tūre pa platformu un mākslīgā intelekta komponentēm — tā, kā to redz lietotājs.</p>
+    <h1>Vienas <em>kilovatstundas</em><br>ceļš</h1>
+    <p class="sub">HVAC AI platforma — no elektrības biržas līdz siltai telpai. Reāli dati, apkures sezona 2026.</p>
     <div class="logos">
       <img src="logos/eu-nextgen.png" alt="Finansē Eiropas Savienība — NextGenerationEU">
       <img src="logos/nap2027.png" alt="Nacionālais attīstības plāns 2027">
@@ -319,39 +337,13 @@
     <p class="funding">Projektu “Nākamās paaudzes mikroražotnes” 5.1.1.2.i.0/4/24/A/CFLA/003 finansē no Eiropas Savienības Atveseļošanas fonda budžeta līdzekļiem. Finansē Eiropas Savienība – NextGenerationEU.</p>
   </section>
 
-  <!-- Journey overview -->
-  <section class="scene" id="scene-map">
-    <div class="kick">Tūres maršruts</div>
-    <h1>No ēkas<br>līdz <em>ieteikumam</em></h1>
-    <div class="journey" id="journeyList"></div>
-  </section>
 
-  <!-- Chapter (re-used, filled from data) -->
-  <section class="scene chapter" id="scene-chapter">
-    <div class="kick" id="chKick"></div>
-    <h1 id="chTitle"></h1>
-    <p class="sub" id="chSub"></p>
-    <div class="num" id="chNum"></div>
-  </section>
 
-  <!-- Every indicator the platform tracks -->
-  <section class="scene" id="scene-indicators">
-    <div class="kick">Ko platforma mēra · nepārtraukti, no reālām iekārtām</div>
-    <h2>Simtiem rādītāju, <em>sešas</em> grupas</h2>
-    <div class="ind">
-      <div class="indc"><b>Enerģija</b><p>kWh · € pēc stundas cenas · CO₂ · bāzes slodze · nakts patēriņš · dārgo stundu daļa · pīķa stunda</p></div>
-      <div class="indc"><b>Efektivitāte</b><p>COP apkurei · COP karstajam ūdenim · EER dzesēšanai · siltuma atgūšana η · siltuma cena pret pilsētas apkuri</p></div>
-      <div class="indc"><b>Komforts</b><p>temperatūra · mitrums · CO₂ · komforta indekss 0–100 · cilvēku vērtējums</p></div>
-      <div class="indc"><b>Iekārtas</b><p>stāvoklis · darbības stundas · režīms un pakāpe · kļūdu kodi · plūsma · padeves un atgaitas temperatūra</p></div>
-      <div class="indc"><b>Ārējie signāli</b><p>Nord Pool cena · temperatūra · saule · mākoņi · rasas punkts · vējš — 48 h prognoze</p></div>
-      <div class="indc"><b>Datu kvalitāte</b><p>skaitītāju salīdzinājums · novecojuši dati · baterija un uzlāde · neticamu rādījumu atsijāšana</p></div>
-    </div>
-  </section>
 
   <!-- AI: signals in, decisions out -->
   <section class="scene" id="scene-signals">
-    <div class="kick">MI ietaupa · ko tas ņem vērā</div>
-    <h2>Daudz signālu, <em>viens</em> lēmums: kad tērēt</h2>
+    <div class="kick">MI · ko tas ņem vērā</div>
+    <h2>Kad pirkt <em>kilovatstundu</em>?</h2>
     <div class="flow" id="flow">
       <svg class="wires" id="wires"></svg>
       <div class="col-list" id="sigIn">
@@ -373,7 +365,7 @@
   <!-- AI: live hot-water optimiser on real prices -->
   <section class="scene" id="scene-optimizer">
     <div class="kick">Karstais ūdens · platformas algoritms, reālas Nord Pool cenas</div>
-    <h2>Piecas sildīšanas — <em>lētākajās</em> stundās</h2>
+    <h2>Karstais ūdens: piecas reizes dienā, <em>lētākajās</em> stundās</h2>
     <div class="days" id="days"></div>
     <div class="opt">
       <div class="chart">
@@ -397,7 +389,7 @@
 
   <!-- AI: plan → control → measure -->
   <section class="scene" id="scene-loop">
-    <div class="kick">MI ietaupa · no plāna līdz eiro</div>
+    <div class="kick">MI · no plāna līdz eiro</div>
     <h2>Plāno. Vada. <em>Mēra.</em></h2>
     <div class="loop">
       <div class="step3"><div class="k">01</div><h4>Plāno</h4><p>Katru dienu no rītdienas cenām aprēķina, kad sildīt ūdeni un kurš siltuma avots būs lētākais.</p><div class="tagline"><span>Nord Pool</span><span>laika prognoze</span><span>COP</span></div></div>
@@ -405,19 +397,6 @@
       <div class="step3"><div class="k">03</div><h4>Mēra</h4><p>Ietaupījumu rēķina katru dienu — patērētās kWh pēc reālās stundas cenas pret dienas vidējo cenu.</p><div class="tagline"><span>reāli eiro</span><span>katru dienu</span></div></div>
     </div>
     <div class="status"><i></i>Karstā ūdens automātika strādā kopš 8. septembra · cilvēks to var izslēgt jebkurā brīdī</div>
-  </section>
-
-  <!-- AI models -->
-  <section class="scene" id="scene-models">
-    <div class="kick">MI ietaupa · vēl četri modeļi uz reāliem datiem</div>
-    <h1>Četri modeļi,<br><em>viens</em> princips</h1>
-    <div class="grid4">
-      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><div><h4>Ventilācijas enerģijas prognoze</h4><p>Patēriņš un izmaksas eiro pēc nākamās dienas cenām</p></div></div>
-      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 7.5l2.6 1.5M17.2 15l2.6 1.5M4.2 16.5l2.6-1.5M17.2 9l2.6-1.5"/><circle cx="12" cy="12" r="3.5"/></svg></div><div><h4>Siltuma atgūšanas efektivitāte</h4><p>Pamana, kad ventilācijas iekārta sāk strādāt sliktāk</p></div></div>
-      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><h4>Izdevumu laika analīze</h4><p>Cik maksāja patiesībā un cik — lētākajās stundās</p></div></div>
-      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/></svg></div><div><h4>Telpu termiskie modeļi</h4><p>Kā katra telpa sasilst un atdziest</p></div></div>
-    </div>
-    <div class="principle">MI iesaka · cilvēks izlemj</div>
   </section>
 
   <!-- Next -->
@@ -461,98 +440,97 @@
    from the live DOM when the screens were captured.
    ───────────────────────────────────────────────────────────── */
 const SCREENS = {
-  f3dHome:     { src: 'app/f3d-home.jpg',        h: 1000, url: '3D ēka' },
-  f3dZoom:     { src: 'app/f3d-zoom.jpg',        h: 1000, url: '3D ēka' },
+  f3d:         { src: 'app/f3d.jpg', video: 'app/f3d.webm', h: 1000, url: '3D ēka' },
   f3dHp:       { src: 'app/f3d-hp.jpg',          h: 1000, url: '3D ēka / Siltumsūknis' },
-  dashboard:   { src: 'app/dashboard.jpg',       h: 1298, url: 'Pārskats' },
-  schematic:   { src: 'app/schematic.jpg',       h: 1000, url: 'Shēma' },
-  schematicH:  { src: 'app/schematic-hover.jpg', h: 1000, url: 'Shēma' },
-  device:      { src: 'app/device.jpg',          h: 1500, url: 'Iekārtas / Siltumsūknis' },
+  dashboard:   { src: 'app/dashboard.jpg',       h: 1233, url: 'Pārskats' },
+  schematic:   { src: 'app/schematic.jpg', video: 'app/schematic.webm', h: 1000, url: 'Shēma' },
+  device:      { src: 'app/device.jpg',          h: 1840, url: 'Iekārtas / HP Master' },
+  runtimeHp:   { src: 'app/runtime-hp.jpg',      h: 1044, url: 'Iekārtas / HP Master / Darbības laiks' },
+  runtimeAhu:  { src: 'app/runtime-ahu.jpg',     h: 1209, url: 'Iekārtas / PN1 ventilācija / Darbības laiks' },
   ahuControl:  { src: 'app/ahu-control.jpg',     h: 1026, url: 'Iekārtas / PN1 ventilācija / Vadība' },
   floor:       { src: 'app/floor.jpg',           h: 1300, url: 'Stāvi / VATP 1A / 2. stāvs' },
-  room:        { src: 'app/room.jpg',            h: 1000, url: 'Telpas / 14. Nākotnes klase' },
   feedback:    { src: 'app/feedback.jpg',        h: 1000, url: 'Telpas / 14. Nākotnes klase / Atsauksmes' },
-  energy:      { src: 'app/energy.jpg',          h: 4592, url: 'Enerģija' },
+  energy:      { src: 'app/energy.jpg',          h: 4795, url: 'Enerģija · 6. okt – 3. nov' },
   energyMenu:  { src: 'app/energy-menu.jpg',     h: 1000, url: 'Enerģija / Eksports' },
-  breakdown:   { src: 'app/breakdown.jpg',       h: 3600, url: 'Enerģija / Sadalījums' },
-  alerts:      { src: 'app/alerts.jpg',          h: 1000, url: 'Brīdinājumi' },
-  alertDetail: { src: 'app/alert-detail.jpg',    h: 1000, url: 'Brīdinājumi' },
-  adminPerm:   { src: 'app/admin-perm.jpg',      h: 1000, url: 'Administrēšana / Tiesības' },
+  breakdown:   { src: 'app/breakdown.jpg',       h: 3500, url: 'Enerģija / Sadalījums' },
+  alerts:      { src: 'app/alerts.jpg',          h: 1829, url: 'Brīdinājumi' },
   adminPolicy: { src: 'app/admin-policy.jpg',    h: 1000, url: 'Administrēšana / Vadības politikas' },
-  settings:    { src: 'app/settings.jpg',        h: 1034, url: 'Administrēšana / Iestatījumi' },
-  display:     { src: 'app/display.jpg',         h: 1000, url: 'Displejs' },
 };
 
-const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Komforts', 'Enerģija', 'MI ietaupa', 'Kontrole', 'Tālāk'];
+const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Komforts', 'Enerģija', 'MI', 'Kontrole', 'Tālāk'];
 
-// type: scene | chapter | cam.   stage: index into STAGES (-1 = before the journey).
-// rect: [x, y, w, h] in page px.  spot: false = camera move without a spotlight.
+// The thread: follow one kilowatt-hour — bought on Nord Pool, multiplied by the heat pump,
+// warming a room, landing on the bill — and show where the AI decides when to buy it.
+// cue: what the audience reads.  say: speaker notes (press N) — what to tell the room and why it matters.
 const STEPS = [
-  { type: 'scene', id: 'intro', stage: -1 },
-  { type: 'scene', id: 'map', stage: -1 },
+  { type: 'scene', id: 'intro', stage: -1,
+    say: 'Šodien neparādīšu slaidus par platformu — parādīšu pašu platformu. Un lai būtu vieglāk sekot, sekosim vienai kilovatstundai: no brīža, kad to nopērkam biržā, līdz brīdim, kad tā silda telpu un parādās atskaitē.' },
 
-  { type: 'chapter', stage: 0, title: 'Ēka — <em>digitāli</em>', sub: 'Viss sākas ar reālo VATP ēku un tās iekārtām 3D modelī.' },
-  { type: 'cam', stage: 0, screen: 'f3dHome', rect: [0, 0, 1600, 1000], spot: false, title: 'VATP ēka 3D', text: 'Ēka, teritorija un laikapstākļi — modelis dzīvo līdzi reālajai situācijai.' },
-  { type: 'cam', stage: 0, screen: 'f3dHome', rect: [12, 74, 655, 108], title: 'Ēka vienā mirklī', text: 'Patērētā jauda, saražotais siltums, pieslēgtās iekārtas un laiks ārā.' },
-  { type: 'cam', stage: 0, screen: 'f3dZoom', rect: [224, 110, 1312, 480], title: 'Katra iekārta savā vietā', text: 'Ventilācija, siltumsūkņi, vārsti un urbumi — ar dzīviem rādījumiem uz ēkas.' },
-  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1222, 74, 312, 432], chip: 'Luxtronik', title: 'Klikšķis — un dati', text: 'Izvēlies iekārtu modelī un redzi tās stāvokli tieši tagad.' },
+  { type: 'cam', stage: 0, screen: 'f3d', rect: [0, 0, 1600, 1000], spot: false, title: 'Šī ir mūsu ēka', text: 'Dzīvs 3D modelis: ventilācija, siltumsūkņi un ģeotermālie urbumi — katrs ar saviem rādījumiem.',
+    say: 'Ceļojums sākas šeit — VATP ēkā. Tas nav zīmējums, tas ir dzīvs modelis: punktiņi uz jumta un pagalmā ir reālas iekārtas, un katra sūta datus uz platformu.' },
+  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1225, 74, 312, 485], chip: 'Luxtronik', title: 'Klikšķis uz siltumsūkņa', text: 'Turpgaitas un atgaitas temperatūra, siltuma jauda un patērētā elektrība — tieši tagad.',
+    say: 'Uzspiežot uz iekārtas, redzam tās stāvokli. Šis siltumsūknis ir mūsu kilovatstundas galvenais pieturas punkts — tieši šeit elektrība pārvēršas siltumā.' },
 
-  { type: 'chapter', stage: 1, title: 'Viss <em>vienā</em> skatā', sub: 'Galvenais panelis — ko ēka dara un kas jāpamana.' },
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [80, 60, 1440, 1220], spot: false, title: 'Galvenais panelis', text: 'Viss svarīgākais par ēku vienā ekrānā — atjaunojas pats.' },
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 160, 1400, 128], title: 'Šodiena skaitļos', text: 'Enerģija, izmaksas, siltumsūkņu efektivitāte, elektrības cena un laiks — ar salīdzinājumu pret vakardienu.' },
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 301, 923, 508], chip: 'MI', title: 'Slodze un prognoze', text: 'Izmērītā jauda un nākamo stundu prognoze uz lēto un dārgo stundu fona.' },
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [1039, 301, 461, 508], chip: 'MI', title: 'Kam pievērst uzmanību', text: 'Brīdinājumi, automātiskās enerģijas pārbaudes un MI ieteikumi — svarīgākais augšā.' },
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 824, 456, 446], title: 'Kur šodien aiziet elektrība', text: 'Ventilācija, dzesēšana, apkure, karstais ūdens — daļa no kopējā patēriņa.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [0, 0, 1600, 1000], spot: false, title: 'Galvenais panelis', text: 'Šodien 116 kWh un €35.73. Siltumsūkņi strādā ar COP 5,19 — siltums 9 % lētāks nekā pilsētas apkure.',
+    say: 'Šo ekrānu redz ēkas pārvaldnieks katru rītu. Augšā — cik šodien patērējām un cik tas maksāja, salīdzinājumā ar vakardienu. Svarīgākais skaitlis: COP 5,19 — katra nopirktā kilovatstunda kļūst par piecām kilovatstundām siltuma.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 301, 923, 444], chip: 'MI', title: 'Slodze un prognoze', text: 'Ēka tagad patērē 8,6 kW. Raustītā līnija — prognoze; iekrāsotas lētās un dārgās stundas.',
+    say: 'Te pirmo reizi parādās MI: prognoze nākamajām stundām. Fonā — elektrības cena: zaļās joslas ir lētās stundas, oranžās — dārgās. Tieši šis attēls ir pamatā tam, kad pirkt mūsu kilovatstundu.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [1039, 301, 461, 444], chip: 'MI', title: '€21.40 palika galdā', text: 'MI ieteikums: PN1 ventilācija 29 dienās iztērēja €21.40 vairāk, nekā būtu, strādājot lētākajās stundās.',
+    say: 'Pārvaldniekam nav jāmeklē problēmas — platforma tās pieliek priekšā. Šis ir reāls MI ieteikums no šī mēneša: ja ventilācija būtu strādājusi lētākajās stundās, ietaupītu 21 eiro. Pie tā vēl atgriezīsimies.' },
 
-  { type: 'chapter', stage: 2, title: 'Reālas <em>iekārtas</em>', sub: 'Ventilācija, siltumsūkņi un vārsti — pieslēgti, uzraudzīti un vadāmi.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [273, 120, 1050, 815], spot: false, title: 'Siltummezgls dzīvajā', text: 'Visa sistēma vienā interaktīvā shēmā. Krāsas rāda, kas silda un kas dzesē.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [405, 128, 350, 228], chip: 'Modbus · BACnet', title: 'Ventilācija', text: 'Divas Siemens ventilācijas iekārtas un to enerģijas vārsti.' },
-  { type: 'cam', stage: 2, screen: 'schematicH', rect: [630, 505, 402, 268], chip: 'Luxtronik', title: 'Siltumsūkņi', text: 'Temperatūras, jauda un efektivitāte — tieši no iekārtas.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [272, 628, 120, 150], chip: 'M-Bus', title: 'Ģeotermālie urbumi', text: 'Zemes siltums — siltumsūkņu avots un dzesēšanas izvads, ar savu siltuma skaitītāju.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [1136, 130, 190, 295], title: 'Enerģijas sadalījums', text: 'Pēdējo 24 h elektrība pa sistēmām — tieši shēmā.' },
-  { type: 'cam', stage: 2, screen: 'device', rect: [250, 240, 1100, 700], title: 'Katras iekārtas dati', text: 'Siltumsūknis sniedz 34 rādījumus, katram — vēsture un statuss.' },
-  { type: 'cam', stage: 2, screen: 'ahuControl', rect: [240, 185, 1065, 510], chip: 'Vadība', title: 'Attālināta vadība', text: 'Ventilatoru režīms, temperatūra, CO₂ mērķis, gaisa plūsma un avārijas apturēšana — katra komanda tiek apstiprināta un auditēta.' },
-  { type: 'scene', id: 'indicators', stage: 2 },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [273, 120, 1050, 815], spot: false, title: 'Siltummezgls dzīvajā', text: 'Visa sistēma vienā shēmā. Plūsmas kustas, krāsas rāda, kas silda un kas dzesē — tieši tagad.',
+    say: 'Tagad ieskatāmies ēkas iekšienē. Šī shēma ir dzīva — redzat, kā plūsma kustas cauruļvados. Inženierim šis ir vienīgais ekrāns, kas vajadzīgs, lai saprastu, kas notiek siltummezglā.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [630, 505, 320, 135], chip: 'Luxtronik', title: '1 kWh → 5 kWh siltuma', text: 'Siltumsūknis paņem siltumu no zemes un no katras elektrības kilovatstundas iegūst ap piecām siltuma.',
+    say: 'Šeit notiek mūsu stāsta galvenā maģija. Kilovatstunda ienāk siltumsūknī, tas paņem klāt siltumu no zemes caur ģeotermālajiem urbumiem — un ārā nāk ap piecas kilovatstundas siltuma.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [405, 128, 350, 228], chip: 'Modbus · BACnet', title: 'Ventilācija', text: 'Divas Siemens ventilācijas iekārtas un enerģijas vārsti, kas mēra, cik siltuma aiziet gaisā.',
+    say: 'Daļa siltuma aiziet ventilācijā. Šie vārsti mēra katru kilovatstundu, kas aiziet uz ventilācijas iekārtām — tā mēs zinām, cik maksā svaigs gaiss.' },
+  { type: 'cam', stage: 2, screen: 'device', rect: [250, 21, 1100, 700], title: '34 rādījumi — tikko atjaunoti', text: 'Katrs siltumsūkņa rādījums nāk tieši no iekārtas: temperatūras, starti, darba stundas, kļūdu kodi.',
+    say: 'Katra iekārta dod desmitiem rādījumu. Šie visi ir atjaunoti pirms minūtes — un katram ir sava vēsture. Šie dati ir izejviela visiem MI modeļiem.' },
+  { type: 'cam', stage: 2, screen: 'runtimeHp', rect: [250, 480, 1100, 540], title: 'Cik daudz strādā kompresors', text: 'Pēdējā mēnesī kompresors strādāja 30 % laika un ieslēdzās 557 reizes.',
+    say: 'No rādījumiem platforma pati izrēķina, kā iekārta tiek lietota. 557 ieslēgšanās mēnesī — tas ir svarīgi kompresora kalpošanas laikam, un to agrāk neviens neskaitīja.' },
+  { type: 'cam', stage: 2, screen: 'runtimeAhu', rect: [250, 340, 1100, 440], title: 'Platforma pamana cilvēku', text: 'PN1 ventilācija kopš 29. oktobra ir manuālā režīmā — kāds to pārslēdza ar roku.',
+    say: 'Interesants piemērs: platforma pamanīja, ka kopš 29. oktobra ventilācija ir pārslēgta manuāli. Tas ir tieši tas, kas ēkās parasti paliek nepamanīts nedēļām.' },
+  { type: 'cam', stage: 2, screen: 'ahuControl', rect: [240, 185, 1065, 510], chip: 'Vadība', title: 'Un var arī vadīt', text: 'Ventilatoru pakāpe, temperatūra, CO₂ mērķis, gaisa plūsma un avārijas apturēšana — ar apstiprinājumu un auditu.',
+    say: 'Platforma ne tikai redz, bet var arī vadīt. Katra komanda tiek pārbaudīta pret drošības robežām, iekārta apstiprina izpildi, un viss tiek ierakstīts auditā.' },
 
-  { type: 'chapter', stage: 3, title: 'Telpu <em>komforts</em>', sub: 'Kā jūtas cilvēki katrā telpā.' },
-  { type: 'cam', stage: 3, screen: 'floor', rect: [248, 164, 1100, 1064], title: 'Stāva plāns', text: 'Katra telpa iekrāsota pēc komforta — CO₂, temperatūra un mitrums.' },
-  { type: 'cam', stage: 3, screen: 'room', rect: [201, 303, 1198, 123], title: 'Telpas rādītāji', text: 'Temperatūra, mitrums, CO₂ un viens komforta indekss 0–100.' },
-  { type: 'cam', stage: 3, screen: 'room', rect: [1019, 444, 380, 343], title: 'Vēsture', text: 'Katra rādītāja līkne — no stundas līdz trim mēnešiem.' },
-  { type: 'cam', stage: 3, screen: 'feedback', rect: [540, 178, 520, 314], title: 'Cilvēku balss', text: 'Darbinieki paši novērtē telpu — no “par aukstu” līdz “par karstu”.' },
+  { type: 'cam', stage: 3, screen: 'floor', rect: [248, 164, 1100, 1064], title: 'Kur kilovatstunda nonāk', text: 'Visas otrā stāva telpas šobrīd ir zaļajā komforta zonā.',
+    say: 'Mūsu kilovatstunda beidzot ir nonākusi telpā. Stāva plānā redzam, kā jūtas katra telpa — šobrīd visas ir zaļajā zonā. Tieši tam mēs to visu darām.' },
+  { type: 'cam', stage: 3, screen: 'feedback', rect: [540, 178, 520, 314], title: 'Un ko saka cilvēki', text: 'Darbinieki paši novērtē telpu — no “par aukstu” līdz “par karstu”.',
+    say: 'Sensori ir viena lieta, cilvēku sajūtas — cita. Tāpēc katram ir iespēja pateikt “man ir auksti”. Šī atgriezeniskā saite nākotnē palīdzēs MI saprast, kad komforts ir patiešām sasniegts.' },
 
-  { type: 'chapter', stage: 4, title: 'Kur aiziet <em>enerģija</em>', sub: 'Katra kilovatstunda — un cik tā maksāja un cik CO₂ radīja.' },
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 379, 1552, 172], title: 'Saražotais siltums', text: 'Ko siltumsūkņi saražoja: apkure, karstais ūdens un dzesēšana.' },
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1648, 925, 650], title: 'Enerģijas plūsma', text: 'No ēkas līdz sistēmai un līdz katrai iekārtai.' },
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1211, 1552, 421], title: 'Izmaksas stundu pa stundai', text: 'Patēriņš, reizināts ar Nord Pool biržas cenu katrā stundā.' },
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 2381, 1552, 395], title: 'Ēkas dienas ritms', text: 'Kurās stundās ēka patērē visvairāk — siltuma karte un tipiska diena.' },
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 3315, 611, 446], title: 'Efektivitāte', text: 'COP apkurei un karstajam ūdenim, EER dzesēšanai — mērīti, nevis pieņemti.' },
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 3777, 1552, 326], title: 'Vai skaitītāji sakrīt?', text: 'Platforma salīdzina dažādus mērītājus tajās pašās stundās un parāda atšķirību.' },
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 4187, 1552, 250], title: 'CO₂ pēdas nospiedums', text: 'Emisijas no patērētās elektrības un mūsu siltuma oglekļa intensitāte.' },
-  { type: 'cam', stage: 4, screen: 'breakdown', rect: [24, 1206, 1552, 783], title: 'Katra iekārta atsevišķi', text: 'Elektrības patēriņš un izmaksas pa iekārtām.' },
-  { type: 'cam', stage: 4, screen: 'breakdown', rect: [24, 2453, 1552, 645], title: 'Siltums no katra siltumsūkņa', text: 'Saražotais siltums dienu pa dienai un katra sūkņa efektivitāte.' },
-  { type: 'cam', stage: 4, screen: 'energyMenu', rect: [1256, 127, 320, 542], title: 'Ikmēneša atskaite', text: 'Viens klikšķis — gatava Excel enerģijas atskaite par jebkuru mēnesi.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 150, 1552, 400], title: '6 287 kWh → 11 207 kWh siltuma', text: 'Kopš 6. oktobra: €907 par elektrību, COP 5,50. Siltumsūkņi saražoja gandrīz divreiz vairāk siltuma nekā patērēja elektrības.',
+    say: 'Tagad paskatāmies uz rēķinu. Kopš apkures sezonas sākuma nopirkām 6 287 kilovatstundas un saņēmām 11 207 kilovatstundas siltuma. Tas ir mūsu stāsta galvenais skaitlis.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1648, 925, 650], title: 'Kur aizgāja katrs eiro', text: 'No ēkas uz sistēmu un uz katru iekārtu: ventilācija 49 %, apkure 41 %.',
+    say: 'Šī diagramma parāda, kur aizgāja nauda. Pārsteigums daudziem — ventilācija patērē vairāk nekā apkure. Tieši tāpēc MI vispirms skatās uz ventilāciju.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1211, 1552, 421], title: 'Katra stunda — sava cena', text: 'Patēriņš pa stundām, reizināts ar Nord Pool cenu tajā pašā stundā.',
+    say: 'Elektrība katru stundu maksā citādi — melnā līnija ir biržas cena. Redzat, cik ļoti tā lēkā. Kad mēs patērējam, ir tikpat svarīgi kā cik daudz.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 3519, 1552, 446], title: '55 % lētāk nekā pilsētas siltums', text: 'Mūsu siltums maksāja €33.6/MWh. Pilsētas apkure — €75/MWh.',
+    say: 'Un šis ir atbilde uz jautājumu, vai siltumsūkņi atmaksājas. Mūsu saražotā siltuma megavatstunda maksāja 34 eiro, pilsētas — 75. Tas ir izmērīts, nevis aprēķināts no kataloga.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 4389, 1552, 250], title: 'Siltums ar 79 % atjaunīgās enerģijas', text: '604 kg CO₂ par visu elektrību. Mūsu siltumam — tikai 21 g CO₂ uz kWh.',
+    say: 'Katrai kilovatstundai ir arī oglekļa pēda. Tā kā lielāko daļu siltuma siltumsūknis paņem no zemes, 79 % mūsu siltuma ir atjaunīgs, un tā oglekļa intensitāte ir tikai 21 grams uz kilovatstundu. Platforma to rēķina automātiski — tieši to prasīs ES ziņošana.' },
+  { type: 'cam', stage: 4, screen: 'energyMenu', rect: [1256, 127, 320, 542], title: 'Atskaite ar vienu klikšķi', text: 'Gatava Excel enerģijas atskaite par jebkuru mēnesi.',
+    say: 'Un mēneša beigās — viena poga, un grāmatvedībai ir gatava atskaite.' },
 
-  { type: 'chapter', stage: 5, title: 'MI, kas <em>ietaupa</em>', sub: 'Apkure un karstais ūdens — pēc elektrības cenas un citiem rādītājiem.' },
-  { type: 'scene', id: 'signals', stage: 5 },
-  { type: 'scene', id: 'optimizer', stage: 5 },
-  { type: 'cam', stage: 5, screen: 'dashboard', rect: [1044, 824, 456, 446], chip: 'MI', title: 'Lētākās stundas lietotnē', text: 'Rītdienas cenas un lētākās stundas — pēc tām kopš 8. septembra automātiski strādā karstā ūdens sūknis.' },
-  { type: 'cam', stage: 5, screen: 'energy', rect: [651, 3315, 925, 446], chip: 'MI', title: 'Siltumsūknis vai pilsētas siltums', text: 'Katru stundu salīdzina mūsu siltuma cenu ar pilsētas apkuri — un saka, kas izdevīgāk.' },
-  { type: 'cam', stage: 5, screen: 'alerts', rect: [200, 641, 1200, 124], chip: 'MI', title: 'Nauda, kas paliek galdā', text: 'MI pamana, ka ventilācija strādāja dārgās stundās: €2.29 no €9.01 bija ietaupāmi — iesaka pārcelt darba laiku.' },
-  { type: 'cam', stage: 5, screen: 'alerts', rect: [200, 399, 1200, 124], chip: 'MI', title: 'Iekārta sāk strādāt sliktāk', text: 'Siltuma atgūšanas efektivitāte nokritās zem normas — MI iesaka pārbaudīt rotoru un siksnu.' },
-  { type: 'cam', stage: 5, screen: 'alertDetail', rect: [890, 315, 465, 650], chip: 'MI', title: 'Ko tas nozīmē un ko darīt', text: 'Katram ieteikumam — skaidrojums, nākamie soļi un saite uz iekārtu, shēmu un 3D modeli.' },
-  { type: 'cam', stage: 5, screen: 'energy', rect: [24, 565, 925, 630], chip: 'MI', title: 'Automātiskas atziņas', text: 'Platforma pati pamana izmaiņas un paskaidro tās vienkāršā valodā.' },
-  { type: 'scene', id: 'loop', stage: 5 },
-  { type: 'scene', id: 'models', stage: 5 },
+  { type: 'scene', id: 'signals', stage: 5,
+    say: 'Tagad svarīgākais. Mēs zinām, cik kilovatstunda maksā katru stundu, kāds būs laiks un cik efektīvi strādā siltumsūkņi. MI to visu saliek kopā un izlemj vienu lietu: kad tērēt.' },
+  { type: 'scene', id: 'optimizer', stage: 5,
+    say: 'Šis ir īstais algoritms, kas strādā mūsu ēkā, uz īstām biržas cenām. Pirms rādu — kurās stundās jūs sildītu ūdeni? … MI izvēlas šīs piecas stundas, un tas ir vidēji 13 % lētāk. Uzklikšķiniet uz citas dienas — plāns mainās. Apakšējā rindā: stundas, kad siltumsūknis ir lētāks par pilsētas siltumu.' },
+  { type: 'cam', stage: 5, screen: 'alerts', rect: [200, 1210, 1200, 124], chip: 'MI', title: 'MI pamana dārgas stundas', text: 'PN1 strādāja 29 % virs lētāko stundu optimuma: €21.40 no €94.81 bija ietaupāmi.',
+    say: 'To pašu MI dara ar ventilāciju: salīdzina, cik iztērējām, ar to, cik būtu iztērējuši lētākajās stundās, un iesaka pārcelt darba laiku.' },
+  { type: 'cam', stage: 5, screen: 'energy', rect: [24, 565, 925, 630], chip: 'MI', title: 'Platforma pati paskaidro', text: '“Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %” — bez neviena iestatījuma.',
+    say: 'Un platforma pati raksta secinājumus vienkāršā valodā. Šie divi teikumi ir uzrakstīti automātiski, no datiem.' },
+  { type: 'scene', id: 'loop', stage: 5,
+    say: 'Tas viss veido noslēgtu ciklu: plāno, vada, mēra. Karstā ūdens sūknis jau kopš 8. septembra ieslēdzas automātiski lētākajās stundās, un mēs katru dienu mērām ietaupījumu eiro.' },
 
-  { type: 'chapter', stage: 6, title: 'Droši un <em>kontrolēti</em>', sub: 'Brīdinājumi, lomas, drošības robežas un audits.' },
-  { type: 'cam', stage: 6, screen: 'alerts', rect: [180, 80, 1240, 720], spot: false, title: 'Brīdinājumu iesūtne', text: 'Kļūmes, novecojuši dati, baterijas un MI ieteikumi — grupēti pa telpām, ar statusu.' },
-  { type: 'cam', stage: 6, screen: 'adminPolicy', rect: [240, 200, 1060, 780], chip: 'Drošība', title: 'Drošības robežas', text: 'Katrai komandai — atļautās vērtības un vai vajadzīgs apstiprinājums.' },
-  { type: 'cam', stage: 6, screen: 'adminPerm', rect: [242, 240, 1060, 760], title: 'Lomas un tiesības', text: 'Septiņas lomas — katra redz un dara tikai to, kas tai pienākas.' },
-  { type: 'cam', stage: 6, screen: 'settings', rect: [24, 81, 1552, 925], spot: false, title: 'Iestatījumi', text: 'E-pasta brīdinājumi, sensoru datu kvalitāte un vestibila ekrāna paneļi.' },
+  { type: 'cam', stage: 6, screen: 'alerts', rect: [180, 80, 1240, 900], spot: false, title: 'Kad kaut kas noiet greizi', text: 'Siltumsūkņa kļūdu kodi, gaiss vārstos, novecojuši sensori — viss vienā iesūtnē, grupēts pa telpām.',
+    say: 'Protams, ne viss vienmēr strādā. Šeit ir reāli brīdinājumi no šīs nedēļas — siltumsūkņa kļūdas kodi un gaiss hidraulikā. Platforma tos atrada pati un pastāstīja, kur tie ir.' },
+  { type: 'cam', stage: 6, screen: 'adminPolicy', rect: [240, 200, 1060, 780], chip: 'Drošība', title: 'MI nedrīkst visu', text: 'Katrai komandai — atļautās robežas un vai vajadzīgs cilvēka apstiprinājums.',
+    say: 'Un lai MI nekad neizdarītu kaut ko bīstamu, katrai komandai ir robežas. Piemēram, CO₂ mērķi var mainīt tikai starp 400 un 2000, un dažām komandām vienmēr vajadzīgs cilvēka apstiprinājums.' },
 
-  { type: 'cam', stage: 7, screen: 'display', rect: [0, 0, 1600, 1000], spot: false, title: 'Vestibila ekrāns', text: 'Ēkas stāvoklis visiem apmeklētājiem — komforts, enerģija un cena.' },
-  { type: 'scene', id: 'next', stage: 7 },
-  { type: 'scene', id: 'outro', stage: 7 },
+  { type: 'scene', id: 'next', stage: 7,
+    say: 'Nākamais solis — MI asistents, kuram var vienkārši pajautāt, un digitālais dvīnis, kurā izmēģināt izmaiņas pirms to veikšanas īstajā ēkā.' },
+  { type: 'scene', id: 'outro', stage: 7,
+    say: 'Paldies. Mūsu kilovatstunda ir nonākusi galā — un katrā pieturā platforma zināja, kur tā ir un cik tā maksā.' },
 ];
 
 /* Real Latvian Nord Pool day-ahead prices (EUR/MWh, local hours) — source: Elering NPS API. */
@@ -570,7 +548,7 @@ const PRICE_DAYS = {
    circular day, 3–8 h apart, waits beyond 5 h cost quadratically; brute force = provably optimal. */
 const DHW = { runs: 5, minGap: 3, maxGap: 8, targetGap: 5, waitWeight: 1 };
 const CITY_HEAT_EUR_MWH = 75;   // district heating tariff used by the app's comparison
-const EXAMPLE_COP = 3;          // heat-pump COP used to price its heat in this illustration
+const EXAMPLE_COP = 5.2;        // heat-pump COP as measured this heating season (5.19–5.50)
 
 function gapsOf(h) { return [...h.slice(1).map((x, i) => x - h[i]), 24 - (h[h.length - 1] - h[0])]; }
 function planDhw(prices) {
@@ -609,9 +587,7 @@ STAGES.forEach((name, i) => {
   b.innerHTML = `<b>${i + 1}</b><span>${name}</span>`;
   b.addEventListener('click', () => go(STEPS.findIndex((s) => s.stage === i)));
   $('stages').appendChild(b);
-  const j = document.createElement('div');
-  j.innerHTML = `<b>0${i + 1}</b><span>${name}</span>`;
-  $('journeyList').appendChild(j);
+
 });
 
 // Number the camera stops so cues read 01, 02, …
@@ -640,11 +616,25 @@ function placeLayer(layer, screen, cam) {
   layer.style.transform = `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.z})`;
 }
 
+function setMedia(layer, screen) {
+  // A screen is either a still capture or a short looping recording of the live app.
+  const s = SCREENS[screen];
+  const want = s.video ? 'VIDEO' : 'IMG';
+  let el = layer.firstElementChild;
+  if (!el || el.tagName !== want) {
+    el = document.createElement(want.toLowerCase());
+    if (s.video) Object.assign(el, { muted: true, loop: true, autoplay: true, playsInline: true });
+    layer.replaceChildren(el);
+  }
+  if (s.video) { if (!el.src.endsWith(s.video)) { el.poster = s.src; el.src = s.video; } el.currentTime = 0; el.play().catch(() => {}); }
+  else el.src = s.src;
+}
+
 function showScreen(screen, cam) {
   if (frontScreen === screen) { placeLayer(layers[front], screen, cam); return; }
   // Cross-fade to the other layer, which jumps straight to the new camera position.
   const back = 1 - front;
-  layers[back].querySelector('img').src = SCREENS[screen].src;
+  setMedia(layers[back], screen);
   layers[back].style.transition = 'none';
   placeLayer(layers[back], screen, cam);
   void layers[back].offsetWidth;
@@ -762,7 +752,7 @@ function renderOptimizer(day) {
     const hpCheaper = p / EXAMPLE_COP < CITY_HEAT_EUR_MWH;
     out += `<rect x="${x}" y="${laneY}" width="${w}" height="${laneH}" rx="5" fill="${hpCheaper ? '#3f7a67' : 'rgba(246,239,227,.08)'}"/>`;
   });
-  out += `<text x="4" y="${laneY - 10}" class="lane-label">APKURE · siltumsūknis (COP ${EXAMPLE_COP}) pret pilsētas siltumu ${CITY_HEAT_EUR_MWH} €/MWh</text>`;
+  out += `<text x="4" y="${laneY - 10}" class="lane-label">APKURE · siltumsūknis (mērītais COP ${String(EXAMPLE_COP).replace('.', ',')}) pret pilsētas siltumu ${CITY_HEAT_EUR_MWH} €/MWh</text>`;
   svg.innerHTML = out;
   const pct = (plan.evenAvg - plan.avg) / plan.evenAvg * 100;
   $('optPct').textContent = `−${Math.round(pct)}%`;
@@ -823,20 +813,21 @@ function go(i) {
   } else {
     document.body.classList.add('scene-mode');
     cue.classList.add('hide');
-    if (step.type === 'chapter') {
-      $('chKick').textContent = `${String(step.stage + 1).padStart(2, '0')} · ${STAGES[step.stage]}`;
-      $('chTitle').innerHTML = step.title;
-      $('chSub').textContent = step.sub;
-      $('chNum').textContent = String(step.stage + 1).padStart(2, '0');
-      const ch = $('scene-chapter');
-      void ch.offsetWidth;
-      ch.classList.add('on');
-    } else {
-      $('scene-' + step.id).classList.add('on');
+    $('scene-' + step.id).classList.add('on');
       if (step.id === 'optimizer') renderOptimizer(optDay);
-      if (step.id === 'signals') setTimeout(drawWires, 950);
-    }
+    if (step.id === 'signals') setTimeout(drawWires, 950);
   }
+
+  // Entering a new stage: a short label instead of a full chapter card.
+  if (step.stage >= 0 && step.stage !== go.lastStage && step.type === 'cam') {
+    const toast = $('toast');
+    toast.innerHTML = `<span>${String(step.stage + 1).padStart(2, '0')}</span>${STAGES[step.stage]}`;
+    toast.classList.add('on');
+    clearTimeout(go.toastT);
+    go.toastT = setTimeout(() => toast.classList.remove('on'), 1800);
+  }
+  go.lastStage = step.stage;
+  $('notesText').textContent = step.say || '';
 
   setRail(step);
   $('count').textContent = `${i + 1} / ${STEPS.length}`;
@@ -856,7 +847,9 @@ document.addEventListener('keydown', (e) => {
   else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
   else if (e.key === 'Home') go(0);
   else if (e.key === 'End') go(STEPS.length - 1);
+  else if (e.key === 'n' || e.key === 'N') document.body.classList.toggle('show-notes');
 });
+if (new URLSearchParams(location.search).has('notes')) document.body.classList.add('show-notes');
 let wheelLock = 0;
 addEventListener('wheel', (e) => {
   if (Date.now() < wheelLock || Math.abs(e.deltaY) < 25) return;
