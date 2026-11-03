@@ -1,384 +1,832 @@
 <!DOCTYPE html>
 <html lang="lv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HVAC AI platforma · 3. ceturksnis</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f4ede1;
-      --card: #fffaf2;
-      --text: #1a1a1a;
-      --muted: #6b6459;
-      --accent: #2f5b4e;
-      --accent-dark: #1d3d33;
-      --accent-soft: #e3ece6;
-      --warm: #c8643b;
-      --border: #e2d8c7;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; overflow: hidden; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.45;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HVAC AI platforma · 3. ceturksnis</title>
+<meta name="description" content="Interaktīva HVAC AI platformas un mākslīgā intelekta tūre — IPCEI-CIS, 2026. gada 3. ceturksnis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0d1a15;
+    --line: rgba(246, 239, 227, .14);
+    --cream: #f6efe3;
+    --cream-dim: rgba(246, 239, 227, .62);
+    --green: #2f5b4e;
+    --mint: #8cc4ad;
+    --ink: #1b1a17;
+    --muted: #6b6459;
+    --ease: cubic-bezier(.65, .05, .25, 1);
+    --cam: 1.15s;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Manrope', system-ui, sans-serif;
+    background: var(--night);
+    color: var(--cream);
+    -webkit-font-smoothing: antialiased;
+  }
 
-    .slide {
-      position: absolute; inset: 0;
-      padding: 4.5vh 5vw 5vh;
-      display: flex; flex-direction: column; gap: 2.4vh;
-      opacity: 0; pointer-events: none;
-      transition: opacity .45s ease;
-    }
-    .slide.active { opacity: 1; pointer-events: auto; }
+  /* Atmosphere: soft glows + faint blueprint grid */
+  .bg { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(60vw 50vh at 85% -10%, rgba(140, 196, 173, .16), transparent 70%),
+      radial-gradient(50vw 50vh at -10% 110%, rgba(227, 148, 103, .10), transparent 70%),
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 64px 64px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+    opacity: .55;
+  }
 
-    .head { display: flex; align-items: baseline; justify-content: space-between; gap: 2vw; flex-shrink: 0; }
-    .label {
-      font-size: clamp(11px, 1.05vh, 14px); font-weight: 600; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: .6vh;
-    }
-    h1, h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; letter-spacing: -.01em; }
-    h1 { font-size: clamp(36px, 7vh, 84px); line-height: 1.05; }
-    h2 { font-size: clamp(26px, 4.6vh, 56px); line-height: 1.1; }
-    .lede { font-size: clamp(14px, 2vh, 22px); color: var(--muted); max-width: 46ch; }
-    .num { font-size: clamp(11px, 1.3vh, 15px); color: var(--muted); font-variant-numeric: tabular-nums; }
+  /* ── Journey rail ─────────────────────────────────────────── */
+  .rail {
+    position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 5;
+    display: flex; align-items: center; gap: 28px; padding: 0 32px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .12em; font-size: 13px; white-space: nowrap; }
+  .brand i { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px var(--mint); }
+  .stages { flex: 1; display: flex; align-items: center; position: relative; max-width: 900px; margin: 0 auto; }
+  .stages::before { content: ''; position: absolute; left: 14px; right: 14px; top: 13px; height: 2px; background: var(--line); }
+  .stages .fill { position: absolute; left: 14px; top: 13px; height: 2px; width: 0; background: var(--mint); transition: width .8s var(--ease); box-shadow: 0 0 10px var(--mint); }
+  .stage { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; cursor: pointer; background: none; border: 0; color: inherit; font: inherit; }
+  .stage:first-of-type { align-items: flex-start; } .stage:last-of-type { align-items: flex-end; }
+  .stage b {
+    width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 11px; font-weight: 700; background: var(--night); border: 2px solid var(--line); color: var(--cream-dim);
+    transition: all .4s var(--ease); position: relative; z-index: 1;
+  }
+  .stage span { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--cream-dim); transition: color .4s; white-space: nowrap; }
+  .stage.done b { background: var(--green); border-color: var(--mint); color: var(--cream); }
+  .stage.now b { background: var(--mint); border-color: var(--mint); color: var(--night); box-shadow: 0 0 0 6px rgba(140,196,173,.18), 0 0 20px rgba(140,196,173,.6); }
+  .stage.now span { color: var(--cream); font-weight: 700; }
+  .count { font-size: 12px; color: var(--cream-dim); font-variant-numeric: tabular-nums; white-space: nowrap; min-width: 52px; text-align: right; }
 
-    /* Screenshot frames */
-    .media { flex: 1; min-height: 0; display: flex; gap: 1.6vw; align-items: stretch; justify-content: center; }
-    .col { display: flex; flex-direction: column; gap: 1.6vw; min-height: 0; min-width: 0; }
-    .shot {
-      min-height: 0; min-width: 0; display: flex; align-items: center; justify-content: center;
-    }
-    .shot img {
-      max-width: 100%; max-height: 100%; display: block;
-      border-radius: 14px;
-      box-shadow: 0 1px 2px rgba(60, 45, 20, .08), 0 18px 48px -12px rgba(60, 45, 20, .28);
-      border: 1px solid var(--border);
-      background: var(--card);
-    }
-    .shot.dark img { border-color: #2c261f; }
-    .f1 { flex: 1; } .f2 { flex: 2; } .f3 { flex: 3; }
+  /* ── App window ───────────────────────────────────────────── */
+  .window {
+    position: fixed; z-index: 2;
+    left: 50%; top: calc(50% + 26px); transform: translate(-50%, -50%);
+    width: min(84vw, calc((100vh - 150px) * 1.6)); height: min(calc(84vw / 1.6), calc(100vh - 150px));
+    border-radius: 16px; overflow: hidden; background: #efe6d6; cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 40px 120px -20px rgba(0,0,0,.7), 0 0 80px -20px rgba(140,196,173,.25);
+    transition: opacity .6s var(--ease), transform .8s var(--ease), filter .6s;
+  }
+  .chrome {
+    height: 38px; background: #e7dccb; display: flex; align-items: center; gap: 14px; padding: 0 14px;
+    border-bottom: 1px solid #d9ccb6; color: var(--muted); font-size: 12px;
+  }
+  .dots { display: flex; gap: 6px; } .dots i { width: 11px; height: 11px; border-radius: 50%; }
+  .dots i:nth-child(1) { background: #e0806a; } .dots i:nth-child(2) { background: #e6b65c; } .dots i:nth-child(3) { background: #8cbf8a; }
+  .url { flex: 1; max-width: 460px; margin: 0 auto; background: #f6efe3; border-radius: 8px; padding: 5px 12px; text-align: center; font-weight: 600; color: #4d473e; }
+  .url em { font-style: normal; color: var(--green); }
+  .live { display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--green); white-space: nowrap; }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: #3f9b6f; animation: blink 2s infinite; }
+  @keyframes blink { 50% { opacity: .3; } }
 
-    /* Title + closing */
-    .title-slide {
-      background: radial-gradient(120% 90% at 85% 10%, #3c7262 0%, var(--accent) 45%, var(--accent-dark) 100%);
-      color: #fff; justify-content: center; padding-left: 8vw;
-    }
-    .title-slide .label { color: rgba(255,255,255,.65); }
-    .title-slide .lede { color: rgba(255,255,255,.78); max-width: 40ch; margin-top: 2vh; }
-    .title-slide .meta {
-      margin-top: 5vh; display: flex; gap: 1.2vw; flex-wrap: wrap;
-    }
-    .pill {
-      font-size: clamp(12px, 1.5vh, 17px); padding: .7vh 1.1vw; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.3); color: rgba(255,255,255,.9);
-    }
-    .funding {
-      position: absolute; left: 8vw; right: 8vw; bottom: 4vh;
-      font-size: clamp(9px, 1.05vh, 12px); color: rgba(255,255,255,.55); line-height: 1.5;
-    }
+  .viewport { position: absolute; top: 38px; left: 0; right: 0; bottom: 0; overflow: hidden; background: #f1e9db; }
+  .layer {
+    position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform, opacity;
+    transition: transform var(--cam) var(--ease), opacity .7s ease;
+  }
+  .layer img { display: block; width: 100%; height: 100%; }
 
-    /* Summary tiles */
-    .tiles { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6vw; align-content: center; }
-    .tile {
-      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
-      padding: 3.5vh 1.6vw; display: flex; flex-direction: column; gap: 1.2vh;
-      box-shadow: 0 18px 40px -24px rgba(60,45,20,.3);
-    }
-    .tile b {
-      font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
-      font-size: clamp(44px, 10vh, 120px); line-height: 1; color: var(--accent);
-    }
-    .tile span { font-size: clamp(14px, 2vh, 22px); font-weight: 600; }
-    .tile small { font-size: clamp(12px, 1.6vh, 17px); color: var(--muted); }
+  /* Spotlight: one rounded hole, everything else dimmed */
+  .spot {
+    position: absolute; border-radius: 16px; pointer-events: none; z-index: 3;
+    box-shadow: 0 0 0 200vmax rgba(13, 26, 21, .58);
+    outline: 2px solid rgba(140, 196, 173, .95); outline-offset: 3px;
+    transition: all var(--cam) var(--ease), opacity .5s;
+  }
+  .spot.off { opacity: 0; }
+  .pin {
+    position: absolute; z-index: 4; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+    background: var(--mint); color: var(--night); font-weight: 800; font-size: 13px; display: grid; place-items: center;
+    transition: all var(--cam) var(--ease), opacity .4s; pointer-events: none;
+  }
+  .pin::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--mint); animation: ring 1.8s infinite; }
+  @keyframes ring { from { transform: scale(.8); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
+  .pin.off { opacity: 0; }
 
-    /* AI model cards */
-    .models { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.6vw; align-content: center; }
-    .model {
-      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
-      padding: 5vh 2.2vw; display: flex; gap: 1.4vw; align-items: flex-start;
-    }
-    .model .ico {
-      flex-shrink: 0; width: 6vh; height: 6vh; border-radius: 14px; background: var(--accent-soft);
-      display: flex; align-items: center; justify-content: center; color: var(--accent);
-    }
-    .model .ico svg { width: 3.2vh; height: 3.2vh; }
-    .model h3 { font-size: clamp(16px, 2.3vh, 26px); font-weight: 600; margin-bottom: .6vh; }
-    .model p { font-size: clamp(13px, 1.8vh, 20px); color: var(--muted); }
+  /* Hotspots for the other stops on the same screen */
+  .hot {
+    position: absolute; z-index: 4; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%;
+    background: rgba(255,250,242,.94); border: 2px solid var(--green); color: var(--green);
+    font: 800 10px 'Manrope', sans-serif; display: grid; place-items: center; cursor: pointer;
+    transition: left var(--cam) var(--ease), top var(--cam) var(--ease), transform .2s;
+  }
+  .hot:hover { transform: scale(1.25); }
 
-    .note {
-      display: inline-flex; align-items: center; gap: .8vw; align-self: flex-start;
-      background: var(--accent-soft); color: var(--accent-dark);
-      border-radius: 999px; padding: 1vh 1.4vw; font-size: clamp(13px, 1.8vh, 19px); font-weight: 500;
-    }
-    .note svg { width: 2.2vh; height: 2.2vh; flex-shrink: 0; }
+  /* ── Cue card ─────────────────────────────────────────────── */
+  .cue {
+    position: fixed; z-index: 6; width: min(360px, 80vw);
+    background: rgba(255, 250, 242, .97); color: var(--ink); border-radius: 18px; padding: 20px 22px 18px;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.04);
+    transition: left .9s var(--ease), top .9s var(--ease), opacity .45s, transform .45s var(--ease);
+  }
+  .cue.hide { opacity: 0; transform: translateY(10px); pointer-events: none; }
+  .cue .meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .cue .n { font-size: 11px; font-weight: 800; color: var(--green); letter-spacing: .1em; }
+  .chip { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: #e6eee9; color: var(--green); }
+  .chip.ai { background: #fbe6da; color: #b2532a; }
+  .chip.proto { background: #eee7da; color: #6b5d45; }
+  .cue h3 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.05; margin-bottom: 8px; }
+  .cue p { font-size: 14.5px; line-height: 1.5; color: #4e4840; }
+  .cue .hint { margin-top: 14px; font-size: 11px; color: #9a9184; display: flex; justify-content: space-between; }
 
-    /* Side text column */
-    .side { display: flex; flex-direction: column; justify-content: center; gap: 2.6vh; }
-    .point { display: flex; gap: 1vw; align-items: flex-start; }
-    .point i {
-      flex-shrink: 0; width: 3.4vh; height: 3.4vh; border-radius: 50%; background: var(--accent);
-      color: #fff; font-style: normal; font-weight: 700; font-size: 1.6vh;
-      display: flex; align-items: center; justify-content: center; margin-top: .2vh;
-    }
-    .point p { font-size: clamp(14px, 2.1vh, 23px); }
-    .point p small { display: block; color: var(--muted); font-size: .82em; margin-top: .3vh; }
+  /* ── Full-stage scenes (intro, chapters, panels, outro) ───── */
+  .scene {
+    position: fixed; inset: 64px 0 0 0; z-index: 4; display: flex; flex-direction: column; justify-content: center;
+    padding: 4vh 8vw; opacity: 0; pointer-events: none; transition: opacity .7s var(--ease);
+  }
+  .scene.on { opacity: 1; pointer-events: auto; }
+  .scene .kick { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--mint); font-weight: 700; margin-bottom: 2.4vh; }
+  .scene h1 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(48px, 10vh, 128px); line-height: .95; letter-spacing: -.01em; }
+  .scene h1 em { color: var(--mint); }
+  .scene .sub { font-size: clamp(16px, 2.3vh, 24px); color: var(--cream-dim); margin-top: 3vh; max-width: 40ch; line-height: 1.45; }
+  .scene > * { transform: translateY(18px); opacity: 0; transition: transform .9s var(--ease), opacity .9s; }
+  .scene.on > * { transform: none; opacity: 1; }
+  .scene.on > *:nth-child(2) { transition-delay: .08s; } .scene.on > *:nth-child(3) { transition-delay: .16s; }
+  .scene.on > *:nth-child(4) { transition-delay: .24s; } .scene.on > *:nth-child(5) { transition-delay: .32s; }
 
-    .next-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4vh 2vw; }
-    .next-list div {
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-      padding: 2vh 1.4vw; font-size: clamp(14px, 2vh, 21px); font-weight: 500;
-    }
-    .next-list div small { display: block; font-weight: 400; color: var(--muted); font-size: .8em; margin-top: .3vh; }
+  .chapter .num { font-family: 'Instrument Serif', serif; font-size: clamp(120px, 34vh, 380px); line-height: .8; color: transparent; -webkit-text-stroke: 1.5px rgba(140,196,173,.5); position: absolute; right: 7vw; bottom: 6vh; }
 
-    /* Nav */
-    .nav {
-      position: fixed; bottom: 2vh; right: 2vw; display: flex; align-items: center; gap: 8px;
-      background: rgba(255,250,242,.92); border: 1px solid var(--border); border-radius: 999px;
-      padding: 6px 8px; transition: opacity .3s; z-index: 10;
-    }
-    .nav.hidden { opacity: 0; }
-    .nav button {
-      width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; cursor: pointer;
-      color: var(--accent); font-size: 18px;
-    }
-    .nav button:disabled { opacity: .3; cursor: default; }
-    .nav span { font-size: 13px; color: var(--muted); min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
-    .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--accent); transition: width .4s; z-index: 10; }
+  .logos {
+    margin-top: 6vh; background: #fff; border-radius: 18px; padding: 2.2vh 2.4vw;
+    display: flex; align-items: center; justify-content: space-between; gap: 2vw; flex-wrap: wrap; max-width: 1180px;
+  }
+  .logos img { height: clamp(28px, 5.4vh, 58px); width: auto; display: block; }
+  .funding { margin-top: 2vh; font-size: 11px; color: rgba(246,239,227,.45); max-width: 1180px; line-height: 1.5; }
 
-    @media (max-width: 760px) {
-      html, body { overflow: auto; }
-      .slide { position: relative; opacity: 1; pointer-events: auto; min-height: 100vh; padding: 32px 16px; }
-      .media, .tiles, .models { flex-direction: column; grid-template-columns: 1fr; }
-      .nav, .progress { display: none; }
-    }
-  </style>
+  /* ── AI money scenes ──────────────────────────────────────── */
+  .scene h2 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(36px, 6.4vh, 76px); line-height: 1; }
+  .scene h2 em { color: var(--mint); }
+
+  .flow { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 4vw; margin-top: 5vh; max-width: 1240px; position: relative; }
+  .flow svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .wires path { fill: none; stroke: rgba(140,196,173,.35); stroke-width: 1.5; stroke-dasharray: 5 7; animation: dash 1.4s linear infinite; }
+  .wires path.out { stroke: rgba(227,148,103,.55); }
+  @keyframes dash { to { stroke-dashoffset: -24; } }
+  .col-list { display: flex; flex-direction: column; gap: 1.4vh; position: relative; z-index: 1; }
+  .sig {
+    display: flex; align-items: center; gap: 12px; padding: 1.4vh 1.2vw; border-radius: 14px;
+    background: rgba(255,250,242,.06); border: 1px solid var(--line);
+  }
+  .sig .ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: rgba(140,196,173,.14); color: var(--mint); flex-shrink: 0; }
+  .sig .ic svg { width: 18px; height: 18px; }
+  .sig b { display: block; font-size: clamp(13px, 1.9vh, 18px); font-weight: 700; }
+  .sig small { font-size: clamp(11px, 1.5vh, 14px); color: var(--cream-dim); }
+  .sig.out { background: rgba(227,148,103,.08); border-color: rgba(227,148,103,.3); }
+  .sig.out .ic { background: rgba(227,148,103,.16); color: var(--warm, #e39467); }
+  .brain {
+    width: clamp(150px, 22vh, 230px); aspect-ratio: 1; border-radius: 50%; position: relative; z-index: 1;
+    display: grid; place-items: center; text-align: center; padding: 1.5vh;
+    background: radial-gradient(circle at 35% 30%, #3f7a67, var(--green) 55%, #1d3d33);
+    box-shadow: 0 0 0 10px rgba(140,196,173,.08), 0 0 0 22px rgba(140,196,173,.04), 0 0 80px rgba(140,196,173,.35);
+  }
+  .brain::before { content: ''; position: absolute; inset: -14px; border-radius: 50%; border: 1px dashed rgba(140,196,173,.45); animation: spin 18s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .brain b { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(24px, 3.6vh, 38px); line-height: 1; display: block; }
+  .brain small { font-size: clamp(11px, 1.4vh, 13px); color: rgba(246,239,227,.75); letter-spacing: .08em; text-transform: uppercase; }
+
+  .opt { display: grid; grid-template-columns: 1fr clamp(220px, 22vw, 320px); gap: 3vw; margin-top: 3vh; max-width: 1280px; align-items: stretch; }
+  .days { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2.4vh; }
+  .days button {
+    font: 600 12px 'Manrope', sans-serif; color: var(--cream-dim); background: transparent; border: 1px solid var(--line);
+    padding: 7px 12px; border-radius: 999px; cursor: pointer; transition: all .25s;
+  }
+  .days button:hover { color: var(--cream); border-color: var(--mint); }
+  .days button.on { background: var(--mint); color: var(--night); border-color: var(--mint); }
+  .chart { position: relative; background: rgba(255,250,242,.04); border: 1px solid var(--line); border-radius: 20px; padding: 2.4vh 1.6vw 1.6vh; }
+  .chart svg { width: 100%; height: auto; max-height: 40vh; display: block; overflow: visible; }
+  .chart .bar { transition: height .7s var(--ease), y .7s var(--ease), fill .4s; }
+  .chart .lane-label { font: 600 11px 'Manrope', sans-serif; fill: var(--cream-dim); letter-spacing: .06em; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 1.2vh; font-size: 12px; color: var(--cream-dim); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .stats { display: flex; flex-direction: column; gap: 1.6vh; justify-content: center; }
+  .big { font-family: 'Instrument Serif', serif; font-size: clamp(64px, 13vh, 150px); line-height: .85; color: var(--mint); }
+  .big-cap { font-size: clamp(13px, 1.8vh, 17px); color: var(--cream-dim); }
+  .stat { border-top: 1px solid var(--line); padding-top: 1.2vh; display: flex; justify-content: space-between; gap: 12px; font-size: clamp(13px, 1.8vh, 17px); }
+  .stat b { font-variant-numeric: tabular-nums; }
+
+  .loop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6vw; margin-top: 5vh; max-width: 1240px; position: relative; }
+  .step3 { background: rgba(255,250,242,.06); border: 1px solid var(--line); border-radius: 22px; padding: 3.4vh 2vw; position: relative; }
+  .step3 .k { font-family: 'Instrument Serif', serif; font-size: clamp(44px, 8vh, 90px); line-height: .8; color: transparent; -webkit-text-stroke: 1.2px var(--mint); }
+  .step3 h4 { font-size: clamp(18px, 2.8vh, 30px); font-weight: 800; margin: 1.6vh 0 .8vh; }
+  .step3 p { font-size: clamp(13px, 1.8vh, 18px); color: var(--cream-dim); line-height: 1.45; }
+  .step3 .tagline { margin-top: 1.6vh; display: flex; flex-wrap: wrap; gap: 6px; }
+  .step3 .tagline span { font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; background: rgba(140,196,173,.12); color: var(--mint); }
+  .step3:not(:last-child)::after { content: '→'; position: absolute; right: -1.25vw; top: 50%; transform: translate(50%, -50%); color: var(--mint); font-size: 22px; z-index: 1; }
+  .status {
+    margin-top: 4vh; align-self: flex-start; display: inline-flex; align-items: center; gap: 12px;
+    padding: 1.2vh 1.6vw; border-radius: 999px; background: rgba(227,148,103,.12); border: 1px solid rgba(227,148,103,.4); color: #f3c3a6; font-weight: 600; font-size: clamp(13px, 1.9vh, 18px);
+  }
+  .status i { width: 8px; height: 8px; border-radius: 50%; background: #e39467; box-shadow: 0 0 10px #e39467; }
+
+  .journey { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1vw; margin-top: 5vh; max-width: 1240px; }
+  .journey div { border-top: 2px solid var(--line); padding-top: 1.4vh; }
+  .journey b { display: block; font-size: 11px; color: var(--mint); letter-spacing: .1em; }
+  .journey span { font-size: clamp(14px, 2vh, 20px); font-weight: 600; }
+
+  .grid4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.6vw; margin-top: 4.5vh; max-width: 1180px; }
+  .model {
+    background: rgba(255,250,242,.06); border: 1px solid var(--line); border-radius: 20px; padding: 3vh 2vw;
+    display: flex; gap: 1.4vw; align-items: flex-start;
+  }
+  .model .ico { flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px; background: rgba(140,196,173,.14); color: var(--mint); display: grid; place-items: center; }
+  .model .ico svg { width: 26px; height: 26px; }
+  .model h4 { font-size: clamp(16px, 2.3vh, 24px); font-weight: 700; margin-bottom: .6vh; }
+  .model p { font-size: clamp(13px, 1.8vh, 18px); color: var(--cream-dim); line-height: 1.45; }
+  .principle { margin-top: 4vh; display: inline-flex; gap: 12px; align-items: center; padding: 1.2vh 1.6vw; border-radius: 999px; border: 1px solid rgba(140,196,173,.4); color: var(--mint); font-weight: 600; font-size: clamp(14px, 2vh, 19px); align-self: flex-start; }
+
+  /* Nav + progress */
+  .progress { position: fixed; left: 0; bottom: 0; height: 3px; width: 0; background: var(--mint); z-index: 7; transition: width .6s var(--ease); box-shadow: 0 0 12px var(--mint); }
+  .arrows { position: fixed; right: 24px; bottom: 18px; z-index: 7; display: flex; gap: 8px; }
+  .arrows button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(13,26,21,.6); color: var(--cream); font-size: 16px; cursor: pointer; }
+  .arrows button:hover { border-color: var(--mint); color: var(--mint); }
+  .arrows button:disabled { opacity: .25; cursor: default; }
+
+  body.scene-mode .window { opacity: 0; transform: translate(-50%, -46%) scale(.96); filter: blur(4px); pointer-events: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root { --cam: 0s; }
+    *, *::before, *::after { animation: none !important; transition-duration: 0s !important; }
+  }
+  @media (max-width: 760px) {
+    .stage span, .brand span { display: none; }
+    .rail { gap: 12px; padding: 0 14px; }
+    .grid4, .journey, .opt, .loop, .flow { grid-template-columns: 1fr; }
+    .flow svg.wires, .step3::after { display: none; }
+    .brain { margin: 0 auto; }
+    .scene { padding: 3vh 16px; overflow: auto; }
+    .cue { left: 16px !important; right: 16px; width: auto; top: auto !important; bottom: 70px; }
+  }
+</style>
 </head>
 <body>
-<div class="progress" id="progress"></div>
+<div class="bg"></div>
 
-<!-- 1 · Title -->
-<section class="slide title-slide active">
-  <div class="label">IPCEI-CIS · Rūpnieciskie pētījumi</div>
-  <h1>HVAC AI platforma<br>un mākslīgais intelekts</h1>
-  <p class="lede">Ko 2026. gada 3. ceturksnī paveicām platformā un MI komponentēs.</p>
-  <div class="meta">
-    <span class="pill">2026. gada jūlijs – septembris</span>
-    <span class="pill">Viedas industriālās ēkas</span>
-  </div>
-  <p class="funding">Projektu “Nākamās paaudzes mikroražotnes” 5.1.1.2.i.0/4/24/A/CFLA/003 finansē no Eiropas Savienības Atveseļošanas fonda budžeta līdzekļiem. Finansē Eiropas Savienība – NextGenerationEU.</p>
-</section>
+<header class="rail">
+  <div class="brand"><i></i><span>VATP · HVAC AI</span></div>
+  <nav class="stages" id="stages" aria-label="Tūres posmi"><div class="fill" id="fill"></div></nav>
+  <div class="count" id="count"></div>
+</header>
 
-<!-- 2 · Summary -->
-<section class="slide">
-  <div class="head"><div><div class="label">3. ceturksnis īsumā</div><h2>No viena siltumsūkņa līdz visai iekārtu telpai</h2></div><span class="num">02</span></div>
-  <div class="tiles">
-    <div class="tile"><b>6</b><span>HVAC iekārtas pieslēgtas</span><small>2 ventilācijas iekārtas, 2 enerģijas vārsti, 2 siltumsūkņi</small></div>
-    <div class="tile"><b>11</b><span>elektrības kontūri mērīti</span><small>katrs sūknis un iekārta atsevišķi</small></div>
-    <div class="tile"><b>5</b><span>sakaru protokoli</span><small>Modbus, BACnet, Luxtronik, HTTP, mākoņa API</small></div>
-    <div class="tile"><b>4</b><span>MI modeļu virzieni</span><small>darbojas padomdevēja režīmā</small></div>
-  </div>
-</section>
-
-<!-- 3 · Dashboard -->
-<section class="slide">
-  <div class="head"><div><div class="label">Platforma</div><h2>Viss svarīgākais vienā skatā</h2></div><span class="num">03</span></div>
-  <div class="media"><div class="shot"><img src="screenshots/dashboard.jpg" alt="Galvenais panelis: enerģija, izmaksas, siltumsūkņu efektivitāte, cena, slodzes prognoze"></div></div>
-</section>
-
-<!-- 4 · Schematic -->
-<section class="slide">
-  <div class="head"><div><div class="label">Platforma</div><h2>Dzīvā siltummezgla shēma</h2></div><span class="num">04</span></div>
-  <div class="media"><div class="shot"><img src="screenshots/schematic.jpg" alt="Interaktīva shēma ar ventilācijas iekārtām, vārstiem, siltumsūkņiem, tvertnēm un ģeotermālajiem urbumiem"></div></div>
-</section>
-
-<!-- 5 · Devices -->
-<section class="slide">
-  <div class="head"><div><div class="label">Iekārtu integrācija</div><h2>Katra iekārta — savi rādījumi reāllaikā</h2></div><span class="num">05</span></div>
-  <div class="media">
-    <div class="shot"><img src="screenshots/hp-device.jpg" alt="Siltumsūkņa ierīces lapa ar 34 kanāliem un sūkņa reģistriem"></div>
-  </div>
-</section>
-
-<!-- 6 · Where energy goes -->
-<section class="slide">
-  <div class="head"><div><div class="label">Enerģijas analītika</div><h2>Kur aiziet katra kilovatstunda</h2></div><span class="num">06</span></div>
-  <div class="media">
-    <div class="shot f1"><img src="screenshots/sankey.jpg" alt="Plūsmas diagramma: ēka → sistēma → iekārta"></div>
-    <div class="shot f1"><img src="screenshots/perdevice.jpg" alt="Elektrības patēriņš pa iekārtām"></div>
-  </div>
-</section>
-
-<!-- 7 · Cost -->
-<section class="slide">
-  <div class="head"><div><div class="label">Enerģijas analītika</div><h2>Izmaksas pēc biržas cenas, stundu pa stundai</h2></div><span class="num">07</span></div>
-  <div class="media">
-    <div class="col f3">
-      <div class="shot f1"><img src="screenshots/cost.jpg" alt="Izmaksas laikā pa sistēmām ar Nord Pool cenu"></div>
-      <div class="shot f1"><img src="screenshots/standout.jpg" alt="Automātiski izceltās atziņas un enerģijas sadalījums"></div>
+<main>
+  <section class="window" id="window" aria-label="Platformas ekrāns">
+    <div class="chrome">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="url" id="url"></div>
+      <div class="live"><i></i>Dzīvie dati</div>
     </div>
-  </div>
-</section>
-
-<!-- 8 · Heat pump efficiency -->
-<section class="slide">
-  <div class="head"><div><div class="label">Siltumsūkņi</div><h2>Efektivitāte un siltuma cena pret pilsētas apkuri</h2></div><span class="num">08</span></div>
-  <div class="media">
-    <div class="col f3">
-      <div class="shot f1"><img src="screenshots/plant.jpg" alt="Siltumsūkņu COP/EER un siltuma izmaksas salīdzinājumā ar pilsētas apkuri"></div>
-      <div class="shot f1"><img src="screenshots/heatdev.jpg" alt="Saražotais siltums un aukstums pa iekārtām"></div>
+    <div class="viewport" id="viewport">
+      <div class="layer" id="layerA"><img alt=""></div>
+      <div class="layer" id="layerB" style="opacity:0"><img alt=""></div>
+      <div class="spot off" id="spot"></div>
+      <div class="pin off" id="pin"></div>
     </div>
-    <div class="shot f1"><img src="screenshots/hpplant.jpg" alt="Siltumsūkņu kartīte galvenajā panelī"></div>
-  </div>
-</section>
+  </section>
 
-<!-- 9 · Comfort -->
-<section class="slide">
-  <div class="head"><div><div class="label">Telpu komforts</div><h2>Katras telpas mikroklimats uz stāva plāna</h2></div><span class="num">09</span></div>
-  <div class="media"><div class="shot"><img src="screenshots/floor.jpg" alt="Stāva plāns ar telpu komforta krāsojumu"></div></div>
-</section>
+  <aside class="cue hide" id="cue" aria-live="polite">
+    <div class="meta"><span class="n" id="cueN"></span><span class="chip" id="cueChip"></span></div>
+    <h3 id="cueTitle"></h3>
+    <p id="cueText"></p>
+    <div class="hint"><span id="cueStage"></span><span>→ / atstarpe</span></div>
+  </aside>
 
-<!-- 10 · AI section: models -->
-<section class="slide">
-  <div class="head"><div><div class="label">Mākslīgais intelekts</div><h2>Pirmie modeļi strādā ar reāliem datiem</h2></div><span class="num">10</span></div>
-  <div class="models">
-    <div class="model">
-      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div>
-      <div><h3>Ventilācijas enerģijas prognoze</h3><p>Patēriņš un izmaksas eiro pēc nākamās dienas cenām</p></div>
+  <!-- Intro -->
+  <section class="scene" id="scene-intro">
+    <div class="kick">IPCEI-CIS · Nākamās paaudzes mikroražotnes · 2026. g. 3. ceturksnis</div>
+    <h1>Ieskats <em>HVAC AI</em><br>platformā</h1>
+    <p class="sub">Interaktīva tūre pa platformu un mākslīgā intelekta komponentēm — tā, kā to redz lietotājs.</p>
+    <div class="logos">
+      <img src="logos/eu-nextgen.png" alt="Finansē Eiropas Savienība — NextGenerationEU">
+      <img src="logos/nap2027.png" alt="Nacionālais attīstības plāns 2027">
+      <img src="logos/vatp.png" alt="Ventspils Augsto Tehnoloģiju Parks">
+      <img src="logos/aspired.png" alt="Aspired">
+      <img src="logos/dati-group.png" alt="DATI Group">
+      <img src="logos/techgym.png" alt="TechGym">
+      <img src="logos/natrix-asya.png" alt="Natrix · Asya">
+      <img src="logos/testdevlab.png" alt="TestDevLab">
     </div>
-    <div class="model">
-      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 7.5l2.6 1.5M17.2 15l2.6 1.5M4.2 16.5l2.6-1.5M17.2 9l2.6-1.5"/><circle cx="12" cy="12" r="3.5"/></svg></div>
-      <div><h3>Siltuma atgūšanas efektivitāte</h3><p>Pamana, kad ventilācijas iekārta sāk strādāt sliktāk</p></div>
-    </div>
-    <div class="model">
-      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-      <div><h3>Izdevumu laika analīze</h3><p>Cik maksāja patiesībā un cik būtu maksājis lētākajās stundās</p></div>
-    </div>
-    <div class="model">
-      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/></svg></div>
-      <div><h3>Telpu termiskie modeļi</h3><p>Kā katra telpa sasilst un atdziest</p></div>
-    </div>
-  </div>
-  <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>MI iesaka, cilvēks izlemj</div>
-</section>
+    <p class="funding">Projektu “Nākamās paaudzes mikroražotnes” 5.1.1.2.i.0/4/24/A/CFLA/003 finansē no Eiropas Savienības Atveseļošanas fonda budžeta līdzekļiem. Finansē Eiropas Savienība – NextGenerationEU.</p>
+  </section>
 
-<!-- 11 · AI in the app -->
-<section class="slide">
-  <div class="head"><div><div class="label">Mākslīgais intelekts</div><h2>Prognoze un ieteikumi lietotnē</h2></div><span class="num">11</span></div>
-  <div class="media">
-    <div class="shot f2"><img src="screenshots/load.jpg" alt="Izmērītā slodze un prognoze ar lētajām un dārgajām stundām"></div>
-    <div class="shot f1"><img src="screenshots/attention.jpg" alt="Automātiskas enerģijas pārbaudes un brīdinājumi"></div>
-  </div>
-</section>
+  <!-- Journey overview -->
+  <section class="scene" id="scene-map">
+    <div class="kick">Tūres maršruts</div>
+    <h1>No ēkas<br>līdz <em>ieteikumam</em></h1>
+    <div class="journey" id="journeyList"></div>
+  </section>
 
-<!-- 12 · Price-aware hot water -->
-<section class="slide">
-  <div class="head"><div><div class="label">Mākslīgais intelekts</div><h2>Karstā ūdens sūknis strādā lētākajās stundās</h2></div><span class="num">12</span></div>
-  <div class="media">
-    <div class="shot f1"><img src="screenshots/price.jpg" alt="Nord Pool cenas nākamajām 12 stundām un lētākās stundas"></div>
-    <div class="side f1">
-      <div class="point"><i>1</i><p>Plāno darbu pēc biržas cenām<small>nākamās dienas Nord Pool cenas</small></p></div>
-      <div class="point"><i>2</i><p>Vadība pārbaudīta uz reālas iekārtas<small>komanda, apstiprinājums, audita ieraksts</small></p></div>
-      <div class="point"><i>3</i><p>Automātika apzināti izslēgta<small>pētījuma posmā lēmumu pieņem cilvēks</small></p></div>
-    </div>
-  </div>
-</section>
+  <!-- Chapter (re-used, filled from data) -->
+  <section class="scene chapter" id="scene-chapter">
+    <div class="kick" id="chKick"></div>
+    <h1 id="chTitle"></h1>
+    <p class="sub" id="chSub"></p>
+    <div class="num" id="chNum"></div>
+  </section>
 
-<!-- 13 · Public display -->
-<section class="slide">
-  <div class="head"><div><div class="label">Publiskais displejs</div><h2>Ēkas stāvoklis vestibila ekrānā</h2></div><span class="num">13</span></div>
-  <div class="media">
-    <div class="shot dark f1"><img src="screenshots/display-comfort.jpg" alt="Displejs: ēkas komforts"></div>
-    <div class="shot dark f1"><img src="screenshots/display-energy.jpg" alt="Displejs: enerģijas kopsavilkums"></div>
-  </div>
-</section>
-
-<!-- 14 · Next -->
-<section class="slide">
-  <div class="head"><div><div class="label">4. ceturksnis</div><h2>Kas jau procesā</h2></div><span class="num">14</span></div>
-  <div class="media">
-    <div class="col f3" style="justify-content:center">
-      <div class="shot"><img src="screenshots/rhythm.jpg" alt="Enerģijas patēriņa siltuma karte un tipiskās dienas profils"></div>
-      <div class="shot"><img src="screenshots/carbon.jpg" alt="CO₂ pēdas nospiedums"></div>
-    </div>
-    <div class="side f2">
-      <div class="next-list">
-        <div>MI asistents<small>jautā ēkai dabiskā valodā, ES mitināts</small></div>
-        <div>Digitālais dvīnis<small>“kas būtu, ja” simulācijas</small></div>
-        <div>Siltuma mērītāji<small>katrs apkures kontūrs</small></div>
-        <div>Apkures sezona<small>pirmie apkures dati modeļiem</small></div>
+  <!-- AI: signals in, decisions out -->
+  <section class="scene" id="scene-signals">
+    <div class="kick">MI ietaupa · ko tas ņem vērā</div>
+    <h2>Daudz signālu, <em>viens</em> lēmums: kad tērēt</h2>
+    <div class="flow" id="flow">
+      <svg class="wires" id="wires"></svg>
+      <div class="col-list" id="sigIn">
+        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div><div><b>Elektrības cena</b><small>Nord Pool, katra stunda nākamajai dienai</small></div></div>
+        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.5 19a4.5 4.5 0 100-9 6 6 0 00-11.6 2A4 4 0 006.5 19z"/></svg></div><div><b>Laika prognoze</b><small>temperatūra, saule, mākoņi — 48 h uz priekšu</small></div></div>
+        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-3"/></svg></div><div><b>Siltumsūkņu efektivitāte</b><small>COP / EER, mērīta katru stundu</small></div></div>
+        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l6-6 4 4 8-8"/></svg></div><div><b>Ēkas slodzes prognoze</b><small>cik enerģijas vajadzēs nākamajās stundās</small></div></div>
+        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/></svg></div><div><b>Komforta robežas</b><small>karstais ūdens ik 3–8 h, telpu temperatūra</small></div></div>
+      </div>
+      <div class="brain" id="brain"><div><b>MI<br>plānotājs</b><small>katru stundu</small></div></div>
+      <div class="col-list" id="sigOut">
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.7s6 6.6 6 11.3a6 6 0 01-12 0c0-4.7 6-11.3 6-11.3z"/></svg></div><div><b>Karstais ūdens</b><small>sildīt lētākajās stundās</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M10 21v-6h4v6"/></svg></div><div><b>Apkure</b><small>siltumsūknis vai pilsētas siltums — kas lētāk</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7M14 12c4 0 7 1 7 4M12 14c0 4-1 7-4 7M10 12c-4 0-7-1-7-4"/></svg></div><div><b>Ventilācija</b><small>izmaksu prognoze un novirzes</small></div></div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- 15 · Thanks -->
-<section class="slide title-slide">
-  <div class="label">VATP · Ventspils Augsto Tehnoloģiju Parks</div>
-  <h1>Paldies!</h1>
-  <p class="lede">Platforma tavai izaugsmei.</p>
-  <p class="funding">Projektu “Nākamās paaudzes mikroražotnes” 5.1.1.2.i.0/4/24/A/CFLA/003 finansē no Eiropas Savienības Atveseļošanas fonda budžeta līdzekļiem. Finansē Eiropas Savienība – NextGenerationEU. Tomēr paustie uzskati un viedokļi ir tikai autora(-u) uzskati un viedokļi un ne vienmēr atspoguļo Eiropas Savienības vai Eiropas Komisijas uzskatus un viedokļus. Par tiem nav atbildīga ne Eiropas Savienība, ne Eiropas Komisija.</p>
-</section>
+  <!-- AI: live hot-water optimiser on real prices -->
+  <section class="scene" id="scene-optimizer">
+    <div class="kick">Karstais ūdens · platformas algoritms, reālas Nord Pool cenas</div>
+    <h2>Piecas sildīšanas — <em>lētākajās</em> stundās</h2>
+    <div class="days" id="days"></div>
+    <div class="opt">
+      <div class="chart">
+        <svg id="optChart" viewBox="0 0 960 390"></svg>
+        <div class="legend">
+          <span><i style="background:#8cc4ad"></i>MI izvēlētās stundas</span>
+          <span><i style="background:transparent;border:2px solid #e39467"></i>Vienmērīgi, bez MI</span>
+          <span><i style="background:#3f7a67"></i>Siltumsūknis lētāks par pilsētas siltumu</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div><div class="big" id="optPct">–</div><div class="big-cap">lētāk nekā sildot vienmērīgi</div></div>
+        <div class="stat"><span>MI plāns, vidēji</span><b id="optAvg">–</b></div>
+        <div class="stat"><span>Bez MI, vidēji</span><b id="optEven">–</b></div>
+        <div class="stat"><span>Garākā pauze</span><b id="optWait">–</b></div>
+        <div class="stat"><span>Siltumsūknis lētāks</span><b id="optHp">–</b></div>
+        <div class="stat"><span>7 dienu vidēji</span><b id="optWeek">–</b></div>
+      </div>
+    </div>
+  </section>
 
-<nav class="nav" id="nav">
-  <button id="prev" aria-label="Iepriekšējais slaids">←</button>
-  <span id="counter"></span>
-  <button id="next" aria-label="Nākamais slaids">→</button>
-</nav>
+  <!-- AI: plan → control → measure -->
+  <section class="scene" id="scene-loop">
+    <div class="kick">MI ietaupa · no plāna līdz eiro</div>
+    <h2>Plāno. Vada. <em>Mēra.</em></h2>
+    <div class="loop">
+      <div class="step3"><div class="k">01</div><h4>Plāno</h4><p>Katru dienu no rītdienas cenām aprēķina, kad sildīt ūdeni un kurš siltuma avots būs lētākais.</p><div class="tagline"><span>Nord Pool</span><span>laika prognoze</span><span>COP</span></div></div>
+      <div class="step3"><div class="k">02</div><h4>Vada</h4><p>Komanda aiziet uz iekārtu, iekārta apstiprina izpildi, katrs solis tiek ierakstīts auditā.</p><div class="tagline"><span>pārbaudīts uz reālas iekārtas</span><span>audita ieraksts</span></div></div>
+      <div class="step3"><div class="k">03</div><h4>Mēra</h4><p>Ietaupījumu rēķina katru dienu — patērētās kWh pēc reālās stundas cenas pret dienas vidējo cenu.</p><div class="tagline"><span>reāli eiro</span><span>katru dienu</span></div></div>
+    </div>
+    <div class="status"><i></i>Automātika gatava · pētījuma posmā to ieslēdz cilvēks</div>
+  </section>
+
+  <!-- AI models -->
+  <section class="scene" id="scene-models">
+    <div class="kick">MI ietaupa · vēl četri modeļi uz reāliem datiem</div>
+    <h1>Četri modeļi,<br><em>viens</em> princips</h1>
+    <div class="grid4">
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><div><h4>Ventilācijas enerģijas prognoze</h4><p>Patēriņš un izmaksas eiro pēc nākamās dienas cenām</p></div></div>
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 7.5l2.6 1.5M17.2 15l2.6 1.5M4.2 16.5l2.6-1.5M17.2 9l2.6-1.5"/><circle cx="12" cy="12" r="3.5"/></svg></div><div><h4>Siltuma atgūšanas efektivitāte</h4><p>Pamana, kad ventilācijas iekārta sāk strādāt sliktāk</p></div></div>
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><h4>Izdevumu laika analīze</h4><p>Cik maksāja patiesībā un cik — lētākajās stundās</p></div></div>
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/></svg></div><div><h4>Telpu termiskie modeļi</h4><p>Kā katra telpa sasilst un atdziest</p></div></div>
+    </div>
+    <div class="principle">MI iesaka · cilvēks izlemj</div>
+  </section>
+
+  <!-- Next -->
+  <section class="scene" id="scene-next">
+    <div class="kick">4. ceturksnis · jau procesā</div>
+    <h1>Kas <em>tālāk</em></h1>
+    <div class="grid4">
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><h4>MI asistents</h4><p>Jautā ēkai dabiskā valodā — ES mitināts modelis</p></div></div>
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 013 3V14M14 17.5h-4a3 3 0 01-3-3V10"/></svg></div><div><h4>Digitālais dvīnis</h4><p>“Kas būtu, ja” simulācijas pirms izmaiņām</p></div></div>
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13l3-3M12 3v2"/></svg></div><div><h4>Siltuma mērītāji</h4><p>Katra apkures kontūra siltums atsevišķi</p></div></div>
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div><div><h4>Apkures sezona</h4><p>Pirmie apkures dati modeļu apmācībai</p></div></div>
+    </div>
+  </section>
+
+  <!-- Outro -->
+  <section class="scene" id="scene-outro">
+    <div class="kick">VATP · Ventspils Augsto Tehnoloģiju Parks</div>
+    <h1>Paldies!</h1>
+    <p class="sub">Platforma tavai izaugsmei.</p>
+    <div class="logos">
+      <img src="logos/eu-nextgen.png" alt="Finansē Eiropas Savienība — NextGenerationEU">
+      <img src="logos/nap2027.png" alt="Nacionālais attīstības plāns 2027">
+      <img src="logos/vatp.png" alt="Ventspils Augsto Tehnoloģiju Parks">
+      <img src="logos/aspired.png" alt="Aspired">
+      <img src="logos/dati-group.png" alt="DATI Group">
+      <img src="logos/techgym.png" alt="TechGym">
+      <img src="logos/natrix-asya.png" alt="Natrix · Asya">
+      <img src="logos/testdevlab.png" alt="TestDevLab">
+    </div>
+    <p class="funding">Projektu “Nākamās paaudzes mikroražotnes” 5.1.1.2.i.0/4/24/A/CFLA/003 finansē no Eiropas Savienības Atveseļošanas fonda budžeta līdzekļiem. Finansē Eiropas Savienība – NextGenerationEU. Tomēr paustie uzskati un viedokļi ir tikai autora(-u) uzskati un viedokļi un ne vienmēr atspoguļo Eiropas Savienības vai Eiropas Komisijas uzskatus un viedokļus. Par tiem nav atbildīga ne Eiropas Savienība, ne Eiropas Komisija.</p>
+  </section>
+</main>
+
+<div class="arrows"><button id="prev" aria-label="Atpakaļ">←</button><button id="next" aria-label="Uz priekšu">→</button></div>
+<div class="progress" id="progress"></div>
 
 <script>
-(function () {
-  var slides = document.querySelectorAll('.slide');
-  var nav = document.getElementById('nav');
-  var prev = document.getElementById('prev');
-  var next = document.getElementById('next');
-  var counter = document.getElementById('counter');
-  var progress = document.getElementById('progress');
-  var total = slides.length;
-  var current = 0;
-  var hideTimer = null;
+/* ─────────────────────────────────────────────────────────────
+   Data. Screens are full-page captures of the web app at 1600 px
+   CSS width; every focus rect is in those page pixels, measured
+   from the live DOM when the screens were captured.
+   ───────────────────────────────────────────────────────────── */
+const SCREENS = {
+  f3dHome:    { src: 'app/f3d-home.jpg',        h: 1000, url: '3D ēka' },
+  f3dZoom:    { src: 'app/f3d-zoom.jpg',        h: 1000, url: '3D ēka' },
+  f3dHp:      { src: 'app/f3d-hp.jpg',          h: 1000, url: '3D ēka / Siltumsūknis' },
+  dashboard:  { src: 'app/dashboard.jpg',       h: 1233, url: 'Pārskats' },
+  schematic:  { src: 'app/schematic.jpg',       h: 1000, url: 'Shēma' },
+  schematicH: { src: 'app/schematic-hover.jpg', h: 1000, url: 'Shēma' },
+  device:     { src: 'app/device.jpg',          h: 1500, url: 'Iekārtas / Siltumsūknis' },
+  floor:      { src: 'app/floor.jpg',           h: 1300, url: 'Stāvi / VATP 1A / 2. stāvs' },
+  energy:     { src: 'app/energy.jpg',          h: 4592, url: 'Enerģija' },
+  breakdown:  { src: 'app/breakdown.jpg',       h: 2500, url: 'Enerģija / Sadalījums' },
+  display:    { src: 'app/display.jpg',         h: 1000, url: 'Displejs' },
+};
 
-  function startIndex() {
-    var n = parseInt(location.hash.slice(1), 10);
-    return n >= 1 && n <= total ? n - 1 : 0;
+const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Komforts', 'Enerģija', 'MI ietaupa', 'Tālāk'];
+
+// type: scene | chapter | cam.   stage: index into STAGES (-1 = before the journey).
+// rect: [x, y, w, h] in page px.  spot: false = camera move without a spotlight.
+const STEPS = [
+  { type: 'scene', id: 'intro', stage: -1 },
+  { type: 'scene', id: 'map', stage: -1 },
+
+  { type: 'chapter', stage: 0, title: 'Ēka — <em>digitāli</em>', sub: 'Viss sākas ar reālo VATP ēku un tās iekārtām 3D modelī.' },
+  { type: 'cam', stage: 0, screen: 'f3dHome', rect: [0, 0, 1600, 1000], spot: false, title: 'VATP ēka 3D', text: 'Ēka, teritorija un laikapstākļi — modelis dzīvo līdzi reālajai situācijai.' },
+  { type: 'cam', stage: 0, screen: 'f3dHome', rect: [12, 74, 655, 108], title: 'Ēka vienā mirklī', text: 'Patērētā jauda, saražotais siltums, pieslēgtās iekārtas un laiks ārā.' },
+  { type: 'cam', stage: 0, screen: 'f3dZoom', rect: [224, 110, 1312, 480], title: 'Katra iekārta savā vietā', text: 'Ventilācija, siltumsūkņi, vārsti un urbumi — ar dzīviem rādījumiem uz ēkas.' },
+  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1222, 74, 312, 432], chip: 'Luxtronik', title: 'Klikšķis — un dati', text: 'Izvēlies iekārtu modelī un redzi tās stāvokli tieši tagad.' },
+
+  { type: 'chapter', stage: 1, title: 'Viss <em>vienā</em> skatā', sub: 'Galvenais panelis — ko ēka dara un kas jāpamana.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [80, 60, 1440, 1160], spot: false, title: 'Galvenais panelis', text: 'Viss svarīgākais par ēku vienā ekrānā — atjaunojas pats.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 160, 1400, 128], title: 'Šodiena skaitļos', text: 'Enerģija, izmaksas, siltumsūkņu efektivitāte, elektrības cena un laiks.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 301, 923, 444], chip: 'MI', title: 'Slodze un prognoze', text: 'Izmērītā jauda un nākamo stundu prognoze uz lēto un dārgo stundu fona.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [1039, 301, 461, 444], title: 'Kam pievērst uzmanību', text: 'Platforma pati pārbauda datus un izceļ, kas jāapskata.' },
+
+  { type: 'chapter', stage: 2, title: 'Reālas <em>iekārtas</em>', sub: 'Ventilācija, siltumsūkņi un vārsti — pieslēgti platformai.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [273, 120, 1050, 815], spot: false, title: 'Siltummezgls dzīvajā', text: 'Visa sistēma vienā interaktīvā shēmā. Krāsas rāda, kas silda un kas dzesē.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [405, 128, 350, 228], chip: 'Modbus · BACnet', title: 'Ventilācija', text: 'Divas Siemens ventilācijas iekārtas un to enerģijas vārsti.' },
+  { type: 'cam', stage: 2, screen: 'schematicH', rect: [630, 505, 402, 268], chip: 'Luxtronik', title: 'Siltumsūkņi', text: 'Temperatūras, jauda un efektivitāte — tieši no iekārtas.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [272, 628, 120, 150], title: 'Ģeotermālie urbumi', text: 'Zemes siltums — siltumsūkņu avots un dzesēšanas izvads.' },
+  { type: 'cam', stage: 2, screen: 'device', rect: [250, 240, 1100, 700], title: 'Katras iekārtas dati', text: 'Siltumsūknis sniedz 34 rādījumus, katram — vēsture un statuss.' },
+
+  { type: 'chapter', stage: 3, title: 'Telpu <em>komforts</em>', sub: 'Kā jūtas cilvēki katrā telpā.' },
+  { type: 'cam', stage: 3, screen: 'floor', rect: [248, 164, 1100, 1064], title: 'Stāva plāns', text: 'Katra telpa iekrāsota pēc komforta — CO₂, temperatūra un mitrums.' },
+
+  { type: 'chapter', stage: 4, title: 'Kur aiziet <em>enerģija</em>', sub: 'Katra kilovatstunda — un cik tā maksāja.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 379, 1552, 172], title: 'Saražotais siltums', text: 'Ko siltumsūkņi saražoja: apkure, karstais ūdens un dzesēšana.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1648, 925, 650], title: 'Enerģijas plūsma', text: 'No ēkas līdz sistēmai un līdz katrai iekārtai.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1211, 1552, 421], title: 'Izmaksas stundu pa stundai', text: 'Patēriņš, reizināts ar Nord Pool biržas cenu katrā stundā.' },
+  { type: 'cam', stage: 4, screen: 'breakdown', rect: [24, 1206, 1552, 783], title: 'Katra iekārta atsevišķi', text: 'Elektrības patēriņš un izmaksas pa iekārtām.' },
+
+  { type: 'chapter', stage: 5, title: 'MI, kas <em>ietaupa</em>', sub: 'Apkure un karstais ūdens — pēc elektrības cenas un citiem rādītājiem.' },
+  { type: 'scene', id: 'signals', stage: 5 },
+  { type: 'scene', id: 'optimizer', stage: 5 },
+  { type: 'cam', stage: 5, screen: 'dashboard', rect: [1044, 759, 456, 446], chip: 'MI', title: 'Lētākās stundas lietotnē', text: 'Operators redz rītdienas cenas un stundas, kurās MI plāno sildīšanu.' },
+  { type: 'cam', stage: 5, screen: 'energy', rect: [24, 3315, 1552, 446], chip: 'MI', title: 'Siltumsūknis vai pilsētas siltums', text: 'Katru stundu salīdzina mūsu siltuma cenu ar pilsētas apkuri — un saka, kas izdevīgāk.' },
+  { type: 'scene', id: 'loop', stage: 5 },
+  { type: 'scene', id: 'models', stage: 5 },
+
+  { type: 'cam', stage: 6, screen: 'display', rect: [0, 0, 1600, 1000], spot: false, title: 'Vestibila ekrāns', text: 'Ēkas stāvoklis visiem apmeklētājiem — komforts, enerģija un cena.' },
+  { type: 'scene', id: 'next', stage: 6 },
+  { type: 'scene', id: 'outro', stage: 6 },
+];
+
+/* Real Latvian Nord Pool day-ahead prices (EUR/MWh, local hours) — source: Elering NPS API. */
+const PRICE_DAYS = {
+  '28. okt': [5.7, 65.4, 96.1, 120.2, 140.2, 94.6, 147.0, 257.8, 240.0, 261.1, 254.2, 237.7, 230.1, 222.1, 218.1, 258.7, 309.5, 308.1, 309.6, 318.4, 310.7, 302.7, 281.1, 257.4],
+  '29. okt': [234.6, 266.2, 254.6, 249.7, 252.5, 254.4, 270.5, 338.2, 346.6, 386.7, 334.2, 299.2, 287.1, 273.7, 305.1, 307.6, 355.9, 316.7, 344.8, 303.6, 351.6, 175.8, 176.1, 182.0],
+  '30. okt': [107.6, 142.6, 228.3, 131.0, 194.5, 174.6, 166.0, 267.2, 245.7, 268.9, 249.6, 260.3, 235.9, 224.2, 236.8, 253.7, 265.7, 276.0, 244.8, 250.3, 209.3, 202.6, 164.8, 152.9],
+  '31. okt': [142.2, 196.4, 189.9, 192.8, 196.9, 184.8, 205.3, 231.7, 243.8, 252.0, 245.5, 233.6, 230.8, 226.4, 233.9, 238.4, 258.0, 283.1, 271.2, 278.0, 273.5, 276.3, 261.7, 208.6],
+  '1. nov': [193.8, 203.5, 189.1, 207.0, 196.7, 232.2, 221.9, 194.4, 173.2, 189.0, 202.2, 208.8, 219.9, 244.7, 254.9, 246.7, 269.7, 297.3, 299.9, 300.0, 297.7, 284.8, 243.7, 222.0],
+  '2. nov': [193.0, 243.0, 274.2, 235.9, 230.8, 231.2, 242.6, 346.9, 404.7, 411.5, 402.8, 394.3, 401.9, 402.9, 399.7, 411.1, 396.2, 404.9, 408.6, 402.2, 411.4, 400.5, 344.6, 283.2],
+  '3. nov': [249.8, 289.4, 280.8, 266.4, 302.9, 300.4, 274.4, 281.1, 347.2, 374.6, 326.0, 295.4, 324.1, 334.9, 320.8, 364.2, 358.1, 348.7, 350.2, 348.6, 343.0, 308.5, 263.9, 219.9],
+};
+
+/* The platform's DHW scheduler (src/features/dhw-scheduling), same rules: 5 runs over a 24/7
+   circular day, 3–8 h apart, waits beyond 5 h cost quadratically; brute force = provably optimal. */
+const DHW = { runs: 5, minGap: 3, maxGap: 8, targetGap: 5, waitWeight: 1 };
+const CITY_HEAT_EUR_MWH = 75;   // district heating tariff used by the app's comparison
+const EXAMPLE_COP = 3;          // heat-pump COP used to price its heat in this illustration
+
+function gapsOf(h) { return [...h.slice(1).map((x, i) => x - h[i]), 24 - (h[h.length - 1] - h[0])]; }
+function planDhw(prices) {
+  let best = null, bestScore = Infinity;
+  const idx = [0, 1, 2, 3, 4];
+  for (;;) {
+    const gaps = gapsOf(idx);
+    if (!gaps.some((g) => g < DHW.minGap || g > DHW.maxGap)) {
+      const score = idx.reduce((s, h) => s + prices[h], 0) +
+        DHW.waitWeight * gaps.reduce((s, g) => s + Math.max(0, g - DHW.targetGap) ** 2, 0);
+      if (score < bestScore) { bestScore = score; best = idx.slice(); }
+    }
+    let i = 4;
+    while (i >= 0 && idx[i] === 24 - 5 + i) i--;
+    if (i < 0) break;
+    idx[i]++;
+    for (let j = i + 1; j < 5; j++) idx[j] = idx[j - 1] + 1;
   }
+  const even = Array.from({ length: 5 }, (_, i) => Math.floor(i * 24 / 5));
+  const avg = (hs) => hs.reduce((s, h) => s + prices[h], 0) / hs.length;
+  return { hours: best, even, avg: avg(best), evenAvg: avg(even), wait: Math.max(...gapsOf(best)) };
+}
 
-  function show(i) {
-    if (i < 0 || i >= total) return;
-    slides[current].classList.remove('active');
-    current = i;
-    slides[current].classList.add('active');
-    counter.textContent = (current + 1) + ' / ' + total;
-    prev.disabled = current === 0;
-    next.disabled = current === total - 1;
-    progress.style.width = ((current + 1) / total * 100) + '%';
-    history.replaceState(null, '', '#' + (current + 1));
-  }
+/* ───────────────────────── Controller ───────────────────────── */
+const $ = (id) => document.getElementById(id);
+const viewport = $('viewport');
+const layers = [$('layerA'), $('layerB')];
+let front = 0;            // index of the visible layer
+let frontScreen = null;   // screen id on the visible layer
+let current = 0;
 
-  function showNav() {
-    nav.classList.remove('hidden');
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(function () { nav.classList.add('hidden'); }, 2500);
-  }
+// Rail + journey map: one entry per stage.
+STAGES.forEach((name, i) => {
+  const b = document.createElement('button');
+  b.className = 'stage';
+  b.innerHTML = `<b>${i + 1}</b><span>${name}</span>`;
+  b.addEventListener('click', () => go(STEPS.findIndex((s) => s.stage === i)));
+  $('stages').appendChild(b);
+  const j = document.createElement('div');
+  j.innerHTML = `<b>0${i + 1}</b><span>${name}</span>`;
+  $('journeyList').appendChild(j);
+});
 
-  prev.addEventListener('click', function () { show(current - 1); showNav(); });
-  next.addEventListener('click', function () { show(current + 1); showNav(); });
-  document.addEventListener('keydown', function (e) {
-    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) >= 0) { e.preventDefault(); show(current + 1); }
-    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) >= 0) { e.preventDefault(); show(current - 1); }
-    else if (e.key === 'Home') { show(0); }
-    else if (e.key === 'End') { show(total - 1); }
+// Number the camera stops so cues read 01, 02, …
+let stop = 0;
+STEPS.forEach((s) => { if (s.type === 'cam') s.n = ++stop; });
+
+function camera(screen, rect) {
+  // Fit the focus rect into the viewport with breathing room, keep the page covering the viewport.
+  const vw = viewport.clientWidth, vh = viewport.clientHeight;
+  const [x, y, w, h] = rect;
+  const pad = w >= 1400 ? 1 : innerWidth < 1500 ? 0.6 : 0.78;
+  const minZ = vw / 1600;
+  let z = Math.min((vw * pad) / w, (vh * pad) / h);
+  z = Math.max(minZ, Math.min(z, minZ * 2.4));
+  const pageH = SCREENS[screen].h;
+  let tx = vw / 2 - (x + w / 2) * z;
+  let ty = vh / 2 - (y + h / 2) * z;
+  tx = Math.min(0, Math.max(vw - 1600 * z, tx));
+  ty = pageH * z > vh ? Math.min(0, Math.max(vh - pageH * z, ty)) : (vh - pageH * z) / 2;
+  return { z, tx, ty };
+}
+
+function placeLayer(layer, screen, cam) {
+  layer.style.width = '1600px';
+  layer.style.height = SCREENS[screen].h + 'px';
+  layer.style.transform = `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.z})`;
+}
+
+function showScreen(screen, cam) {
+  if (frontScreen === screen) { placeLayer(layers[front], screen, cam); return; }
+  // Cross-fade to the other layer, which jumps straight to the new camera position.
+  const back = 1 - front;
+  layers[back].querySelector('img').src = SCREENS[screen].src;
+  layers[back].style.transition = 'none';
+  placeLayer(layers[back], screen, cam);
+  void layers[back].offsetWidth;
+  layers[back].style.transition = '';
+  layers[back].style.opacity = 1;
+  layers[front].style.opacity = 0;
+  front = back; frontScreen = screen;
+}
+
+function spotlight(step, cam) {
+  const spot = $('spot'), pin = $('pin');
+  const [x, y, w, h] = step.rect;
+  const p = 8;
+  const L = x * cam.z + cam.tx - p, T = y * cam.z + cam.ty - p, W = w * cam.z + 2 * p, H = h * cam.z + 2 * p;
+  const on = step.spot !== false;
+  Object.assign(spot.style, { left: L + 'px', top: T + 'px', width: W + 'px', height: H + 'px' });
+  spot.classList.toggle('off', !on);
+  Object.assign(pin.style, { left: L + 'px', top: T + 'px' });
+  pin.textContent = step.n;
+  pin.classList.toggle('off', !on);
+  return { L, T, W, H, on };
+}
+
+function hotspots(step, cam) {
+  // Small numbered dots on the other stops of the same screen — click to jump there.
+  viewport.querySelectorAll('.hot').forEach((n) => n.remove());
+  const family = (s) => s.replace(/H$/, '');
+  STEPS.forEach((s, i) => {
+    if (s.type !== 'cam' || s === step || s.spot === false || family(s.screen) !== family(step.screen)) return;
+    const d = document.createElement('button');
+    d.className = 'hot';
+    d.textContent = s.n;
+    d.title = s.title;
+    d.style.left = (s.rect[0] * cam.z + cam.tx + 16) + 'px';
+    d.style.top = (s.rect[1] * cam.z + cam.ty + 16) + 'px';
+    d.addEventListener('click', (e) => { e.stopPropagation(); go(i); });
+    viewport.appendChild(d);
   });
-  document.addEventListener('mousemove', showNav, { passive: true });
+}
 
-  show(startIndex());
-  showNav();
-})();
+function placeCue(box) {
+  // Beside the spotlight when there is room; otherwise tucked into its lower-right corner.
+  const cue = $('cue');
+  const win = $('window').getBoundingClientRect();
+  const vp = viewport.getBoundingClientRect();
+  const cw = cue.offsetWidth, ch = cue.offsetHeight, gap = 22;
+  let left, top;
+  if (box.on) {
+    const sx = vp.left + box.L, sy = vp.top + box.T;
+    if (sx + box.W + gap + cw < innerWidth - 16) { left = sx + box.W + gap; top = sy; }
+    else if (sx - gap - cw > 16) { left = sx - gap - cw; top = sy; }
+    else {
+      // No room beside it: use the window corner farthest from the spotlight's centre.
+      const cx = sx + box.W / 2, cy = sy + box.H / 2;
+      left = cx > (win.left + win.right) / 2 ? win.left + 20 : win.right - cw - 20;
+      top = cy > (win.top + win.bottom) / 2 ? win.top + 50 : win.bottom - ch - 20;
+    }
+  } else {
+    left = win.left + 28; top = win.bottom - ch - 28;
+  }
+  cue.style.left = Math.min(innerWidth - cw - 16, Math.max(16, left)) + 'px';
+  cue.style.top = Math.min(innerHeight - ch - 24, Math.max(80, top)) + 'px';
+}
+
+function setCue(step) {
+  $('cueN').textContent = String(step.n).padStart(2, '0');
+  const chip = $('cueChip');
+  chip.textContent = step.chip || STAGES[step.stage];
+  chip.className = 'chip' + (step.chip === 'MI' ? ' ai' : step.chip ? ' proto' : '');
+  $('cueTitle').textContent = step.title;
+  $('cueText').textContent = step.text;
+  $('cueStage').textContent = `${step.stage + 1} · ${STAGES[step.stage]}`;
+}
+
+function setRail(step) {
+  const stage = step.stage;
+  document.querySelectorAll('.stage').forEach((el, i) => {
+    el.classList.toggle('done', i < stage);
+    el.classList.toggle('now', i === stage);
+  });
+  const nodes = document.querySelectorAll('.stage b');
+  if (stage < 0) { $('fill').style.width = '0px'; return; }
+  const first = nodes[0].getBoundingClientRect(), cur = nodes[stage].getBoundingClientRect();
+  $('fill').style.width = Math.max(0, cur.left - first.left) + 'px';
+}
+
+/* ── AI scenes: live optimiser chart + signal wires ── */
+let optDay = '30. okt';
+
+function renderOptimizer(day) {
+  optDay = day;
+  const prices = PRICE_DAYS[day];
+  const plan = planDhw(prices);
+  document.querySelectorAll('#days button').forEach((b) => b.classList.toggle('on', b.dataset.day === day));
+  const svg = $('optChart');
+  const W = 960, top = 22, chartH = 262, laneY = 344, laneH = 26, bw = W / 24;
+  const max = Math.max(420, ...prices);
+  let out = '';
+  // Gridlines every 100 EUR/MWh.
+  for (let v = 100; v <= max; v += 100) {
+    const y = top + chartH - (v / max) * chartH;
+    out += `<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="rgba(246,239,227,.08)"/>` +
+      `<text x="${W - 4}" y="${y - 5}" text-anchor="end" class="lane-label">${v}</text>`;
+  }
+  prices.forEach((p, h) => {
+    const bh = Math.max(3, (p / max) * chartH);
+    const x = h * bw + 4, w = bw - 8, y = top + chartH - bh;
+    const chosen = plan.hours.includes(h), even = plan.even.includes(h);
+    const fill = chosen ? '#8cc4ad' : 'rgba(246,239,227,.16)';
+    out += `<rect class="bar" x="${x}" y="${y}" width="${w}" height="${bh}" rx="5" fill="${fill}"/>`;
+    if (even) out += `<rect x="${x - 2}" y="${y - 2}" width="${w + 4}" height="${bh + 4}" rx="6" fill="none" stroke="#e39467" stroke-width="2.5" stroke-dasharray="${chosen ? '0' : '5 4'}"/>`;
+    if (chosen) out += `<text x="${x + w / 2}" y="${y - 9}" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="13" fill="#8cc4ad">${Math.round(p)}</text>`;
+    if (h % 3 === 0) out += `<text x="${x + w / 2}" y="${top + chartH + 18}" text-anchor="middle" class="lane-label">${String(h).padStart(2, '0')}</text>`;
+    // Heating lane: heat-pump heat = price / COP vs the city heating tariff.
+    const hpCheaper = p / EXAMPLE_COP < CITY_HEAT_EUR_MWH;
+    out += `<rect x="${x}" y="${laneY}" width="${w}" height="${laneH}" rx="5" fill="${hpCheaper ? '#3f7a67' : 'rgba(246,239,227,.08)'}"/>`;
+  });
+  out += `<text x="4" y="${laneY - 10}" class="lane-label">APKURE · siltumsūknis (COP ${EXAMPLE_COP}) pret pilsētas siltumu ${CITY_HEAT_EUR_MWH} €/MWh</text>`;
+  svg.innerHTML = out;
+  const pct = (plan.evenAvg - plan.avg) / plan.evenAvg * 100;
+  $('optPct').textContent = `−${Math.round(pct)}%`;
+  $('optAvg').textContent = `${Math.round(plan.avg)} €/MWh`;
+  $('optEven').textContent = `${Math.round(plan.evenAvg)} €/MWh`;
+  $('optWait').textContent = `${plan.wait} h`;
+  const hpHours = prices.filter((p) => p / EXAMPLE_COP < CITY_HEAT_EUR_MWH).length;
+  $('optHp').textContent = `${hpHours} no 24 h`;
+  const week = Object.values(PRICE_DAYS).map((d) => { const r = planDhw(d); return (r.evenAvg - r.avg) / r.evenAvg; });
+  $('optWeek').textContent = `−${Math.round(week.reduce((s, v) => s + v, 0) / week.length * 100)}%`;
+}
+
+Object.keys(PRICE_DAYS).forEach((day) => {
+  const b = document.createElement('button');
+  b.textContent = day;
+  b.dataset.day = day;
+  b.addEventListener('click', (e) => { e.stopPropagation(); renderOptimizer(day); });
+  $('days').appendChild(b);
+});
+
+function drawWires() {
+  // Curved dashed wires from every signal into the planner, and from it to every decision.
+  const flow = $('flow').getBoundingClientRect();
+  const brain = $('brain').getBoundingClientRect();
+  const bx = brain.left - flow.left, by = brain.top - flow.top + brain.height / 2, bw = brain.width;
+  let d = '';
+  document.querySelectorAll('#sigIn .sig').forEach((el) => {
+    const r = el.getBoundingClientRect();
+    const x = r.right - flow.left, y = r.top - flow.top + r.height / 2;
+    d += `<path d="M${x},${y} C${(x + bx) / 2},${y} ${(x + bx) / 2},${by} ${bx},${by}"/>`;
+  });
+  document.querySelectorAll('#sigOut .sig').forEach((el) => {
+    const r = el.getBoundingClientRect();
+    const x = r.left - flow.left, y = r.top - flow.top + r.height / 2, sx = bx + bw;
+    d += `<path class="out" d="M${sx},${by} C${(sx + x) / 2},${by} ${(sx + x) / 2},${y} ${x},${y}"/>`;
+  });
+  $('wires').innerHTML = d;
+}
+
+function go(i) {
+  if (i < 0 || i >= STEPS.length) return;
+  current = i;
+  const step = STEPS[i];
+  document.querySelectorAll('.scene').forEach((s) => s.classList.remove('on'));
+  const cue = $('cue');
+  clearTimeout(go.t);
+
+  if (step.type === 'cam') {
+    document.body.classList.remove('scene-mode');
+    const cam = camera(step.screen, step.rect);
+    showScreen(step.screen, cam);
+    $('url').innerHTML = `vatp.lv · <em>${SCREENS[step.screen].url}</em>`;
+    const box = spotlight(step, cam);
+    hotspots(step, cam);
+    cue.classList.add('hide');
+    setCue(step);
+    go.t = setTimeout(() => { placeCue(box); cue.classList.remove('hide'); }, 450);
+  } else {
+    document.body.classList.add('scene-mode');
+    cue.classList.add('hide');
+    if (step.type === 'chapter') {
+      $('chKick').textContent = `${String(step.stage + 1).padStart(2, '0')} · ${STAGES[step.stage]}`;
+      $('chTitle').innerHTML = step.title;
+      $('chSub').textContent = step.sub;
+      $('chNum').textContent = String(step.stage + 1).padStart(2, '0');
+      const ch = $('scene-chapter');
+      void ch.offsetWidth;
+      ch.classList.add('on');
+    } else {
+      $('scene-' + step.id).classList.add('on');
+      if (step.id === 'optimizer') renderOptimizer(optDay);
+      if (step.id === 'signals') setTimeout(drawWires, 950);
+    }
+  }
+
+  setRail(step);
+  $('count').textContent = `${i + 1} / ${STEPS.length}`;
+  $('progress').style.width = ((i + 1) / STEPS.length * 100) + '%';
+  $('prev').disabled = i === 0;
+  $('next').disabled = i === STEPS.length - 1;
+  history.replaceState(null, '', '#' + (i + 1));
+}
+
+// Input: keys, click on the app window, wheel, swipe.
+const next = () => go(current + 1), prev = () => go(current - 1);
+$('next').addEventListener('click', next);
+$('prev').addEventListener('click', prev);
+$('window').addEventListener('click', next);
+document.addEventListener('keydown', (e) => {
+  if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); next(); }
+  else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
+  else if (e.key === 'Home') go(0);
+  else if (e.key === 'End') go(STEPS.length - 1);
+});
+let wheelLock = 0;
+addEventListener('wheel', (e) => {
+  if (Date.now() < wheelLock || Math.abs(e.deltaY) < 25) return;
+  wheelLock = Date.now() + 900;
+  e.deltaY > 0 ? next() : prev();
+}, { passive: true });
+let touchX = null;
+addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+addEventListener('touchend', (e) => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
+  touchX = null;
+}, { passive: true });
+addEventListener('resize', () => go(current));
+
+// Preload every screen so camera moves never wait on the network.
+Object.values(SCREENS).forEach((s) => { const im = new Image(); im.src = s.src; });
+
+const start = parseInt(location.hash.slice(1), 10);
+go(start >= 1 && start <= STEPS.length ? start - 1 : 0);
 </script>
 </body>
 </html>
