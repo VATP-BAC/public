@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HVAC AI platforma · 3. ceturksnis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4ede1;
+      --card: #fffaf2;
+      --text: #1a1a1a;
+      --muted: #6b6459;
+      --accent: #2f5b4e;
+      --accent-dark: #1d3d33;
+      --accent-soft: #e3ece6;
+      --warm: #c8643b;
+      --border: #e2d8c7;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .slide {
+      position: absolute; inset: 0;
+      padding: 4.5vh 5vw 5vh;
+      display: flex; flex-direction: column; gap: 2.4vh;
+      opacity: 0; pointer-events: none;
+      transition: opacity .45s ease;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; }
+
+    .head { display: flex; align-items: baseline; justify-content: space-between; gap: 2vw; flex-shrink: 0; }
+    .label {
+      font-size: clamp(11px, 1.05vh, 14px); font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: .6vh;
+    }
+    h1, h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; letter-spacing: -.01em; }
+    h1 { font-size: clamp(36px, 7vh, 84px); line-height: 1.05; }
+    h2 { font-size: clamp(26px, 4.6vh, 56px); line-height: 1.1; }
+    .lede { font-size: clamp(14px, 2vh, 22px); color: var(--muted); max-width: 46ch; }
+    .num { font-size: clamp(11px, 1.3vh, 15px); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+    /* Screenshot frames */
+    .media { flex: 1; min-height: 0; display: flex; gap: 1.6vw; align-items: stretch; justify-content: center; }
+    .col { display: flex; flex-direction: column; gap: 1.6vw; min-height: 0; min-width: 0; }
+    .shot {
+      min-height: 0; min-width: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .shot img {
+      max-width: 100%; max-height: 100%; display: block;
+      border-radius: 14px;
+      box-shadow: 0 1px 2px rgba(60, 45, 20, .08), 0 18px 48px -12px rgba(60, 45, 20, .28);
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    .shot.dark img { border-color: #2c261f; }
+    .f1 { flex: 1; } .f2 { flex: 2; } .f3 { flex: 3; }
+
+    /* Title + closing */
+    .title-slide {
+      background: radial-gradient(120% 90% at 85% 10%, #3c7262 0%, var(--accent) 45%, var(--accent-dark) 100%);
+      color: #fff; justify-content: center; padding-left: 8vw;
+    }
+    .title-slide .label { color: rgba(255,255,255,.65); }
+    .title-slide .lede { color: rgba(255,255,255,.78); max-width: 40ch; margin-top: 2vh; }
+    .title-slide .meta {
+      margin-top: 5vh; display: flex; gap: 1.2vw; flex-wrap: wrap;
+    }
+    .pill {
+      font-size: clamp(12px, 1.5vh, 17px); padding: .7vh 1.1vw; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.3); color: rgba(255,255,255,.9);
+    }
+    .funding {
+      position: absolute; left: 8vw; right: 8vw; bottom: 4vh;
+      font-size: clamp(9px, 1.05vh, 12px); color: rgba(255,255,255,.55); line-height: 1.5;
+    }
+
+    /* Summary tiles */
+    .tiles { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6vw; align-content: center; }
+    .tile {
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+      padding: 3.5vh 1.6vw; display: flex; flex-direction: column; gap: 1.2vh;
+      box-shadow: 0 18px 40px -24px rgba(60,45,20,.3);
+    }
+    .tile b {
+      font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
+      font-size: clamp(44px, 10vh, 120px); line-height: 1; color: var(--accent);
+    }
+    .tile span { font-size: clamp(14px, 2vh, 22px); font-weight: 600; }
+    .tile small { font-size: clamp(12px, 1.6vh, 17px); color: var(--muted); }
+
+    /* AI model cards */
+    .models { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.6vw; align-content: center; }
+    .model {
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+      padding: 5vh 2.2vw; display: flex; gap: 1.4vw; align-items: flex-start;
+    }
+    .model .ico {
+      flex-shrink: 0; width: 6vh; height: 6vh; border-radius: 14px; background: var(--accent-soft);
+      display: flex; align-items: center; justify-content: center; color: var(--accent);
+    }
+    .model .ico svg { width: 3.2vh; height: 3.2vh; }
+    .model h3 { font-size: clamp(16px, 2.3vh, 26px); font-weight: 600; margin-bottom: .6vh; }
+    .model p { font-size: clamp(13px, 1.8vh, 20px); color: var(--muted); }
+
+    .note {
+      display: inline-flex; align-items: center; gap: .8vw; align-self: flex-start;
+      background: var(--accent-soft); color: var(--accent-dark);
+      border-radius: 999px; padding: 1vh 1.4vw; font-size: clamp(13px, 1.8vh, 19px); font-weight: 500;
+    }
+    .note svg { width: 2.2vh; height: 2.2vh; flex-shrink: 0; }
+
+    /* Side text column */
+    .side { display: flex; flex-direction: column; justify-content: center; gap: 2.6vh; }
+    .point { display: flex; gap: 1vw; align-items: flex-start; }
+    .point i {
+      flex-shrink: 0; width: 3.4vh; height: 3.4vh; border-radius: 50%; background: var(--accent);
+      color: #fff; font-style: normal; font-weight: 700; font-size: 1.6vh;
+      display: flex; align-items: center; justify-content: center; margin-top: .2vh;
+    }
+    .point p { font-size: clamp(14px, 2.1vh, 23px); }
+    .point p small { display: block; color: var(--muted); font-size: .82em; margin-top: .3vh; }
+
+    .next-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4vh 2vw; }
+    .next-list div {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 2vh 1.4vw; font-size: clamp(14px, 2vh, 21px); font-weight: 500;
+    }
+    .next-list div small { display: block; font-weight: 400; color: var(--muted); font-size: .8em; margin-top: .3vh; }
+
+    /* Nav */
+    .nav {
+      position: fixed; bottom: 2vh; right: 2vw; display: flex; align-items: center; gap: 8px;
+      background: rgba(255,250,242,.92); border: 1px solid var(--border); border-radius: 999px;
+      padding: 6px 8px; transition: opacity .3s; z-index: 10;
+    }
+    .nav.hidden { opacity: 0; }
+    .nav button {
+      width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; cursor: pointer;
+      color: var(--accent); font-size: 18px;
+    }
+    .nav button:disabled { opacity: .3; cursor: default; }
+    .nav span { font-size: 13px; color: var(--muted); min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
+    .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--accent); transition: width .4s; z-index: 10; }
+
+    @media (max-width: 760px) {
+      html, body { overflow: auto; }
+      .slide { position: relative; opacity: 1; pointer-events: auto; min-height: 100vh; padding: 32px 16px; }
+      .media, .tiles, .models { flex-direction: column; grid-template-columns: 1fr; }
+      .nav, .progress { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<!-- 1 · Title -->
+<section class="slide title-slide active">
+  <div class="label">IPCEI-CIS · Rūpnieciskie pētījumi</div>
+  <h1>HVAC AI platforma<br>un mākslīgais intelekts</h1>
+  <p class="lede">Ko 2026. gada 3. ceturksnī paveicām platformā un MI komponentēs.</p>
+  <div class="meta">
+    <span class="pill">2026. gada jūlijs – septembris</span>
+    <span class="pill">Viedas industriālās ēkas</span>
+  </div>
+  <p class="funding">Projektu “Nākamās paaudzes mikroražotnes” 5.1.1.2.i.0/4/24/A/CFLA/003 finansē no Eiropas Savienības Atveseļošanas fonda budžeta līdzekļiem. Finansē Eiropas Savienība – NextGenerationEU.</p>
+</section>
+
+<!-- 2 · Summary -->
+<section class="slide">
+  <div class="head"><div><div class="label">3. ceturksnis īsumā</div><h2>No viena siltumsūkņa līdz visai iekārtu telpai</h2></div><span class="num">02</span></div>
+  <div class="tiles">
+    <div class="tile"><b>6</b><span>HVAC iekārtas pieslēgtas</span><small>2 ventilācijas iekārtas, 2 enerģijas vārsti, 2 siltumsūkņi</small></div>
+    <div class="tile"><b>11</b><span>elektrības kontūri mērīti</span><small>katrs sūknis un iekārta atsevišķi</small></div>
+    <div class="tile"><b>5</b><span>sakaru protokoli</span><small>Modbus, BACnet, Luxtronik, HTTP, mākoņa API</small></div>
+    <div class="tile"><b>4</b><span>MI modeļu virzieni</span><small>darbojas padomdevēja režīmā</small></div>
+  </div>
+</section>
+
+<!-- 3 · Dashboard -->
+<section class="slide">
+  <div class="head"><div><div class="label">Platforma</div><h2>Viss svarīgākais vienā skatā</h2></div><span class="num">03</span></div>
+  <div class="media"><div class="shot"><img src="screenshots/dashboard.jpg" alt="Galvenais panelis: enerģija, izmaksas, siltumsūkņu efektivitāte, cena, slodzes prognoze"></div></div>
+</section>
+
+<!-- 4 · Schematic -->
+<section class="slide">
+  <div class="head"><div><div class="label">Platforma</div><h2>Dzīvā siltummezgla shēma</h2></div><span class="num">04</span></div>
+  <div class="media"><div class="shot"><img src="screenshots/schematic.jpg" alt="Interaktīva shēma ar ventilācijas iekārtām, vārstiem, siltumsūkņiem, tvertnēm un ģeotermālajiem urbumiem"></div></div>
+</section>
+
+<!-- 5 · Devices -->
+<section class="slide">
+  <div class="head"><div><div class="label">Iekārtu integrācija</div><h2>Katra iekārta — savi rādījumi reāllaikā</h2></div><span class="num">05</span></div>
+  <div class="media">
+    <div class="shot"><img src="screenshots/hp-device.jpg" alt="Siltumsūkņa ierīces lapa ar 34 kanāliem un sūkņa reģistriem"></div>
+  </div>
+</section>
+
+<!-- 6 · Where energy goes -->
+<section class="slide">
+  <div class="head"><div><div class="label">Enerģijas analītika</div><h2>Kur aiziet katra kilovatstunda</h2></div><span class="num">06</span></div>
+  <div class="media">
+    <div class="shot f1"><img src="screenshots/sankey.jpg" alt="Plūsmas diagramma: ēka → sistēma → iekārta"></div>
+    <div class="shot f1"><img src="screenshots/perdevice.jpg" alt="Elektrības patēriņš pa iekārtām"></div>
+  </div>
+</section>
+
+<!-- 7 · Cost -->
+<section class="slide">
+  <div class="head"><div><div class="label">Enerģijas analītika</div><h2>Izmaksas pēc biržas cenas, stundu pa stundai</h2></div><span class="num">07</span></div>
+  <div class="media">
+    <div class="col f3">
+      <div class="shot f1"><img src="screenshots/cost.jpg" alt="Izmaksas laikā pa sistēmām ar Nord Pool cenu"></div>
+      <div class="shot f1"><img src="screenshots/standout.jpg" alt="Automātiski izceltās atziņas un enerģijas sadalījums"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Heat pump efficiency -->
+<section class="slide">
+  <div class="head"><div><div class="label">Siltumsūkņi</div><h2>Efektivitāte un siltuma cena pret pilsētas apkuri</h2></div><span class="num">08</span></div>
+  <div class="media">
+    <div class="col f3">
+      <div class="shot f1"><img src="screenshots/plant.jpg" alt="Siltumsūkņu COP/EER un siltuma izmaksas salīdzinājumā ar pilsētas apkuri"></div>
+      <div class="shot f1"><img src="screenshots/heatdev.jpg" alt="Saražotais siltums un aukstums pa iekārtām"></div>
+    </div>
+    <div class="shot f1"><img src="screenshots/hpplant.jpg" alt="Siltumsūkņu kartīte galvenajā panelī"></div>
+  </div>
+</section>
+
+<!-- 9 · Comfort -->
+<section class="slide">
+  <div class="head"><div><div class="label">Telpu komforts</div><h2>Katras telpas mikroklimats uz stāva plāna</h2></div><span class="num">09</span></div>
+  <div class="media"><div class="shot"><img src="screenshots/floor.jpg" alt="Stāva plāns ar telpu komforta krāsojumu"></div></div>
+</section>
+
+<!-- 10 · AI section: models -->
+<section class="slide">
+  <div class="head"><div><div class="label">Mākslīgais intelekts</div><h2>Pirmie modeļi strādā ar reāliem datiem</h2></div><span class="num">10</span></div>
+  <div class="models">
+    <div class="model">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div>
+      <div><h3>Ventilācijas enerģijas prognoze</h3><p>Patēriņš un izmaksas eiro pēc nākamās dienas cenām</p></div>
+    </div>
+    <div class="model">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 7.5l2.6 1.5M17.2 15l2.6 1.5M4.2 16.5l2.6-1.5M17.2 9l2.6-1.5"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+      <div><h3>Siltuma atgūšanas efektivitāte</h3><p>Pamana, kad ventilācijas iekārta sāk strādāt sliktāk</p></div>
+    </div>
+    <div class="model">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div><h3>Izdevumu laika analīze</h3><p>Cik maksāja patiesībā un cik būtu maksājis lētākajās stundās</p></div>
+    </div>
+    <div class="model">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/></svg></div>
+      <div><h3>Telpu termiskie modeļi</h3><p>Kā katra telpa sasilst un atdziest</p></div>
+    </div>
+  </div>
+  <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>MI iesaka, cilvēks izlemj</div>
+</section>
+
+<!-- 11 · AI in the app -->
+<section class="slide">
+  <div class="head"><div><div class="label">Mākslīgais intelekts</div><h2>Prognoze un ieteikumi lietotnē</h2></div><span class="num">11</span></div>
+  <div class="media">
+    <div class="shot f2"><img src="screenshots/load.jpg" alt="Izmērītā slodze un prognoze ar lētajām un dārgajām stundām"></div>
+    <div class="shot f1"><img src="screenshots/attention.jpg" alt="Automātiskas enerģijas pārbaudes un brīdinājumi"></div>
+  </div>
+</section>
+
+<!-- 12 · Price-aware hot water -->
+<section class="slide">
+  <div class="head"><div><div class="label">Mākslīgais intelekts</div><h2>Karstā ūdens sūknis strādā lētākajās stundās</h2></div><span class="num">12</span></div>
+  <div class="media">
+    <div class="shot f1"><img src="screenshots/price.jpg" alt="Nord Pool cenas nākamajām 12 stundām un lētākās stundas"></div>
+    <div class="side f1">
+      <div class="point"><i>1</i><p>Plāno darbu pēc biržas cenām<small>nākamās dienas Nord Pool cenas</small></p></div>
+      <div class="point"><i>2</i><p>Vadība pārbaudīta uz reālas iekārtas<small>komanda, apstiprinājums, audita ieraksts</small></p></div>
+      <div class="point"><i>3</i><p>Automātika apzināti izslēgta<small>pētījuma posmā lēmumu pieņem cilvēks</small></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · Public display -->
+<section class="slide">
+  <div class="head"><div><div class="label">Publiskais displejs</div><h2>Ēkas stāvoklis vestibila ekrānā</h2></div><span class="num">13</span></div>
+  <div class="media">
+    <div class="shot dark f1"><img src="screenshots/display-comfort.jpg" alt="Displejs: ēkas komforts"></div>
+    <div class="shot dark f1"><img src="screenshots/display-energy.jpg" alt="Displejs: enerģijas kopsavilkums"></div>
+  </div>
+</section>
+
+<!-- 14 · Next -->
+<section class="slide">
+  <div class="head"><div><div class="label">4. ceturksnis</div><h2>Kas jau procesā</h2></div><span class="num">14</span></div>
+  <div class="media">
+    <div class="col f3" style="justify-content:center">
+      <div class="shot"><img src="screenshots/rhythm.jpg" alt="Enerģijas patēriņa siltuma karte un tipiskās dienas profils"></div>
+      <div class="shot"><img src="screenshots/carbon.jpg" alt="CO₂ pēdas nospiedums"></div>
+    </div>
+    <div class="side f2">
+      <div class="next-list">
+        <div>MI asistents<small>jautā ēkai dabiskā valodā, ES mitināts</small></div>
+        <div>Digitālais dvīnis<small>“kas būtu, ja” simulācijas</small></div>
+        <div>Siltuma mērītāji<small>katrs apkures kontūrs</small></div>
+        <div>Apkures sezona<small>pirmie apkures dati modeļiem</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 · Thanks -->
+<section class="slide title-slide">
+  <div class="label">VATP · Ventspils Augsto Tehnoloģiju Parks</div>
+  <h1>Paldies!</h1>
+  <p class="lede">Platforma tavai izaugsmei.</p>
+  <p class="funding">Projektu “Nākamās paaudzes mikroražotnes” 5.1.1.2.i.0/4/24/A/CFLA/003 finansē no Eiropas Savienības Atveseļošanas fonda budžeta līdzekļiem. Finansē Eiropas Savienība – NextGenerationEU. Tomēr paustie uzskati un viedokļi ir tikai autora(-u) uzskati un viedokļi un ne vienmēr atspoguļo Eiropas Savienības vai Eiropas Komisijas uzskatus un viedokļus. Par tiem nav atbildīga ne Eiropas Savienība, ne Eiropas Komisija.</p>
+</section>
+
+<nav class="nav" id="nav">
+  <button id="prev" aria-label="Iepriekšējais slaids">←</button>
+  <span id="counter"></span>
+  <button id="next" aria-label="Nākamais slaids">→</button>
+</nav>
+
+<script>
+(function () {
+  var slides = document.querySelectorAll('.slide');
+  var nav = document.getElementById('nav');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var total = slides.length;
+  var current = 0;
+  var hideTimer = null;
+
+  function startIndex() {
+    var n = parseInt(location.hash.slice(1), 10);
+    return n >= 1 && n <= total ? n - 1 : 0;
+  }
+
+  function show(i) {
+    if (i < 0 || i >= total) return;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    prev.disabled = current === 0;
+    next.disabled = current === total - 1;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    history.replaceState(null, '', '#' + (current + 1));
+  }
+
+  function showNav() {
+    nav.classList.remove('hidden');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () { nav.classList.add('hidden'); }, 2500);
+  }
+
+  prev.addEventListener('click', function () { show(current - 1); showNav(); });
+  next.addEventListener('click', function () { show(current + 1); showNav(); });
+  document.addEventListener('keydown', function (e) {
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) >= 0) { e.preventDefault(); show(current + 1); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) >= 0) { e.preventDefault(); show(current - 1); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(total - 1); }
+  });
+  document.addEventListener('mousemove', showNav, { passive: true });
+
+  show(startIndex());
+  showNav();
+})();
+</script>
+</body>
+</html>
