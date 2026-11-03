@@ -440,10 +440,10 @@
    from the live DOM when the screens were captured.
    ───────────────────────────────────────────────────────────── */
 const SCREENS = {
-  f3d:         { src: 'app/f3d.jpg', video: 'app/f3d.webm', h: 1000, url: '3D ēka' },
+  f3d:         { src: 'app/f3d.jpg', video: 'app/f3d.webm', start: 9, h: 1000, url: '3D ēka' },
   f3dHp:       { src: 'app/f3d-hp.jpg',          h: 1000, url: '3D ēka / Siltumsūknis' },
   dashboard:   { src: 'app/dashboard.jpg',       h: 1233, url: 'Pārskats' },
-  schematic:   { src: 'app/schematic.jpg', video: 'app/schematic.webm', h: 1000, url: 'Shēma' },
+  schematic:   { src: 'app/schematic.jpg', video: 'app/schematic.webm', start: 9, h: 1000, url: 'Shēma' },
   device:      { src: 'app/device.jpg',          h: 1840, url: 'Iekārtas / HP Master' },
   runtimeHp:   { src: 'app/runtime-hp.jpg',      h: 1044, url: 'Iekārtas / HP Master / Darbības laiks' },
   runtimeAhu:  { src: 'app/runtime-ahu.jpg',     h: 1209, url: 'Iekārtas / PN1 ventilācija / Darbības laiks' },
@@ -466,9 +466,9 @@ const STEPS = [
   { type: 'scene', id: 'intro', stage: -1,
     say: 'Šodien neparādīšu slaidus par platformu — parādīšu pašu platformu. Un lai būtu vieglāk sekot, sekosim vienai kilovatstundai: no brīža, kad to nopērkam biržā, līdz brīdim, kad tā silda telpu un parādās atskaitē.' },
 
-  { type: 'cam', stage: 0, screen: 'f3d', rect: [0, 0, 1600, 1000], spot: false, title: 'Šī ir mūsu ēka', text: 'Dzīvs 3D modelis: ventilācija, siltumsūkņi un ģeotermālie urbumi — katrs ar saviem rādījumiem.',
+  { type: 'cam', stage: 0, screen: 'f3d', rect: [0, 0, 1600, 1000], spot: false, title: 'Šī ir mūsu ēka', text: 'Dzīvs 3D modelis. Tieši tagad abi siltumsūkņi strādā: 18,7 kW elektrības → 97,9 kW siltuma.',
     say: 'Ceļojums sākas šeit — VATP ēkā. Tas nav zīmējums, tas ir dzīvs modelis: punktiņi uz jumta un pagalmā ir reālas iekārtas, un katra sūta datus uz platformu.' },
-  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1225, 74, 312, 485], chip: 'Luxtronik', title: 'Klikšķis uz siltumsūkņa', text: 'Turpgaitas un atgaitas temperatūra, siltuma jauda un patērētā elektrība — tieši tagad.',
+  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1222, 74, 312, 595], chip: 'Luxtronik', title: 'Klikšķis uz siltumsūkņa', text: 'HP Slave tagad dod 33,6 kW siltuma no 6,1 kW elektrības un silda karsto ūdeni līdz 50 °C.',
     say: 'Uzspiežot uz iekārtas, redzam tās stāvokli. Šis siltumsūknis ir mūsu kilovatstundas galvenais pieturas punkts — tieši šeit elektrība pārvēršas siltumā.' },
 
   { type: 'cam', stage: 1, screen: 'dashboard', rect: [0, 0, 1600, 1000], spot: false, title: 'Galvenais panelis', text: 'Šodien 116 kWh un €35.73. Siltumsūkņi strādā ar COP 5,19 — siltums 9 % lētāks nekā pilsētas apkure.',
@@ -480,7 +480,7 @@ const STEPS = [
 
   { type: 'cam', stage: 2, screen: 'schematic', rect: [273, 120, 1050, 815], spot: false, title: 'Siltummezgls dzīvajā', text: 'Visa sistēma vienā shēmā. Plūsmas kustas, krāsas rāda, kas silda un kas dzesē — tieši tagad.',
     say: 'Tagad ieskatāmies ēkas iekšienē. Šī shēma ir dzīva — redzat, kā plūsma kustas cauruļvados. Inženierim šis ir vienīgais ekrāns, kas vajadzīgs, lai saprastu, kas notiek siltummezglā.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [630, 505, 320, 135], chip: 'Luxtronik', title: '1 kWh → 5 kWh siltuma', text: 'Siltumsūknis paņem siltumu no zemes un no katras elektrības kilovatstundas iegūst ap piecām siltuma.',
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [630, 505, 320, 135], chip: 'Luxtronik', title: '1 kWh → 5 kWh siltuma', text: 'Abi siltumsūkņi strādā: siltumu ņem no zemes caur urbumiem — no katras elektrības kilovatstundas ap piecas siltuma.',
     say: 'Šeit notiek mūsu stāsta galvenā maģija. Kilovatstunda ienāk siltumsūknī, tas paņem klāt siltumu no zemes caur ģeotermālajiem urbumiem — un ārā nāk ap piecas kilovatstundas siltuma.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [405, 128, 350, 228], chip: 'Modbus · BACnet', title: 'Ventilācija', text: 'Divas Siemens ventilācijas iekārtas un enerģijas vārsti, kas mēra, cik siltuma aiziet gaisā.',
     say: 'Daļa siltuma aiziet ventilācijā. Šie vārsti mēra katru kilovatstundu, kas aiziet uz ventilācijas iekārtām — tā mēs zinām, cik maksā svaigs gaiss.' },
@@ -626,7 +626,15 @@ function setMedia(layer, screen) {
     if (s.video) Object.assign(el, { muted: true, loop: true, autoplay: true, playsInline: true });
     layer.replaceChildren(el);
   }
-  if (s.video) { if (!el.src.endsWith(s.video)) { el.poster = s.src; el.src = s.video; } el.currentTime = 0; el.play().catch(() => {}); }
+  if (s.video) {
+    // Recordings include the page loading; play only the settled part and loop back to it.
+    const start = s.start ?? 0;
+    if (!el.src.endsWith(s.video)) {
+      el.poster = s.src; el.src = s.video; el.loop = false;
+      el.addEventListener('ended', () => { el.currentTime = start; el.play().catch(() => {}); });
+    }
+    el.currentTime = start; el.play().catch(() => {});
+  }
   else el.src = s.src;
 }
 
