@@ -110,135 +110,115 @@ _Uz ekrāna:_ Katrs siltumsūkņa rādījums nāk tieši no iekārtas: temperat�
 
 Un ne tikai enerģiju — katra iekārta dod desmitiem rādījumu, visi atjaunoti pirms minūtes. Tā ir izejviela visiem MI modeļiem.
 
-**#16 · Cik daudz strādā kompresors**  
-_Uz ekrāna:_ Pēdējā mēnesī kompresors strādāja 30 % laika un ieslēdzās 557 reizes.
-
-No rādījumiem platforma pati izrēķina, kā iekārta tiek lietota. 557 ieslēgšanās mēnesī — tas ietekmē kompresora mūžu, un agrāk to neviens neskaitīja.
-
-**#17 · Platforma pamana cilvēku**  
-_Uz ekrāna:_ PN1 ventilācija kopš 29. oktobra ir manuālā režīmā — kāds to pārslēdza ar roku.
-
-Platforma pamanīja, ka kopš 29. oktobra ventilācija ir pārslēgta manuāli. Ēkās tas parasti paliek nepamanīts nedēļām — un maksā naudu.
-
-**#18 · Un var arī vadīt**  
-_Uz ekrāna:_ Ventilatoru pakāpe, temperatūra, CO₂ mērķis, gaisa plūsma — platforma var to mainīt pati.
-
-Platforma ne tikai redz — tā var arī vadīt. Komanda aiziet uz iekārtu, un iekārta apstiprina, ka izpildīja.
-
 ## 4. Komforts
 
-**#19 · Kur kilovatstunda nonāk**  
-_Uz ekrāna:_ Visas otrā stāva telpas šobrīd ir zaļajā komforta zonā.
+**#16 · Kilovatstunda ir telpā**  
+_Uz ekrāna:_ Visas otrā stāva telpas šobrīd ir zaļajā komforta zonā — siltums ir tur, kur vajag.
 
 Mūsu kilovatstunda beidzot ir telpā. Stāva plānā redzam, kā jūtas katra telpa — šobrīd visas zaļajā zonā. Tieši tam to visu darām.
 
-**#20 · Un ko saka cilvēki**  
-_Uz ekrāna:_ Darbinieki paši novērtē telpu — no “par aukstu” līdz “par karstu”.
-
-Sensori ir viena lieta, cilvēku sajūtas — cita. Katrs var pateikt “man ir auksti”. Tas nākotnē palīdzēs MI saprast, kad komforts ir patiešām sasniegts.
-
 ## 5. Enerģija
 
-**#21 · Patērējām par 21 % mazāk…**  
+**#17 · Patērējām par 21 % mazāk…**  
 _Uz ekrāna:_ …bet rēķins pieauga par 10 %: elektrība kļuva dārgāka. Tāpēc tikpat svarīgi ir, KAD mēs to pērkam.
 
 Rēķins par apkures sezonu kopš 6. oktobra. Patērējām par piekto daļu mazāk nekā mēnesi iepriekš — bet samaksājām vairāk, jo elektrība kļuva dārgāka. Ar taupīšanu vien nepietiek; jāpērk lētajās stundās. Tieši tur strādā MI.
 
-**#22 · 11 207 kWh siltuma**  
+**#18 · 11 207 kWh siltuma**  
 _Uz ekrāna:_ Siltumsūkņi visā periodā strādāja ar COP 5,50: no katras elektrības kWh — piecarpus kWh siltuma.
 
 Otrā rinda — ko saražojām: 11 tūkstoši kilovatstundu siltuma telpām un vēl karstais ūdens. Vidējā efektivitāte visā periodā — 5,5. Tas nav kataloga skaitlis, tas ir izmērīts.
 
-**#23 · Kur aizgāja katrs eiro**  
+**#19 · Kur aizgāja katrs eiro**  
 _Uz ekrāna:_ No ēkas uz sistēmu un uz katru iekārtu: ventilācija 49 %, apkure 41 %.
 
 Šī diagramma parāda, kur aizgāja nauda. Pārsteigums — ventilācija patērē vairāk nekā apkure. Tāpēc MI vispirms skatās uz ventilāciju.
 
-**#24 · Katra stunda — sava cena**  
+**#20 · Katra stunda — sava cena**  
 _Uz ekrāna:_ Patēriņš pa stundām, reizināts ar Nord Pool cenu tajā pašā stundā.
 
 Elektrība katru stundu maksā citādi — melnā līnija ir biržas cena. Redzat, cik tā lēkā. Kad patērējam, ir tikpat svarīgi kā cik daudz.
 
-**#25 · 55 % lētāk nekā pilsētas siltums**  
+**#21 · 55 % lētāk nekā pilsētas siltums**  
 _Uz ekrāna:_ Mūsu siltums maksāja €33.6/MWh. Pilsētas apkure — €75/MWh.
 
 Vai siltumsūkņi atmaksājas? Mūsu siltuma megavatstunda maksāja 34 eiro, pilsētas — 75. Izmērīts, nevis aprēķināts no kataloga.
 
-**#26 · ~10× mazāk CO₂ nekā gāzes katlam**  
+**#22 · ~10× mazāk CO₂ nekā gāzes katlam**  
 _Uz ekrāna:_ Mūsu siltums: 21 g CO₂/kWh. Gāzes katls: 213 g. Ventspils pilsētas siltums ir līdzīgā līmenī kā mūsējais.
 
 Katrai kilovatstundai ir oglekļa pēda. Tā kā lielāko daļu siltuma dod zeme, mūsu siltumam ir tikai 21 grams CO₂ uz kilovatstundu. Gāzes katlam būtu 213 — desmit reizes vairāk. Godīgi jāsaka: Ventspils pilsētas siltums ir līdzīgā līmenī — mūsu priekšrocība ir cena, ne CO₂. Platforma to rēķina automātiski, un tieši to prasīs ES ziņošana.
 
-**#27 · Atskaite ar vienu klikšķi**  
+**#23 · Atskaite ar vienu klikšķi**  
 _Uz ekrāna:_ Gatava Excel enerģijas atskaite par jebkuru mēnesi.
 
 Un mēneša beigās — viena poga, un grāmatvedībai ir gatava atskaite.
 
 ## 6. MI
 
-**#28 · Ko MI ņem vērā**
+**#24 · Ko MI ņem vērā**
 
-Tagad svarīgākais. Mēs zinām, cik elektrība maksā katru stundu, kāds būs laiks, cik efektīvi strādā siltumsūkņi un cik ēkai vajadzēs. MI to saliek kopā un izlemj vienu lietu: kad tērēt.
+MI plānotājs katru stundu skatās uz visu reizē. Ievadē: elektrības cena katrai stundai rītdienai no Nord Pool; laika prognoze 48 stundām — āra temperatūra, saule, mākoņi, vējš — un ēkā izmērītā āra temperatūra; siltumsūkņu efektivitāte, ko mērām katru stundu; MI prognoze, cik enerģijas ēkai vajadzēs; komforta robežas — telpu temperatūra, CO₂, mitrums, un ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām; iekārtu stāvoklis — tvertņu temperatūras, kompresora starti, kļūdas; un pilsētas siltuma tarifs salīdzinājumam. Izvadē: karsto ūdeni sildām lētajās stundās; apkurē ēku un tvertni uzsildām, kamēr elektrība lēta; dzesēšanā atdzesējam iepriekš; ventilācijas darba stundas pārceļam uz lētāko laiku.
 
-**#29 · Vadība pēc elektrības cenas (interaktīvs)**
+**#25 · Vadība pēc elektrības cenas (interaktīvs)**
 
 Šis ir īstais algoritms, kas strādā mūsu ēkā, uz īstām biržas cenām. Pirms rādu — kurās stundās jūs sildītu ūdeni? … Platforma izvēlas šīs piecas stundas, un tas ir vidēji 13 % lētāk. Uzklikšķiniet uz citas dienas — plāns mainās. Apakšā: stundas, kad siltumsūkņa siltums ir lētāks par pilsētas.
 
-**#30 · Plāno. Vada. Mēra.**
+**#26 · Plāno. Vada. Mēra.**
 
 Un tas strādā pats. Katru dienu platforma saplāno, pati ieslēdz un izslēdz karstā ūdens sistēmu, un katru dienu izmēra ietaupījumu eiro. Kopš 8. septembra — 24 stundas diennaktī, bez cilvēka.
 
-**#31 · MI pamana dārgas stundas**  
+**#27 · MI pamana dārgas stundas**  
 _Uz ekrāna:_ PN1 strādāja 29 % virs lētāko stundu optimuma: €21.40 no €94.81 bija ietaupāmi.
 
 To pašu MI dara ar ventilāciju: salīdzina, cik iztērējām, ar to, cik būtu iztērējuši lētākajās stundās, un iesaka pārcelt darba laiku.
 
-**#32 · Platforma pati paskaidro**  
+**#28 · Platforma pati paskaidro**  
 _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %” — bez neviena iestatījuma.
 
 Un platforma pati raksta secinājumus vienkāršā valodā. Šie teikumi ir uzrakstīti automātiski, no datiem.
 
-**#33 · MI asistents**
+**#29 · MI asistents**
 
 Nākamais solis, ko jau būvējam: MI asistents. Jūs vienkārši pajautājat — “kāpēc ventilācija šomēnes maksāja vairāk?” — un tas atbild no ēkas datiem, ar avotiem. Šeit piemērs uz šī mēneša reālajiem skaitļiem. Modelis ir mitināts Eiropā, un izmaksām ir griesti — eiro dienā visai ēkai.
 
-**#34 · Ko mums dod MI**
+**#30 · Ko mums dod MI**
 
 Tātad, ko MI mums dod jau šodien: karstais ūdens par 13 % lētāk, automātiski. Ventilācijā atrasti 21 eiro mēnesī, ko tērējām dārgajās stundās. Kļūdas iekārtās atrod pati, pirms kāds pamana. Un prognoze 48 stundas uz priekšu, uz kā balstās viss pārējais.
 
 ## 7. Kontrole
 
-**#35 · Kad kaut kas noiet greizi**  
+**#31 · Kad kaut kas noiet greizi**  
 _Uz ekrāna:_ Siltumsūkņa kļūdu kodi, gaiss vārstos, novecojuši sensori — viss vienā iesūtnē, grupēts pa telpām.
 
 Ne viss vienmēr strādā. Šeit reāli brīdinājumi no šīs nedēļas — siltumsūkņa kļūdas kodi un gaiss hidraulikā. Platforma tos atrada pati un pastāstīja, kur tie ir.
 
-**#36 · Autonoms — drošās robežās**  
+**#32 · Autonoms — drošās robežās**  
 _Uz ekrāna:_ Platforma vada pati, bet katrai komandai ir robežas, ārpus kurām tā neiziet.
 
 Platforma strādā autonomi, bet nekad ārpus drošām robežām. Piemēram, CO₂ mērķi var mainīt tikai starp 400 un 2000.
 
-**#37 · Serveris ēkā (DATI Group)**
+**#33 · Serveris ēkā (DATI Group)**
 
 Viss, ko šodien redzējāt, strādā uz servera tepat mūsu ēkā, ko izveidojām kopā ar DATI Group. Kopš 16. oktobra dati un vadība glabājas ēkā, rezerves kopija — ES. Katru nakti kopija, viena ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.
 
-**#38 · Testēšana (TestDevLab)**
+**#34 · Testēšana (TestDevLab)**
 
 Kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem — no maziem koda testiem līdz pieņemšanai ēkā. Mēs to pielāgojām HVAC platformai. Pirmie pieci līmeņi jau strādā: ap 3 700 automātisku testu uz katru koda izmaiņu, uz tā paša servera. Pēdējais līmenis — pilota pieņemšana — 2027. gada maijā.
 
 ## 8. Tālāk
 
-**#39 · Kas tālāk**
+**#35 · Kas tālāk**
 
-Tālāk: MI asistents visiem lietotājiem, siltumsūkņu temperatūras vadība pēc cenas, un digitālais dvīnis, kurā izmēģināt izmaiņas pirms īstās ēkas.
+Tālāk: MI asistents visiem lietotājiem, siltuma mērītāji katram kontūram un digitālais dvīnis, kurā izmēģināt izmaiņas pirms īstās ēkas.
 
-**#40 · Paldies**
+**#36 · Paldies**
 
 Paldies. Mūsu kilovatstunda ir nonākusi galā — un katrā pieturā platforma zināja, kur tā ir, cik tā maksā un kā to nopirkt lētāk.
 
 ## Sagatave jautājumiem
 
-- **“Vai MI vada pašus siltumsūkņus?”** Šobrīd automātiski pēc cenas tiek vadīta karstā ūdens sistēma (cirkulācijas sūknis), un siltumsūknis pēc tam to uzsilda. Tiešā siltumsūkņa temperatūras vadība pēc cenas ir izstrādē (sk. “Kas tālāk”).
+- **“Ko tieši MI vada?”** Karsto ūdeni, apkuri un dzesēšanu pēc elektrības cenas un pārējiem rādītājiem (sk. #24 piezīmes); ventilācijai — darba stundas uz lētāko laiku.
 - **“Zeme 42 kW, bet siltumsūkņi dod 60 kW — kur pārējais?”** Siltums = zemes siltums + elektrība (42 + 13 ≈ 55); atlikums ir mērījumu precizitāte un laika nobīde starp skaitītājiem.
 - **“Vai CO₂ ir labāks nekā pilsētas siltumam?”** Nē, līdzīgs — Ventspils pilsētas siltums arī ir zema oglekļa. Mūsu priekšrocība ir cena (−55 %) un tas, ka mēs to izmērām. Pret gāzes apkuri — ~10× mazāk.
 - **“Cik droša ir autonomā vadība?”** Katrai komandai ir robežas (piem., CO₂ mērķis tikai 400–2000), iekārta apstiprina izpildi, un jebkuras nenoteiktības gadījumā sistēma izvēlas “izslēgts”.

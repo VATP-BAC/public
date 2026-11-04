@@ -178,6 +178,8 @@
   .sig .ic svg { width: 18px; height: 18px; }
   .sig b { display: block; font-size: clamp(13px, 1.9vh, 18px); font-weight: 700; }
   .sig small { font-size: clamp(11px, 1.5vh, 14px); color: var(--cream-dim); }
+  .sig em { font-style: normal; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+  .sig em.live { background: rgba(140,196,173,.2); color: var(--mint); } .sig em.dev { background: rgba(246,239,227,.1); color: var(--cream-dim); }
   .sig.out { background: rgba(227,148,103,.08); border-color: rgba(227,148,103,.3); }
   .sig.out .ic { background: rgba(227,148,103,.16); color: var(--warm, #e39467); }
   .brain {
@@ -444,7 +446,7 @@
   <!-- AI: signals in, decisions out -->
   <section class="scene" id="scene-signals">
     <div class="kick">MI · ko tas ņem vērā</div>
-    <h2>Kad pirkt <em>kilovatstundu</em>?</h2>
+    <h2>MI plānotājs: kad <em>sildīt</em> un kad <em>dzesēt</em>?</h2>
     <div class="flow" id="flow">
       <svg class="wires" id="wires"></svg>
       <div class="col-list" id="sigIn">
@@ -452,13 +454,15 @@
         <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.5 19a4.5 4.5 0 100-9 6 6 0 00-11.6 2A4 4 0 006.5 19z"/></svg></div><div><b>Laika prognoze</b><small>temperatūra, saule, mākoņi — 48 h uz priekšu</small></div></div>
         <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-3"/></svg></div><div><b>Siltumsūkņu efektivitāte</b><small>COP / EER, mērīta katru stundu</small></div></div>
         <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l6-6 4 4 8-8"/></svg></div><div><b>Ēkas slodzes prognoze</b><small>cik enerģijas vajadzēs nākamajās stundās</small></div></div>
-        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/></svg></div><div><b>Komforta robežas</b><small>karstais ūdens ik 3–8 h, telpu temperatūra</small></div></div>
+        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/></svg></div><div><b>Komforta robežas</b><small>telpu temperatūra, CO₂, karstais ūdens ik 3–8 h</small></div></div>
+        <div class="sig"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h10M4 17h6"/></svg></div><div><b>Iekārtu stāvoklis</b><small>tvertņu temperatūras, kompresora starti, kļūdas</small></div></div>
       </div>
       <div class="brain" id="brain"><div><b>MI<br>plānotājs</b><small>katru stundu</small></div></div>
       <div class="col-list" id="sigOut">
         <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.7s6 6.6 6 11.3a6 6 0 01-12 0c0-4.7 6-11.3 6-11.3z"/></svg></div><div><b>Karstais ūdens</b><small>lēta elektrība — sildām, dārga — gaidām</small></div></div>
-        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M10 21v-6h4v6"/></svg></div><div><b>Apkure</b><small>siltumsūknis vai pilsētas siltums — kas lētāk</small></div></div>
-        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7M14 12c4 0 7 1 7 4M12 14c0 4-1 7-4 7M10 12c-4 0-7-1-7-4"/></svg></div><div><b>Ventilācija</b><small>izmaksu prognoze un novirzes</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M10 21v-6h4v6"/></svg></div><div><b>Apkure</b><small>uzsildīt ēku un tvertni lētajās stundās</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4.9 7l14.2 10M4.9 17L19.1 7"/></svg></div><div><b>Dzesēšana</b><small>atdzesēt iepriekš, kamēr elektrība lēta</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7M14 12c4 0 7 1 7 4M12 14c0 4-1 7-4 7M10 12c-4 0-7-1-7-4"/></svg></div><div><b>Ventilācija</b><small>darba stundas uz lētāko laiku</small></div></div>
       </div>
     </div>
   </section>
@@ -575,7 +579,7 @@
     <div class="grid4">
       <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><h4>MI asistents visiem</h4><p>No prototipa uz ikdienas rīku pārvaldniekam</p></div></div>
       <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 013 3V14M14 17.5h-4a3 3 0 01-3-3V10"/></svg></div><div><h4>Digitālais dvīnis</h4><p>“Kas būtu, ja” simulācijas pirms izmaiņām</p></div></div>
-      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13l3-3M12 3v2"/></svg></div><div><h4>Siltumsūkņu vadība pēc cenas</h4><p>Temperatūras mērķis, ko izvēlas pēc elektrības cenas</p></div></div>
+      <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13l3-3M12 3v2"/></svg></div><div><h4>Siltuma mērītāji</h4><p>Katra apkures kontūra siltums atsevišķi</p></div></div>
       <div class="model"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div><div><h4>Apkures sezona</h4><p>Pirmie apkures dati modeļu apmācībai</p></div></div>
     </div>
   </section>
@@ -665,17 +669,9 @@ const STEPS = [
     say: 'Lai varētu teikt “energoefektīvi”, tas ir jāizmēra. Elektrību mēra 11 skaitītāji uz katras iekārtas, siltumu — siltumsūkņu un vārstu skaitītāji. Tāpēc platforma zina, kur aizgāja katra kilovatstunda.' },
   { type: 'cam', stage: 2, screen: 'device', rect: [250, 21, 1100, 700], title: 'Mēra arī pašu iekārtu', text: 'Katrs siltumsūkņa rādījums nāk tieši no iekārtas: temperatūras, starti, darba stundas, kļūdu kodi.',
     say: 'Un ne tikai enerģiju — katra iekārta dod desmitiem rādījumu, visi atjaunoti pirms minūtes. Tā ir izejviela visiem MI modeļiem.' },
-  { type: 'cam', stage: 2, screen: 'runtimeHp', rect: [250, 480, 1100, 540], title: 'Cik daudz strādā kompresors', text: 'Pēdējā mēnesī kompresors strādāja 30 % laika un ieslēdzās 557 reizes.',
-    say: 'No rādījumiem platforma pati izrēķina, kā iekārta tiek lietota. 557 ieslēgšanās mēnesī — tas ietekmē kompresora mūžu, un agrāk to neviens neskaitīja.' },
-  { type: 'cam', stage: 2, screen: 'runtimeAhu', rect: [250, 340, 1100, 440], title: 'Platforma pamana cilvēku', text: 'PN1 ventilācija kopš 29. oktobra ir manuālā režīmā — kāds to pārslēdza ar roku.',
-    say: 'Platforma pamanīja, ka kopš 29. oktobra ventilācija ir pārslēgta manuāli. Ēkās tas parasti paliek nepamanīts nedēļām — un maksā naudu.' },
-  { type: 'cam', stage: 2, screen: 'ahuControl', rect: [240, 185, 1065, 510], chip: 'Vadība', title: 'Un var arī vadīt', text: 'Ventilatoru pakāpe, temperatūra, CO₂ mērķis, gaisa plūsma — platforma var to mainīt pati.',
-    say: 'Platforma ne tikai redz — tā var arī vadīt. Komanda aiziet uz iekārtu, un iekārta apstiprina, ka izpildīja.' },
 
-  { type: 'cam', stage: 3, screen: 'floor', rect: [248, 164, 1100, 1064], title: 'Kur kilovatstunda nonāk', text: 'Visas otrā stāva telpas šobrīd ir zaļajā komforta zonā.',
+  { type: 'cam', stage: 3, screen: 'floor', rect: [248, 164, 1100, 1064], title: 'Kilovatstunda ir telpā', text: 'Visas otrā stāva telpas šobrīd ir zaļajā komforta zonā — siltums ir tur, kur vajag.',
     say: 'Mūsu kilovatstunda beidzot ir telpā. Stāva plānā redzam, kā jūtas katra telpa — šobrīd visas zaļajā zonā. Tieši tam to visu darām.' },
-  { type: 'cam', stage: 3, screen: 'feedback', rect: [540, 178, 520, 314], title: 'Un ko saka cilvēki', text: 'Darbinieki paši novērtē telpu — no “par aukstu” līdz “par karstu”.',
-    say: 'Sensori ir viena lieta, cilvēku sajūtas — cita. Katrs var pateikt “man ir auksti”. Tas nākotnē palīdzēs MI saprast, kad komforts ir patiešām sasniegts.' },
 
   { type: 'cam', stage: 4, screen: 'energy', rect: [24, 158, 1552, 192], title: 'Patērējām par 21 % mazāk…', text: '…bet rēķins pieauga par 10 %: elektrība kļuva dārgāka. Tāpēc tikpat svarīgi ir, KAD mēs to pērkam.',
     say: 'Rēķins par apkures sezonu kopš 6. oktobra. Patērējām par piekto daļu mazāk nekā mēnesi iepriekš — bet samaksājām vairāk, jo elektrība kļuva dārgāka. Ar taupīšanu vien nepietiek; jāpērk lētajās stundās. Tieši tur strādā MI.' },
@@ -693,7 +689,7 @@ const STEPS = [
     say: 'Un mēneša beigās — viena poga, un grāmatvedībai ir gatava atskaite.' },
 
   { type: 'scene', id: 'signals', stage: 5,
-    say: 'Tagad svarīgākais. Mēs zinām, cik elektrība maksā katru stundu, kāds būs laiks, cik efektīvi strādā siltumsūkņi un cik ēkai vajadzēs. MI to saliek kopā un izlemj vienu lietu: kad tērēt.' },
+    say: 'MI plānotājs katru stundu skatās uz visu reizē. Ievadē: elektrības cena katrai stundai rītdienai no Nord Pool; laika prognoze 48 stundām — āra temperatūra, saule, mākoņi, vējš — un ēkā izmērītā āra temperatūra; siltumsūkņu efektivitāte, ko mērām katru stundu; MI prognoze, cik enerģijas ēkai vajadzēs; komforta robežas — telpu temperatūra, CO₂, mitrums, un ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām; iekārtu stāvoklis — tvertņu temperatūras, kompresora starti, kļūdas; un pilsētas siltuma tarifs salīdzinājumam. Izvadē: karsto ūdeni sildām lētajās stundās; apkurē ēku un tvertni uzsildām, kamēr elektrība lēta; dzesēšanā atdzesējam iepriekš; ventilācijas darba stundas pārceļam uz lētāko laiku.' },
   { type: 'scene', id: 'optimizer', stage: 5,
     say: 'Šis ir īstais algoritms, kas strādā mūsu ēkā, uz īstām biržas cenām. Pirms rādu — kurās stundās jūs sildītu ūdeni? … Platforma izvēlas šīs piecas stundas, un tas ir vidēji 13 % lētāk. Uzklikšķiniet uz citas dienas — plāns mainās. Apakšā: stundas, kad siltumsūkņa siltums ir lētāks par pilsētas.' },
   { type: 'scene', id: 'loop', stage: 5,
@@ -717,7 +713,7 @@ const STEPS = [
     say: 'Kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem — no maziem koda testiem līdz pieņemšanai ēkā. Mēs to pielāgojām HVAC platformai. Pirmie pieci līmeņi jau strādā: ap 3 700 automātisku testu uz katru koda izmaiņu, uz tā paša servera. Pēdējais līmenis — pilota pieņemšana — 2027. gada maijā.' },
 
   { type: 'scene', id: 'next', stage: 7,
-    say: 'Tālāk: MI asistents visiem lietotājiem, siltumsūkņu temperatūras vadība pēc cenas, un digitālais dvīnis, kurā izmēģināt izmaiņas pirms īstās ēkas.' },
+    say: 'Tālāk: MI asistents visiem lietotājiem, siltuma mērītāji katram kontūram un digitālais dvīnis, kurā izmēģināt izmaiņas pirms īstās ēkas.' },
   { type: 'scene', id: 'outro', stage: 7,
     say: 'Paldies. Mūsu kilovatstunda ir nonākusi galā — un katrā pieturā platforma zināja, kur tā ir, cik tā maksā un kā to nopirkt lētāk.' },
 ];
