@@ -6,7 +6,7 @@ Tūre: `index.html` (N — piezīmes ekrānā, `#12` — pāriet uz soli 12). Š
 
 ## Viena doma, kas jāatceras
 
-**Mūsu ēka siltumu ņem no zemes, un MI izlemj, kad pirkt elektrību, kas to “pārsūknē” — tāpēc siltums ir piecas reizes efektīvāks un lētāks.**
+**IPCEI-CIS: no iekārtas malā līdz ES mākonim. Mūsu ēka siltumu ņem no zemes, un MI izlemj, kad pirkt elektrību, kas to “pārsūknē” — tāpēc siltums ir piecas reizes efektīvāks un lētāks.**
 
 ## Siltumsūknis — vienkāršiem vārdiem (sagatavei)
 
@@ -33,36 +33,36 @@ Tūre: `index.html` (N — piezīmes ekrānā, `#12` — pāriet uz soli 12). Š
 
 **#1 · Titulslaids**
 
-Šodien neparādīšu slaidus par platformu — parādīšu pašu platformu. Sekosim vienai kilovatstundai: no brīža, kad to nopērkam biržā, līdz brīdim, kad tā silda telpu un parādās rēķinā. Un pa ceļam parādīšu, kur MI to padara lētāku.
+Šis ir IPCEI-CIS projekts — mākoņa un malas skaitļošanas infrastruktūra. Mūsu daļa: HVAC AI platforma, kas savieno iekārtas ēkā ar ES mākoni. Šodien neparādīšu slaidus par platformu — parādīšu pašu platformu. Sekosim vienai kilovatstundai: no brīža, kad to nopērkam biržā, līdz brīdim, kad tā silda telpu un parādās rēķinā. Un pa ceļam parādīšu, kur MI to padara lētāku.
 
 ## 1. Ēka
 
-**#2 · Šī ir mūsu ēka**  
-_Uz ekrāna:_ Dzīvs 3D modelis. Tieši tagad abi siltumsūkņi strādā: 18,7 kW elektrības → 97,9 kW siltuma.
+**#2 · Šeit viss sākas — mūsu objekts**  
+_Uz ekrāna:_ VATP ēka 3D. Katrs punktiņš ir reāla iekārta. Izmēģinām, kā ēku labāk parādīt lietotājiem un apmeklētājiem.
 
-Ceļojums sākas šeit — VATP ēkā. Tas nav zīmējums, tas ir dzīvs modelis: punktiņi ir reālas iekārtas, un katra sūta datus uz platformu. Paskatieties augšā: elektrības ieiet ap 19 kilovatiem, siltuma iznāk ap 98. Kā tas iespējams — to tūlīt parādīšu.
+Šeit viss sākas — šis ir mūsu objekts. Katrs punktiņš ir reāla iekārta, kas sūta datus uz platformu. 3D skats ir eksperiments: mēģinām dažādus veidus, kā un ko rādīt — gan ikdienas lietotājiem, gan cilvēkiem, kas apmeklē ēku. Konferencēs redzējām, ka vismaz dažos tirgos uzņēmumi tieši šādus 3D modeļus izvēlas, tāpēc izmēģinājām arī mēs.
 
-**#3 · Klikšķis uz siltumsūkņa**  
-_Uz ekrāna:_ HP Master: no zemes ienāk 4,6 °C, ēkai aiziet 37,5 °C. 6,3 kW elektrības → 28,4 kW siltuma.
+**#3 · Kur kilovatstunda kļūst par siltumu**  
+_Uz ekrāna:_ Galvenais siltumsūknis: 6,3 kW elektrības → 28,4 kW siltuma. Kā no 6 var dabūt 28? Pie tā atgriezīsimies.
 
-Uzspiežam uz galvenā siltumsūkņa. No zemes ienāk šķidrums ar 4,6 grādiem, atpakaļ zemē aiziet −1,6 — tātad siltumsūknis to atdzesēja un to siltumu paņēma. Ēkai tas dod 37,5 grādus. Par 6 kilovatiem elektrības — 28 kilovati siltuma.
+Mūsu kilovatstunda ceļo tieši šurp — uz siltumsūkni uz jumta. Uzspiežot redzam, ko tas dara šobrīd: ieņem nedaudz vairāk par 6 kilovatiem elektrības un atdod 28 kilovatus siltuma. Tas izklausās pēc maģijas — un vēlāk parādīšu, kā tas strādā. Šie dati nāk tieši no siltumsūkņa kontrollera — tā ir malas daļa mūsu IPCEI-CIS sistēmā.
 
 ## 2. Pārskats
 
-**#4 · Galvenais panelis**  
-_Uz ekrāna:_ Šodien 116 kWh un €35.73. Siltumsūkņi strādā ar COP 5,19 — siltums 9 % lētāks nekā pilsētas apkure.
+**#4 · Ikdienā — galvenais panelis**  
+_Uz ekrāna:_ Pārvaldnieks katru rītu atver šo: cik šodien patērējām, cik tas maksāja un kas mainījies kopš vakardienas.
 
-Šo ekrānu ēkas pārvaldnieks redz katru rītu: cik šodien patērējām, cik tas maksāja, salīdzinājumā ar vakardienu. COP 5,19 nozīmē: par katru nopirkto kilovatstundu dabūjam piecas siltuma.
+3D ir skaists, bet ikdienā pārvaldnieks atver šo — galveno paneli. Vienā skatā: cik kilovatstundu šodien patērējām, cik tas maksāja, kā tas salīdzinās ar vakardienu, kāda ir elektrības cena un laiks ārā.
 
-**#5 · Slodze un prognoze**  
-_Uz ekrāna:_ Ēka tagad patērē 8,6 kW. Raustītā līnija — MI prognoze; iekrāsotas lētās un dārgās stundas.
+**#5 · MI zina, kas būs rīt**  
+_Uz ekrāna:_ Līnija — ēkas patēriņš; raustītā — MI prognoze. Pelēkās joslas — lētās stundas, sārtās — dārgās.
 
-Te pirmo reizi parādās MI: tas prognozē, cik ēkai vajadzēs nākamajās stundās. Fonā — elektrības cena: zaļās joslas lētas, oranžās dārgas. Prognoze plus cena — tieši no tā MI izlemj, kad tērēt.
+Te pirmo reizi parādās MI. Tas prognozē, cik enerģijas ēkai vajadzēs nākamajās stundās, un fonā redzam, kuras stundas būs lētas un kuras dārgas. Prognoze plus cena — no tā MI vēlāk izlemj, kad tērēt.
 
-**#6 · €21.40 palika galdā**  
-_Uz ekrāna:_ MI ieteikums: PN1 ventilācija 29 dienās iztērēja €21.40 vairāk, nekā strādājot lētākajās stundās.
+**#6 · MI pasaka, kas jāzina šodien**  
+_Uz ekrāna:_ Trīs ziņas vienkāršā valodā: neapskatīti brīdinājumi, 39 % enerģijas patērēts naktī, un ieteikums ventilācijai.
 
-Pārvaldniekam nav jāmeklē problēmas — MI tās pieliek priekšā. Reāls ieteikums no šī mēneša: ja ventilācija strādātu lētākajās stundās, 21 eiro paliktu kabatā. Pie tā vēl atgriezīsimies.
+Pārvaldniekam nav jārok grafikos — MI pats saliek svarīgāko trīs teikumos. Šodien: ir neapskatīti brīdinājumi; 39 procenti enerģijas aizgāja naktī, kad ēka ir tukša; un ieteikums ventilāciju darbināt lētākajās stundās. Tālāk paskatīsimies, no kurienes tas viss nāk — ēkas iekšienē.
 
 ## 3. Iekārtas
 
@@ -180,7 +180,7 @@ Un platforma pati raksta secinājumus vienkāršā valodā. Šie teikumi ir uzra
 
 **#29 · MI asistents**
 
-Nākamais solis, ko jau būvējam: MI asistents. Jūs vienkārši pajautājat — “kāpēc ventilācija šomēnes maksāja vairāk?” — un tas atbild no ēkas datiem, ar avotiem. Šeit piemērs uz šī mēneša reālajiem skaitļiem. Modelis ir mitināts Eiropā, un izmaksām ir griesti — eiro dienā visai ēkai.
+Nākamais solis, ko jau būvējam: MI asistents. Jūs vienkārši pajautājat — “kāpēc ventilācija šomēnes maksāja vairāk?” — un tas atbild no ēkas datiem, ar avotiem. Šeit piemērs uz šī mēneša reālajiem skaitļiem. Valodas modelis darbojas ES mākonī — tā ir mūsu IPCEI-CIS mākoņa daļa — un izmaksām ir griesti: eiro dienā visai ēkai.
 
 **#30 · Ko mums dod MI**
 
@@ -200,7 +200,7 @@ Platforma strādā autonomi, bet nekad ārpus drošām robežām. Piemēram, CO�
 
 **#33 · Serveris ēkā (DATI Group)**
 
-Viss, ko šodien redzējāt, strādā uz servera tepat mūsu ēkā, ko izveidojām kopā ar DATI Group. Kopš 16. oktobra dati un vadība glabājas ēkā, rezerves kopija — ES. Katru nakti kopija, viena ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.
+Šī ir IPCEI-CIS būtība: mala un mākonis kā viena sistēma. Malā — iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Tos visus apkalpo vārteja un serveris tepat ēkā, ko izveidojām kopā ar DATI Group — tur strādā platforma, datubāze un MI, tāpēc lēmumi notiek ēkā. Mākonī, ES datu centros — rezerves kopijas, valodas modelis asistentam, elektrības cenas un laika prognozes. Kopš 16. oktobra dati un vadība glabājas ēkā, rezerves kopija — ES. Katru nakti kopija, viena ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.
 
 **#34 · Testēšana (TestDevLab)**
 
@@ -222,6 +222,7 @@ Paldies. Mūsu kilovatstunda ir nonākusi galā — un katrā pieturā platforma
 - **“Zeme 42 kW, bet siltumsūkņi dod 60 kW — kur pārējais?”** Siltums = zemes siltums + elektrība (42 + 13 ≈ 55); atlikums ir mērījumu precizitāte un laika nobīde starp skaitītājiem.
 - **“Vai CO₂ ir labāks nekā pilsētas siltumam?”** Nē, līdzīgs — Ventspils pilsētas siltums arī ir zema oglekļa. Mūsu priekšrocība ir cena (−55 %) un tas, ka mēs to izmērām. Pret gāzes apkuri — ~10× mazāk.
 - **“Cik droša ir autonomā vadība?”** Katrai komandai ir robežas (piem., CO₂ mērķis tikai 400–2000), iekārta apstiprina izpildi, un jebkuras nenoteiktības gadījumā sistēma izvēlas “izslēgts”.
-- **“Kur glabājas dati?”** Uz servera ēkā (kopā ar DATI Group); rezerves kopija — ES datu centrā, bloķēta 7 dienas.
+- **“Kur ir IPCEI-CIS daļa?”** Mala: iekārtu kontrolleri (Climatix ×2, Luxtronik ×2, Siemens vārsti, 11 Shelly), vārteja un serveris ēkā (kopā ar DATI Group). Mākonis (ES): rezerves kopijas (Scaleway, Varšava, bloķētas 7 dienas), valodas modelis asistentam (Scaleway, Parīze), Nord Pool cenas, laika prognozes.
+- **“Vai 3D ir dzīvs?”** Jā, rādījumi ir reāli; pats 3D skats ir eksperiments, kā ēku rādīt lietotājiem un apmeklētājiem.
 - **“Vai MI asistents jau strādā?”** Prototips ir izstrādāts (ES mitināts modelis, izmaksu griesti €1 dienā); slaidā ir piemērs uz šī mēneša reāliem datiem. Ieviešana lietotājiem — nākamais solis.
 - **“Ko dara TestDevLab?”** Viņi izstrādāja IPCEI testēšanas stratēģiju ar līmeņiem A–F; mēs to pielāgojām HVAC platformai. Līmeņi A–E jau strādā, F — pilota pieņemšana 2027. g. maijā.

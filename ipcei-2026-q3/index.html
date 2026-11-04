@@ -382,7 +382,6 @@
     <div class="chrome">
       <div class="dots"><i></i><i></i><i></i></div>
       <div class="url" id="url"></div>
-      <div class="live"><i></i>Dzīvie dati</div>
     </div>
     <div class="viewport" id="viewport">
       <div class="layer" id="layerA"><img alt=""></div>
@@ -406,7 +405,7 @@
   <section class="scene" id="scene-intro">
     <div class="kick">IPCEI-CIS · Nākamās paaudzes mikroražotnes · 2026. g. 3. ceturksnis</div>
     <h1>Vienas <em>kilovatstundas</em><br>ceļš</h1>
-    <p class="sub">HVAC AI platforma — no elektrības biržas līdz siltai telpai. Reāli dati, apkures sezona 2026.</p>
+    <p class="sub">HVAC AI platforma IPCEI-CIS projektā — no iekārtas malā līdz ES mākonim, no elektrības biržas līdz siltai telpai.</p>
     <div class="logos">
       <img src="logos/eu-nextgen.png" alt="Finansē Eiropas Savienība — NextGenerationEU">
       <img src="logos/nap2027.png" alt="Nacionālais attīstības plāns 2027">
@@ -517,7 +516,7 @@
       </div>
       <div class="asst-facts">
         <div><b>Atbild no ēkas datiem</b><span>un vienmēr parāda avotu — neko neizdomā</span></div>
-        <div><b>Modelis mitināts ES</b><span>Scaleway, Parīze</span></div>
+        <div><b>Valodas modelis ES mākonī</b><span>Scaleway, Parīze — IPCEI-CIS mākoņa daļa</span></div>
         <div><b>€1 dienā</b><span>izmaksu griesti visai ēkai</span></div>
         <small>Piemērs uz šī mēneša reālajiem datiem</small>
       </div>
@@ -537,21 +536,21 @@
     </div>
   </section>
 
-  <!-- Infrastructure: on-prem server with DATI Group -->
+  <!-- IPCEI-CIS: edge to cloud, server with DATI Group -->
   <section class="scene" id="scene-server">
-    <div class="kick">Infrastruktūra · kopā ar DATI Group</div>
-    <h2>Viss strādā uz <em>mūsu servera</em> — tepat ēkā</h2>
+    <div class="kick">IPCEI-CIS · mala un mākonis · kopā ar DATI Group</div>
+    <h2>No iekārtas līdz <em>mākonim</em> — viena sistēma</h2>
     <div class="arch">
-      <div class="node"><small>Iekārtas</small><b>Siltumsūkņi, ventilācija, vārsti</b><span>+ 11 elektrības skaitītāji</span></div>
-      <div class="node"><small>Vārteja</small><b>Runā ar iekārtām</b><span>Luxtronik · Modbus · BACnet · HTTP</span></div>
-      <div class="node core"><small>VATP serveris</small><b>Platforma, datubāze, MI un testi</b><span>14 kodoli · 15 GB · 450 GB</span></div>
-      <div class="node"><small>Lietotājs</small><b>Pārlūks jebkur</b><span>šifrēts savienojums</span></div>
+      <div class="node"><small>Mala · iekārtās</small><b>Iekārtu kontrolleri</b><span>Siemens Climatix ×2 · Luxtronik ×2 · Siemens vārsti ×2 · 11 Shelly</span></div>
+      <div class="node"><small>Mala · ēkā</small><b>Vārteja runā ar iekārtām</b><span>Modbus · BACnet · Luxtronik · HTTP</span></div>
+      <div class="node core"><small>Mala · serveris ēkā</small><b>Platforma, datubāze, MI un testi</b><span>14 kodoli · 15 GB · 450 GB</span></div>
+      <div class="node"><small>Mākonis · ES</small><b>Rezerves kopijas, valodas modelis, cenas un laiks</b><span>Scaleway (Varšava, Parīze) · Nord Pool · Open-Meteo</span></div>
     </div>
     <div class="facts">
-      <div><b>16. okt</b><span>pārcelts no mākoņa uz ēku</span></div>
-      <div><b>Katru nakti</b><span>rezerves kopija — arī ārpus ēkas, bloķēta 7 dienas</span></div>
+      <div><b>16. okt</b><span>platforma pārcelta no mākoņa uz ēkas malu</span></div>
+      <div><b>Katru nakti</b><span>rezerves kopija ES mākonī — bloķēta 7 dienas</span></div>
       <div><b>Katru mēnesi</b><span>atjaunošanas tests no kopijas — izturēts</span></div>
-      <div><b>Dati glabājas</b><span>ēkā, rezerves kopija — ES datu centrā</span></div>
+      <div><b>Vadība ēkā</b><span>lēmumi notiek malā, mākonis tos papildina</span></div>
     </div>
     <div class="partner"><img src="logos/dati-group.png" alt="DATI Group"><span>Servera un tīkla risinājums kopā ar DATI Group</span></div>
   </section>
@@ -613,7 +612,7 @@
    from the live DOM when the screens were captured.
    ───────────────────────────────────────────────────────────── */
 const SCREENS = {
-  f3d:         { src: 'app/f3d.jpg', video: 'app/f3d.webm', start: 9, h: 1000, url: '3D ēka' },
+  f3d:         { src: 'app/f3d.jpg', video: 'app/f3d.webm', start: 0, h: 1000, url: '3D ēka' },
   f3dHp:       { src: 'app/f3d-hp.jpg',          h: 1000, url: '3D ēka / Siltumsūknis' },
   dashboard:   { src: 'app/dashboard.jpg',       h: 1233, url: 'Pārskats' },
   schematic:   { src: 'app/schematic.jpg', video: 'app/schematic.webm', start: 0, h: 1000, url: 'Shēma' },
@@ -630,6 +629,9 @@ const SCREENS = {
   adminPolicy: { src: 'app/admin-policy.jpg',    h: 1000, url: 'Administrēšana / Vadības politikas' },
 };
 
+const ASSET_V = '20261104c';
+Object.values(SCREENS).forEach((s) => { s.src += '?v=' + ASSET_V; if (s.video) s.video += '?v=' + ASSET_V; });
+
 const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Komforts', 'Enerģija', 'MI', 'Kontrole', 'Tālāk'];
 
 // The thread: follow one kilowatt-hour — bought on Nord Pool, multiplied by the heat pump,
@@ -637,19 +639,19 @@ const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Komforts', 'Enerģija', 'MI',
 // cue: what the audience reads.  say: speaker notes (press N) — what to tell the room and why it matters.
 const STEPS = [
   { type: 'scene', id: 'intro', stage: -1,
-    say: 'Šodien neparādīšu slaidus par platformu — parādīšu pašu platformu. Sekosim vienai kilovatstundai: no brīža, kad to nopērkam biržā, līdz brīdim, kad tā silda telpu un parādās rēķinā. Un pa ceļam parādīšu, kur MI to padara lētāku.' },
+    say: 'Šis ir IPCEI-CIS projekts — mākoņa un malas skaitļošanas infrastruktūra. Mūsu daļa: HVAC AI platforma, kas savieno iekārtas ēkā ar ES mākoni. Šodien neparādīšu slaidus par platformu — parādīšu pašu platformu. Sekosim vienai kilovatstundai: no brīža, kad to nopērkam biržā, līdz brīdim, kad tā silda telpu un parādās rēķinā. Un pa ceļam parādīšu, kur MI to padara lētāku.' },
 
-  { type: 'cam', stage: 0, screen: 'f3d', rect: [0, 0, 1600, 1000], spot: false, title: 'Šī ir mūsu ēka', text: 'Dzīvs 3D modelis. Tieši tagad abi siltumsūkņi strādā: 18,7 kW elektrības → 97,9 kW siltuma.',
-    say: 'Ceļojums sākas šeit — VATP ēkā. Tas nav zīmējums, tas ir dzīvs modelis: punktiņi ir reālas iekārtas, un katra sūta datus uz platformu. Paskatieties augšā: elektrības ieiet ap 19 kilovatiem, siltuma iznāk ap 98. Kā tas iespējams — to tūlīt parādīšu.' },
-  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1222, 74, 312, 500], chip: 'Luxtronik', title: 'Klikšķis uz siltumsūkņa', text: 'HP Master: no zemes ienāk 4,6 °C, ēkai aiziet 37,5 °C. 6,3 kW elektrības → 28,4 kW siltuma.',
-    say: 'Uzspiežam uz galvenā siltumsūkņa. No zemes ienāk šķidrums ar 4,6 grādiem, atpakaļ zemē aiziet −1,6 — tātad siltumsūknis to atdzesēja un to siltumu paņēma. Ēkai tas dod 37,5 grādus. Par 6 kilovatiem elektrības — 28 kilovati siltuma.' },
+  { type: 'cam', stage: 0, screen: 'f3d', rect: [0, 0, 1600, 1000], spot: false, title: 'Šeit viss sākas — mūsu objekts', text: 'VATP ēka 3D. Katrs punktiņš ir reāla iekārta. Izmēģinām, kā ēku labāk parādīt lietotājiem un apmeklētājiem.',
+    say: 'Šeit viss sākas — šis ir mūsu objekts. Katrs punktiņš ir reāla iekārta, kas sūta datus uz platformu. 3D skats ir eksperiments: mēģinām dažādus veidus, kā un ko rādīt — gan ikdienas lietotājiem, gan cilvēkiem, kas apmeklē ēku. Konferencēs redzējām, ka vismaz dažos tirgos uzņēmumi tieši šādus 3D modeļus izvēlas, tāpēc izmēģinājām arī mēs.' },
+  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1222, 74, 312, 500], chip: 'Mala · Luxtronik', title: 'Kur kilovatstunda kļūst par siltumu', text: 'Galvenais siltumsūknis: 6,3 kW elektrības → 28,4 kW siltuma. Kā no 6 var dabūt 28? Pie tā atgriezīsimies.',
+    say: 'Mūsu kilovatstunda ceļo tieši šurp — uz siltumsūkni uz jumta. Uzspiežot redzam, ko tas dara šobrīd: ieņem nedaudz vairāk par 6 kilovatiem elektrības un atdod 28 kilovatus siltuma. Tas izklausās pēc maģijas — un vēlāk parādīšu, kā tas strādā. Šie dati nāk tieši no siltumsūkņa kontrollera — tā ir malas daļa mūsu IPCEI-CIS sistēmā.' },
 
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [0, 0, 1600, 1000], spot: false, title: 'Galvenais panelis', text: 'Šodien 116 kWh un €35.73. Siltumsūkņi strādā ar COP 5,19 — siltums 9 % lētāks nekā pilsētas apkure.',
-    say: 'Šo ekrānu ēkas pārvaldnieks redz katru rītu: cik šodien patērējām, cik tas maksāja, salīdzinājumā ar vakardienu. COP 5,19 nozīmē: par katru nopirkto kilovatstundu dabūjam piecas siltuma.' },
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 301, 923, 444], chip: 'MI', title: 'Slodze un prognoze', text: 'Ēka tagad patērē 8,6 kW. Raustītā līnija — MI prognoze; iekrāsotas lētās un dārgās stundas.',
-    say: 'Te pirmo reizi parādās MI: tas prognozē, cik ēkai vajadzēs nākamajās stundās. Fonā — elektrības cena: zaļās joslas lētas, oranžās dārgas. Prognoze plus cena — tieši no tā MI izlemj, kad tērēt.' },
-  { type: 'cam', stage: 1, screen: 'dashboard', rect: [1039, 301, 461, 444], chip: 'MI', title: '€21.40 palika galdā', text: 'MI ieteikums: PN1 ventilācija 29 dienās iztērēja €21.40 vairāk, nekā strādājot lētākajās stundās.',
-    say: 'Pārvaldniekam nav jāmeklē problēmas — MI tās pieliek priekšā. Reāls ieteikums no šī mēneša: ja ventilācija strādātu lētākajās stundās, 21 eiro paliktu kabatā. Pie tā vēl atgriezīsimies.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [0, 0, 1600, 1000], spot: false, title: 'Ikdienā — galvenais panelis', text: 'Pārvaldnieks katru rītu atver šo: cik šodien patērējām, cik tas maksāja un kas mainījies kopš vakardienas.',
+    say: '3D ir skaists, bet ikdienā pārvaldnieks atver šo — galveno paneli. Vienā skatā: cik kilovatstundu šodien patērējām, cik tas maksāja, kā tas salīdzinās ar vakardienu, kāda ir elektrības cena un laiks ārā.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 301, 923, 444], chip: 'MI', title: 'MI zina, kas būs rīt', text: 'Līnija — ēkas patēriņš; raustītā — MI prognoze. Pelēkās joslas — lētās stundas, sārtās — dārgās.',
+    say: 'Te pirmo reizi parādās MI. Tas prognozē, cik enerģijas ēkai vajadzēs nākamajās stundās, un fonā redzam, kuras stundas būs lētas un kuras dārgas. Prognoze plus cena — no tā MI vēlāk izlemj, kad tērēt.' },
+  { type: 'cam', stage: 1, screen: 'dashboard', rect: [1039, 301, 461, 444], chip: 'MI', title: 'MI pasaka, kas jāzina šodien', text: 'Trīs ziņas vienkāršā valodā: neapskatīti brīdinājumi, 39 % enerģijas patērēts naktī, un ieteikums ventilācijai.',
+    say: 'Pārvaldniekam nav jārok grafikos — MI pats saliek svarīgāko trīs teikumos. Šodien: ir neapskatīti brīdinājumi; 39 procenti enerģijas aizgāja naktī, kad ēka ir tukša; un ieteikums ventilāciju darbināt lētākajās stundās. Tālāk paskatīsimies, no kurienes tas viss nāk — ēkas iekšienē.' },
 
   { type: 'scene', id: 'heatpump', stage: 2,
     say: 'Pirms ejam iekšā — kā vispār strādā siltumsūknis? Iedomājieties ledusskapi. Tas izsūknē siltumu no pārtikas un izmet virtuvē — tāpēc ledusskapja aizmugure ir silta. Siltumsūknis dara to pašu, tikai otrādi: izsūknē siltumu no zemes un ielaiž ēkā. Zeme siltumu dod par brīvu — mēs maksājam tikai par “sūknēšanu”. Tāpēc no vienas elektrības daļas iznāk piecas siltuma daļas. Elektriskais sildītājs dod vienu pret vienu, gāzes katls pat mazāk. Mūsu siltumsūkņi — piecarpus, un tas ir izmērīts.' },
@@ -657,11 +659,11 @@ const STEPS = [
     say: 'Tagad tas pats mūsu ēkā, dzīvajā. Šī shēma kustas — plūsmas iet pa caurulēm, sarkans ir silts, zils auksts. Izsekosim siltumam soli pa solim.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [240, 622, 120, 155], chip: 'Ģeotermija', title: '1. Paņemam siltumu no zemes', text: 'Zem ēkas ir dziļi urbumi. Šķidrums tajos ieiet auksts, iznāk siltāks. Šobrīd zeme dod 42 kW — par brīvu.',
     say: 'Pirmais solis: zeme. Zem ēkas ir urbumi, pa tiem riņķo šķidrums. Dziļumā zeme visu gadu ir ap 8 grādiem, tāpēc šķidrums atgriežas siltāks. Šobrīd zeme mums dod 42 kilovatus — un par tiem nemaksājam neko.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [618, 492, 345, 140], chip: 'Luxtronik', title: '2. Siltumsūknis to “sasilda”', text: '42 kW no zemes + 13 kW elektrības → 60 kW siltuma. Gandrīz ¾ siltuma nāk no zemes.',
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [618, 492, 345, 140], chip: 'Mala · Luxtronik', title: '2. Siltumsūknis to “sasilda”', text: '42 kW no zemes + 13 kW elektrības → 60 kW siltuma. Gandrīz ¾ siltuma nāk no zemes.',
     say: 'Otrais solis: zemes siltums ir vēss — tikai daži grādi. Siltumsūknis to saspiež un sasilda līdz temperatūrai, ar ko var sildīt ēku. Tam vajag elektrību — 13 kilovatus. Rezultātā 60 kilovati siltuma. Tā ir mūsu energoefektivitāte: lielāko daļu siltuma dod zeme, elektrība tikai palīdz.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [1012, 430, 275, 265], title: '3. Siltums nonāk telpās', text: 'Lielā tvertne strādā kā siltuma baterija. No tās silts ūdens iet uz radiatoriem — šobrīd 19,9 kW.',
     say: 'Trešais solis: siltums nonāk lielā tvertnē — tā ir kā baterija, kas krāj siltumu. No tās silts ūdens aiziet uz radiatoriem un grīdas apkuri. Šie skaitļi ir tieši šī brīža jauda.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [388, 94, 352, 224], chip: 'BACnet', title: '4. …un svaigajā gaisā', text: 'Ārā ir 7 °C. Ventilācija svaigo gaisu uzsilda līdz 27 °C — tam šobrīd aiziet 21 kW.',
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [388, 94, 352, 224], chip: 'Mala · BACnet', title: '4. …un svaigajā gaisā', text: 'Ārā ir 7 °C. Ventilācija svaigo gaisu uzsilda līdz 27 °C — tam šobrīd aiziet 21 kW.',
     say: 'Ceturtais solis: daļa siltuma aiziet ventilācijā. Ārā ir septiņi grādi, un svaigais gaiss jāuzsilda, pirms tas ieplūst telpās. Siemens vārsts precīzi mēra, cik siltuma tam aiziet.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [693, 765, 132, 172], title: '5. Un karstais ūdens krānā', text: 'Atsevišķa tvertne, šobrīd 51 °C. Kad to sildīt, izlemj platforma — pēc elektrības cenas.',
     say: 'Un karstais ūdens krānos. Šī tvertne ir MI pirmais darba lauks: platforma pati izvēlas, kurās stundās to sildīt, lai elektrība būtu vislētākā.' },
@@ -699,7 +701,7 @@ const STEPS = [
   { type: 'cam', stage: 5, screen: 'energy', rect: [24, 565, 925, 630], chip: 'MI', title: 'Platforma pati paskaidro', text: '“Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %” — bez neviena iestatījuma.',
     say: 'Un platforma pati raksta secinājumus vienkāršā valodā. Šie teikumi ir uzrakstīti automātiski, no datiem.' },
   { type: 'scene', id: 'assistant', stage: 5,
-    say: 'Nākamais solis, ko jau būvējam: MI asistents. Jūs vienkārši pajautājat — “kāpēc ventilācija šomēnes maksāja vairāk?” — un tas atbild no ēkas datiem, ar avotiem. Šeit piemērs uz šī mēneša reālajiem skaitļiem. Modelis ir mitināts Eiropā, un izmaksām ir griesti — eiro dienā visai ēkai.' },
+    say: 'Nākamais solis, ko jau būvējam: MI asistents. Jūs vienkārši pajautājat — “kāpēc ventilācija šomēnes maksāja vairāk?” — un tas atbild no ēkas datiem, ar avotiem. Šeit piemērs uz šī mēneša reālajiem skaitļiem. Valodas modelis darbojas ES mākonī — tā ir mūsu IPCEI-CIS mākoņa daļa — un izmaksām ir griesti: eiro dienā visai ēkai.' },
   { type: 'scene', id: 'savings', stage: 5,
     say: 'Tātad, ko MI mums dod jau šodien: karstais ūdens par 13 % lētāk, automātiski. Ventilācijā atrasti 21 eiro mēnesī, ko tērējām dārgajās stundās. Kļūdas iekārtās atrod pati, pirms kāds pamana. Un prognoze 48 stundas uz priekšu, uz kā balstās viss pārējais.' },
 
@@ -708,7 +710,7 @@ const STEPS = [
   { type: 'cam', stage: 6, screen: 'adminPolicy', rect: [240, 200, 1060, 780], chip: 'Drošība', title: 'Autonoms — drošās robežās', text: 'Platforma vada pati, bet katrai komandai ir robežas, ārpus kurām tā neiziet.',
     say: 'Platforma strādā autonomi, bet nekad ārpus drošām robežām. Piemēram, CO₂ mērķi var mainīt tikai starp 400 un 2000.' },
   { type: 'scene', id: 'server', stage: 6,
-    say: 'Viss, ko šodien redzējāt, strādā uz servera tepat mūsu ēkā, ko izveidojām kopā ar DATI Group. Kopš 16. oktobra dati un vadība glabājas ēkā, rezerves kopija — ES. Katru nakti kopija, viena ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.' },
+    say: 'Šī ir IPCEI-CIS būtība: mala un mākonis kā viena sistēma. Malā — iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Tos visus apkalpo vārteja un serveris tepat ēkā, ko izveidojām kopā ar DATI Group — tur strādā platforma, datubāze un MI, tāpēc lēmumi notiek ēkā. Mākonī, ES datu centros — rezerves kopijas, valodas modelis asistentam, elektrības cenas un laika prognozes. Kopš 16. oktobra dati un vadība glabājas ēkā, rezerves kopija — ES. Katru nakti kopija, viena ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.' },
   { type: 'scene', id: 'testing', stage: 6,
     say: 'Kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem — no maziem koda testiem līdz pieņemšanai ēkā. Mēs to pielāgojām HVAC platformai. Pirmie pieci līmeņi jau strādā: ap 3 700 automātisku testu uz katru koda izmaiņu, uz tā paša servera. Pēdējais līmenis — pilota pieņemšana — 2027. gada maijā.' },
 
