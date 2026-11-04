@@ -246,6 +246,36 @@
   .model p { font-size: clamp(13px, 1.8vh, 18px); color: var(--cream-dim); line-height: 1.45; }
   .principle { margin-top: 4vh; display: inline-flex; gap: 12px; align-items: center; padding: 1.2vh 1.6vw; border-radius: 999px; border: 1px solid rgba(140,196,173,.4); color: var(--mint); font-weight: 600; font-size: clamp(14px, 2vh, 19px); align-self: flex-start; }
 
+  /* ── Infrastructure + quality scenes ──────────────────────── */
+  .arch { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4vw; margin-top: 4.5vh; max-width: 1240px; }
+  .node { position: relative; background: rgba(255,250,242,.06); border: 1px solid var(--line); border-radius: 20px; padding: 2.6vh 1.4vw; }
+  .node:not(:last-child)::after { content: ''; position: absolute; right: -2.4vw; top: 50%; width: 2.4vw; height: 2px;
+    background: repeating-linear-gradient(90deg, var(--mint) 0 6px, transparent 6px 11px); background-size: 22px 2px; animation: flowx 1s linear infinite; }
+  @keyframes flowx { to { background-position: 22px 0; } }
+  .node small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); font-weight: 700; }
+  .node b { display: block; font-size: clamp(15px, 2.2vh, 22px); font-weight: 700; margin: 1vh 0 .6vh; line-height: 1.25; }
+  .node span { font-size: clamp(12px, 1.6vh, 15px); color: var(--cream-dim); }
+  .node.core { background: radial-gradient(circle at 30% 20%, #3f7a67, var(--green) 70%); border-color: var(--mint); box-shadow: 0 0 60px -10px rgba(140,196,173,.45); }
+  .node.core small, .node.core span { color: rgba(246,239,227,.85); }
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4vw; margin-top: 3.6vh; max-width: 1240px; }
+  .facts div { border-top: 2px solid var(--line); padding-top: 1.4vh; }
+  .facts b { display: block; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(26px, 4.4vh, 46px); color: var(--mint); line-height: 1; margin-bottom: .8vh; }
+  .facts span { font-size: clamp(12px, 1.7vh, 16px); color: var(--cream-dim); line-height: 1.4; }
+  .partner { margin-top: 4vh; align-self: flex-start; display: inline-flex; align-items: center; gap: 16px; background: #fff; color: var(--ink);
+    border-radius: 999px; padding: 1vh 1.6vw 1vh 1vh; font-weight: 600; font-size: clamp(13px, 1.8vh, 17px); }
+  .partner img { height: clamp(26px, 4.4vh, 44px); width: auto; padding: 0 .8vw; }
+  .levels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1vw; margin-top: 4.5vh; max-width: 1240px; align-items: end; }
+  .lvl { background: rgba(255,250,242,.06); border: 1px solid var(--line); border-radius: 18px; padding: 2vh 1vw; }
+  .lvl:nth-child(1) { min-height: 15vh; } .lvl:nth-child(2) { min-height: 18vh; } .lvl:nth-child(3) { min-height: 21vh; }
+  .lvl:nth-child(4) { min-height: 24vh; } .lvl:nth-child(5) { min-height: 27vh; } .lvl:nth-child(6) { min-height: 30vh; }
+  .lvl i { font-style: normal; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-weight: 800; font-size: 14px; margin-bottom: 1.4vh; }
+  .lvl.ok i { background: var(--mint); color: var(--night); }
+  .lvl.wait { border-style: dashed; } .lvl.wait i { border: 2px dashed var(--mint); color: var(--mint); }
+  .lvl b { display: block; font-size: clamp(14px, 2vh, 19px); font-weight: 700; line-height: 1.25; margin-bottom: .8vh; }
+  .lvl span { font-size: clamp(12px, 1.6vh, 15px); color: var(--cream-dim); line-height: 1.4; }
+  .gate { margin-top: 3.4vh; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: var(--mint); font-weight: 700; }
+  .gate span { padding: .9vh 1.1vw; border-radius: 999px; border: 1px solid rgba(140,196,173,.4); color: var(--cream); font-weight: 600; font-size: clamp(12px, 1.7vh, 16px); }
+
   /* Nav + progress */
   .progress { position: fixed; left: 0; bottom: 0; height: 3px; width: 0; background: var(--mint); z-index: 7; transition: width .6s var(--ease); box-shadow: 0 0 12px var(--mint); }
   .arrows { position: fixed; right: 24px; bottom: 18px; z-index: 7; display: flex; gap: 8px; }
@@ -277,8 +307,9 @@
   @media (max-width: 760px) {
     .stage span, .brand span { display: none; }
     .rail { gap: 12px; padding: 0 14px; }
-    .grid4, .journey, .opt, .loop, .flow, .ind { grid-template-columns: 1fr; }
-    .flow svg.wires, .step3::after { display: none; }
+    .grid4, .journey, .opt, .loop, .flow, .ind, .arch, .facts { grid-template-columns: 1fr; }
+    .levels { grid-template-columns: repeat(2, 1fr); } .lvl { min-height: 0 !important; }
+    .flow svg.wires, .step3::after, .node::after { display: none; }
     .brain { margin: 0 auto; }
     .scene { padding: 3vh 16px; overflow: auto; }
     .cue { left: 16px !important; right: 16px; width: auto; top: auto !important; bottom: 70px; }
@@ -399,6 +430,41 @@
     <div class="status"><i></i>Karstā ūdens automātika strādā kopš 8. septembra · cilvēks to var izslēgt jebkurā brīdī</div>
   </section>
 
+  <!-- Infrastructure: on-prem server with DATI Group -->
+  <section class="scene" id="scene-server">
+    <div class="kick">Infrastruktūra · kopā ar DATI Group</div>
+    <h2>Viss strādā uz <em>mūsu servera</em> — tepat ēkā</h2>
+    <div class="arch">
+      <div class="node"><small>Iekārtas</small><b>Siltumsūkņi, ventilācija, vārsti</b><span>+ 11 elektrības skaitītāji</span></div>
+      <div class="node"><small>Vārteja</small><b>Runā ar iekārtām</b><span>Luxtronik · Modbus · BACnet · HTTP</span></div>
+      <div class="node core"><small>VATP serveris</small><b>Platforma, datubāze, MI un testi</b><span>14 kodoli · 15 GB · 450 GB</span></div>
+      <div class="node"><small>Lietotājs</small><b>Pārlūks jebkur</b><span>šifrēts savienojums</span></div>
+    </div>
+    <div class="facts">
+      <div><b>16. okt</b><span>pārcelts no mākoņa uz ēku</span></div>
+      <div><b>Katru nakti</b><span>rezerves kopija — arī ārpus ēkas, bloķēta 7 dienas</span></div>
+      <div><b>Katru mēnesi</b><span>atjaunošanas tests no kopijas — izturēts</span></div>
+      <div><b>Dati paliek</b><span>ēkā un ES — nekas neaiziet ārpus Eiropas</span></div>
+    </div>
+    <div class="partner"><img src="logos/dati-group.png" alt="DATI Group"><span>Servera un tīkla risinājums kopā ar DATI Group</span></div>
+  </section>
+
+  <!-- Quality: TestDevLab test levels -->
+  <section class="scene" id="scene-testing">
+    <div class="kick">Kvalitāte · TestDevLab testēšanas stratēģija</div>
+    <h2>Kā mēs zinām, ka tas <em>strādā</em></h2>
+    <div class="levels">
+      <div class="lvl ok"><i>A</i><b>Koda daļas</b><span>≈3 200 testi</span></div>
+      <div class="lvl ok"><i>B</i><b>Ar īstu datubāzi</b><span>≈450 testi</span></div>
+      <div class="lvl ok"><i>C</i><b>Pārlūkā kā lietotājs</b><span>57 scenāriji</span></div>
+      <div class="lvl ok"><i>D</i><b>Ar īstām iekārtām</b><span>Luxtronik, Siemens, Shelly dzīvajā</span></div>
+      <div class="lvl ok"><i>E</i><b>Uz servera ēkā</b><span>kopš 16. okt · atjaunošanas tests</span></div>
+      <div class="lvl wait"><i>F</i><b>Pilota pieņemšana</b><span>2027. g. maijs</span></div>
+    </div>
+    <div class="gate"><span>Katra koda izmaiņa</span>→<span>tipi un stils</span>→<span>visi testi</span>→<span>cilvēks apstiprina</span>→<span>automātiski ēkā</span></div>
+    <div class="partner"><img src="logos/testdevlab.png" alt="TestDevLab"><span>Testēšanas līmeņi A–F pēc TestDevLab stratēģijas</span></div>
+  </section>
+
   <!-- Next -->
   <section class="scene" id="scene-next">
     <div class="kick">4. ceturksnis · jau procesā</div>
@@ -478,14 +544,22 @@ const STEPS = [
   { type: 'cam', stage: 1, screen: 'dashboard', rect: [1039, 301, 461, 444], chip: 'MI', title: '€21.40 palika galdā', text: 'MI ieteikums: PN1 ventilācija 29 dienās iztērēja €21.40 vairāk, nekā būtu, strādājot lētākajās stundās.',
     say: 'Pārvaldniekam nav jāmeklē problēmas — platforma tās pieliek priekšā. Šis ir reāls MI ieteikums no šī mēneša: ja ventilācija būtu strādājusi lētākajās stundās, ietaupītu 21 eiro. Pie tā vēl atgriezīsimies.' },
 
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [273, 120, 1050, 815], spot: false, title: 'Siltummezgls dzīvajā', text: 'Visa sistēma vienā shēmā. Plūsmas kustas, krāsas rāda, kas silda un kas dzesē — tieši tagad.',
-    say: 'Tagad ieskatāmies ēkas iekšienē. Šī shēma ir dzīva — redzat, kā plūsma kustas cauruļvados. Inženierim šis ir vienīgais ekrāns, kas vajadzīgs, lai saprastu, kas notiek siltummezglā.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [630, 505, 320, 135], chip: 'Luxtronik', title: '1 kWh → 5 kWh siltuma', text: 'Abi siltumsūkņi strādā: siltumu ņem no zemes caur urbumiem — no katras elektrības kilovatstundas ap piecas siltuma.',
-    say: 'Šeit notiek mūsu stāsta galvenā maģija. Kilovatstunda ienāk siltumsūknī, tas paņem klāt siltumu no zemes caur ģeotermālajiem urbumiem — un ārā nāk ap piecas kilovatstundas siltuma.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [405, 128, 350, 228], chip: 'Modbus · BACnet', title: 'Ventilācija', text: 'Divas Siemens ventilācijas iekārtas un enerģijas vārsti, kas mēra, cik siltuma aiziet gaisā.',
-    say: 'Daļa siltuma aiziet ventilācijā. Šie vārsti mēra katru kilovatstundu, kas aiziet uz ventilācijas iekārtām — tā mēs zinām, cik maksā svaigs gaiss.' },
-  { type: 'cam', stage: 2, screen: 'device', rect: [250, 21, 1100, 700], title: '34 rādījumi — tikko atjaunoti', text: 'Katrs siltumsūkņa rādījums nāk tieši no iekārtas: temperatūras, starti, darba stundas, kļūdu kodi.',
-    say: 'Katra iekārta dod desmitiem rādījumu. Šie visi ir atjaunoti pirms minūtes — un katram ir sava vēsture. Šie dati ir izejviela visiem MI modeļiem.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [273, 120, 1050, 815], spot: false, title: 'No zemes līdz telpai', text: 'Siltums ceļo pa shēmu no kreisās uz labo: urbumi → siltumsūkņi → tvertne → radiatori un ventilācija.',
+    say: 'Tagad ieskatāmies ēkas iekšienē un izsekosim, kā siltums nonāk no zemes līdz telpai. Shēma ir dzīva — plūsmas kustas, sarkans ir silts, zils ir auksts. Iesim pa soļiem.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [270, 615, 135, 170], chip: 'Ģeotermija', title: '1. Siltums no zemes', text: 'Ūdens riņķo urbumos zem ēkas un atgriežas ap 3 °C siltāks. Šobrīd zeme dod 22,5 kW — bez maksas.',
+    say: 'Viss sākas zem zemes. Ģeotermālajos urbumos riņķo ūdens; zeme visu gadu ir vienā temperatūrā, tāpēc ūdens atgriežas siltāks. Tieši šis siltums ir bezmaksas — par to mēs nemaksājam nevienu centu.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [630, 505, 320, 135], chip: 'Luxtronik', title: '2. Siltumsūknis to paceļ', text: 'No 12 kW elektrības abi siltumsūkņi kopā dod 63 kW siltuma. Efektivitāte — COP 5,2 un 5,4.',
+    say: 'Zemes siltums ir vēss — tikai dažus grādus. Siltumsūknis to “paceļ” līdz temperatūrai, ar ko var sildīt ēku. Tam vajag elektrību — un te ir mūsu energoefektivitāte: par katru elektrības kilovatstundu dabūjam vairāk nekā piecas siltuma.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [995, 450, 262, 248], title: '3. Siltums ēkā', text: 'Karstā tvertne krāj siltumu un baro radiatorus — šobrīd 22,2 kW — un grīdas apkuri.',
+    say: 'Siltums nonāk lielā tvertnē — tā ir kā baterija. No tās siltums iet uz radiatoriem un grīdas apkuri. Šie skaitļi ir šī brīža reālā jauda.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [405, 128, 350, 228], chip: 'BACnet', title: '4. …un svaigā gaisā', text: 'PN1 vārsts šobrīd atdod ventilācijai 9,7 kW — svaigais gaiss tiek uzsildīts, pirms ieplūst telpās.',
+    say: 'Daļa siltuma aiziet ventilācijā: ārā ir auksts, un svaigais gaiss jāuzsilda. Siemens vārsts precīzi mēra, cik siltuma tam aiziet.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [700, 762, 125, 165], title: '5. Un karstais ūdens', text: 'Atsevišķa tvertne — šobrīd 44 °C. Kad tieši to sildīt, izlemj MI. Pie tā vēl atgriezīsimies.',
+    say: 'Un karstais ūdens krānos. Šī tvertne ir mūsu MI pirmais darba lauks — tā izvēlas, kurās stundās to sildīt, lai elektrība būtu vislētākā.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [1143, 138, 177, 282], title: 'Un mēs mērām katru soli', text: 'Pēdējās 24 h: 218 kWh no tīkla — apkurei 52 %, ventilācijai 42 %, karstajam ūdenim 4 %.',
+    say: 'Lai to visu varētu saukt par energoefektivitāti, tas ir jāizmēra. Elektrību mēra 11 Shelly skaitītāji uz katras iekārtas, siltumu — siltumsūkņu un vārstu skaitītāji. Tā platforma zina, kur aizgāja katra kilovatstunda.' },
+  { type: 'cam', stage: 2, screen: 'device', rect: [250, 21, 1100, 700], title: 'Mēra arī pašu iekārtu', text: 'Katrs siltumsūkņa rādījums nāk tieši no iekārtas: temperatūras, starti, darba stundas, kļūdu kodi.',
+    say: 'Un ne tikai enerģiju — katra iekārta dod desmitiem rādījumu. Visi ir atjaunoti pirms minūtes, katram ir sava vēsture. Tā ir izejviela visiem MI modeļiem.' },
   { type: 'cam', stage: 2, screen: 'runtimeHp', rect: [250, 480, 1100, 540], title: 'Cik daudz strādā kompresors', text: 'Pēdējā mēnesī kompresors strādāja 30 % laika un ieslēdzās 557 reizes.',
     say: 'No rādījumiem platforma pati izrēķina, kā iekārta tiek lietota. 557 ieslēgšanās mēnesī — tas ir svarīgi kompresora kalpošanas laikam, un to agrāk neviens neskaitīja.' },
   { type: 'cam', stage: 2, screen: 'runtimeAhu', rect: [250, 340, 1100, 440], title: 'Platforma pamana cilvēku', text: 'PN1 ventilācija kopš 29. oktobra ir manuālā režīmā — kāds to pārslēdza ar roku.',
@@ -498,8 +572,8 @@ const STEPS = [
   { type: 'cam', stage: 3, screen: 'feedback', rect: [540, 178, 520, 314], title: 'Un ko saka cilvēki', text: 'Darbinieki paši novērtē telpu — no “par aukstu” līdz “par karstu”.',
     say: 'Sensori ir viena lieta, cilvēku sajūtas — cita. Tāpēc katram ir iespēja pateikt “man ir auksti”. Šī atgriezeniskā saite nākotnē palīdzēs MI saprast, kad komforts ir patiešām sasniegts.' },
 
-  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 150, 1552, 400], title: '6 287 kWh → 11 207 kWh siltuma', text: 'Kopš 6. oktobra: €907 par elektrību, COP 5,50. Siltumsūkņi saražoja gandrīz divreiz vairāk siltuma nekā patērēja elektrības.',
-    say: 'Tagad paskatāmies uz rēķinu. Kopš apkures sezonas sākuma nopirkām 6 287 kilovatstundas un saņēmām 11 207 kilovatstundas siltuma. Tas ir mūsu stāsta galvenais skaitlis.' },
+  { type: 'cam', stage: 4, screen: 'energy', rect: [24, 150, 1552, 400], title: 'Mēneša energoefektivitāte: COP 5,50', text: 'Kopš 6. oktobra visa ēka patērēja 6 287 kWh (€907); siltumsūkņi saražoja 11 207 kWh siltuma.',
+    say: 'Tagad paskatāmies uz rēķinu par visu apkures sezonu. Visa ēka — ar ventilāciju un visu pārējo — patērēja 6 287 kilovatstundas. Siltumsūkņi saražoja 11 207 kilovatstundas siltuma, ar vidējo COP 5,5. Tas ir izmērīts, ne no kataloga.' },
   { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1648, 925, 650], title: 'Kur aizgāja katrs eiro', text: 'No ēkas uz sistēmu un uz katru iekārtu: ventilācija 49 %, apkure 41 %.',
     say: 'Šī diagramma parāda, kur aizgāja nauda. Pārsteigums daudziem — ventilācija patērē vairāk nekā apkure. Tieši tāpēc MI vispirms skatās uz ventilāciju.' },
   { type: 'cam', stage: 4, screen: 'energy', rect: [24, 1211, 1552, 421], title: 'Katra stunda — sava cena', text: 'Patēriņš pa stundām, reizināts ar Nord Pool cenu tajā pašā stundā.',
@@ -526,6 +600,10 @@ const STEPS = [
     say: 'Protams, ne viss vienmēr strādā. Šeit ir reāli brīdinājumi no šīs nedēļas — siltumsūkņa kļūdas kodi un gaiss hidraulikā. Platforma tos atrada pati un pastāstīja, kur tie ir.' },
   { type: 'cam', stage: 6, screen: 'adminPolicy', rect: [240, 200, 1060, 780], chip: 'Drošība', title: 'MI nedrīkst visu', text: 'Katrai komandai — atļautās robežas un vai vajadzīgs cilvēka apstiprinājums.',
     say: 'Un lai MI nekad neizdarītu kaut ko bīstamu, katrai komandai ir robežas. Piemēram, CO₂ mērķi var mainīt tikai starp 400 un 2000, un dažām komandām vienmēr vajadzīgs cilvēka apstiprinājums.' },
+  { type: 'scene', id: 'server', stage: 6,
+    say: 'Viss, ko šodien redzējāt, nestrādā kaut kur mākonī ārzemēs. Tas strādā uz servera tepat mūsu ēkā, ko izveidojām kopā ar DATI Group. Kopš 16. oktobra dati un vadība paliek ēkā. Katru nakti rezerves kopija, viena — ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi mēs pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.' },
+  { type: 'scene', id: 'testing', stage: 6,
+    say: 'Un kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem — no maziem koda testiem līdz pieņemšanai ēkā. Mēs to pielāgojām HVAC platformai. Pirmie pieci līmeņi jau strādā: ap 3 700 automātisku testu iet uz katru koda izmaiņu, uz tā paša servera. Neviens labojums nenonāk ēkā, kamēr testi nav zaļi un cilvēks to nav apstiprinājis. Pēdējais līmenis — pilota pieņemšana — 2027. gada maijā.' },
 
   { type: 'scene', id: 'next', stage: 7,
     say: 'Nākamais solis — MI asistents, kuram var vienkārši pajautāt, un digitālais dvīnis, kurā izmēģināt izmaiņas pirms to veikšanas īstajā ēkā.' },
