@@ -629,7 +629,7 @@ const SCREENS = {
   adminPolicy: { src: 'app/admin-policy.jpg',    h: 1000, url: 'Administrēšana / Vadības politikas' },
 };
 
-const ASSET_V = '20261104d';
+const ASSET_V = '20261104e';
 Object.values(SCREENS).forEach((s) => { s.src += '?v=' + ASSET_V; if (s.video) s.video += '?v=' + ASSET_V; });
 
 const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Komforts', 'Enerģija', 'MI', 'Kontrole', 'Tālāk'];
@@ -643,8 +643,8 @@ const STEPS = [
 
   { type: 'cam', stage: 0, screen: 'f3d', rect: [0, 0, 1600, 1000], spot: false, title: 'Šeit viss sākas — mūsu objekts', text: 'VATP ēka 3D. Katrs punktiņš ir reāla iekārta. Abi siltumsūkņi strādā: 18 kW elektrības → 96,5 kW siltuma.',
     say: 'Šeit viss sākas — šis ir mūsu objekts. Katrs punktiņš ir reāla iekārta, kas sūta datus uz platformu. 3D skats ir eksperiments: mēģinām dažādus veidus, kā un ko rādīt — gan ikdienas lietotājiem, gan cilvēkiem, kas apmeklē ēku. Konferencēs redzējām, ka vismaz dažos tirgos uzņēmumi tieši šādus 3D modeļus izvēlas, tāpēc izmēģinājām arī mēs.' },
-  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1222, 74, 312, 500], chip: 'Mala · Luxtronik', title: 'Kur kilovatstunda kļūst par siltumu', text: 'Galvenais siltumsūknis: 6,3 kW elektrības → 28,4 kW siltuma. Kā no 6 var dabūt 28? Pie tā atgriezīsimies.',
-    say: 'Mūsu kilovatstunda ceļo tieši šurp — uz siltumsūkni uz jumta. Uzspiežot redzam, ko tas dara šobrīd: ieņem nedaudz vairāk par 6 kilovatiem elektrības un atdod 28 kilovatus siltuma. Tas izklausās pēc maģijas — un vēlāk parādīšu, kā tas strādā. Šie dati nāk tieši no siltumsūkņa kontrollera — tā ir malas daļa mūsu IPCEI-CIS sistēmā.' },
+  { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1228, 79, 300, 485], chip: 'Mala · Luxtronik', title: 'Kur kilovatstunda kļūst par siltumu', text: 'Galvenais siltumsūknis: 6 kW elektrības → 30,9 kW siltuma. Kā no 6 var dabūt 31? Pie tā atgriezīsimies.',
+    say: 'Mūsu kilovatstunda ceļo tieši šurp — uz siltumsūkni uz jumta. Uzspiežot redzam, ko tas dara šobrīd: ieņem 6 kilovatus elektrības un atdod gandrīz 31 kilovatu siltuma. No zemes šķidrums ienāk ar 6 grādiem, atpakaļ aiziet ar nulli — to siltumu siltumsūknis paņēma. Tas izklausās pēc maģijas — un vēlāk parādīšu, kā tas strādā. Šie dati nāk tieši no siltumsūkņa kontrollera — tā ir malas daļa mūsu IPCEI-CIS sistēmā.' },
 
   { type: 'cam', stage: 1, screen: 'dashboard', rect: [0, 0, 1600, 1000], spot: false, title: 'Ikdienā — galvenais panelis', text: 'Pārvaldnieks katru rītu atver šo: cik šodien patērējām, cik tas maksāja un kas mainījies kopš vakardienas.',
     say: '3D ir skaists, bet ikdienā pārvaldnieks atver šo — galveno paneli. Vienā skatā: cik kilovatstundu šodien patērējām, cik tas maksāja, kā tas salīdzinās ar vakardienu, kāda ir elektrības cena un laiks ārā.' },
