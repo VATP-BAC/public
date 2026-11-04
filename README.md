@@ -14,6 +14,7 @@ Each subfolder is a self-contained HTML presentation. The repo is deployed via G
 | **Partner Technical Overview** | Technical partners | EN | [view](https://vatp-bac.github.io/public/partner-overview/) | [`partner-overview/`](./partner-overview/) |
 | **AI apmācība · 1. modulis — AI pamati** | Training module 1 — AI foundations | LV | [view](https://vatp-bac.github.io/public/training-module-1-ai-foundations/) | [`training-module-1-ai-foundations/`](./training-module-1-ai-foundations/) |
 | **HVAC Platform — System Overview** | One-page architecture: devices, server & data flows | EN | [view](https://vatp-bac.github.io/public/system-overview/) | [`system-overview/`](./system-overview/) |
+| **HVAC AI platforma un MI · 2026. g. 3. cet.** | Scientific council — Q3 2026 web app & AI progress | LV | [view](https://vatp-bac.github.io/public/ipcei-2026-q3/) | [`ipcei-2026-q3/`](./ipcei-2026-q3/) |
 
 ## Local preview
 
