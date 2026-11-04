@@ -38,7 +38,7 @@ Tūre: `index.html` (N — piezīmes ekrānā, `#12` — pāriet uz soli 12). Š
 ## 1. Ēka
 
 **#2 · Šeit viss sākas — mūsu objekts**  
-_Uz ekrāna:_ VATP ēka 3D. Katrs punktiņš ir reāla iekārta. Izmēģinām, kā ēku labāk parādīt lietotājiem un apmeklētājiem.
+_Uz ekrāna:_ VATP ēka 3D. Katrs punktiņš ir reāla iekārta. Abi siltumsūkņi strādā: 18 kW elektrības → 96,5 kW siltuma.
 
 Šeit viss sākas — šis ir mūsu objekts. Katrs punktiņš ir reāla iekārta, kas sūta datus uz platformu. 3D skats ir eksperiments: mēģinām dažādus veidus, kā un ko rādīt — gan ikdienas lietotājiem, gan cilvēkiem, kas apmeklē ēku. Konferencēs redzējām, ka vismaz dažos tirgos uzņēmumi tieši šādus 3D modeļus izvēlas, tāpēc izmēģinājām arī mēs.
 
