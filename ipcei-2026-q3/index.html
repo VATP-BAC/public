@@ -351,14 +351,7 @@
   body.scene-mode .window { opacity: 0; transform: translate(-50%, -46%) scale(.96); filter: blur(4px); pointer-events: none; }
 
 
-  /* Speaker notes (press N) + stage toast */
-  .notes { position: fixed; left: 50%; bottom: 14px; transform: translate(-50%, 130%); width: min(900px, 92vw); z-index: 8;
-    background: rgba(13,26,21,.96); border: 1px solid rgba(140,196,173,.4); border-radius: 16px; padding: 14px 20px;
-    transition: transform .4s var(--ease); font-size: 16px; line-height: 1.5; }
-  .notes p { white-space: pre-line; }
-  .notes { max-height: 72vh; overflow-y: auto; }
-  .notes b { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); margin-bottom: 4px; }
-  body.show-notes .notes { transform: translate(-50%, 0); }
+  /* Stage toast */
   .toast { position: fixed; left: 50%; bottom: 70px; transform: translate(-50%, 10px); z-index: 7; opacity: 0; pointer-events: none;
     font-family: 'Instrument Serif', serif; font-size: clamp(28px, 4.4vh, 48px); color: var(--cream);
     padding: 6px 26px; border-radius: 999px; background: rgba(13,26,21,.85); border: 1px solid rgba(140,196,173,.35);
@@ -413,7 +406,6 @@
     <div class="hint"><span id="cueStage"></span><span>→ / atstarpe</span></div>
   </aside>
 
-  <div class="notes" id="notes" aria-live="polite"><b>Ko teikt</b><p id="notesText"></p></div>
   <div class="toast" id="toast"></div>
 
   <!-- Intro -->
@@ -644,7 +636,7 @@ const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Enerģija', 'MI', 'Kontrole',
 
 // The thread: follow one kilowatt-hour — bought on Nord Pool, multiplied by the heat pump,
 // warming a room, landing on the bill — and show where the AI decides when to buy it.
-// cue: what the audience reads.  say: speaker notes (press N) — what to tell the room and why it matters.
+// cue: what the audience reads.  say: speaker notes (presenter window, press P) — what to tell the room and why it matters.
 const STEPS = [
   { type: 'scene', id: 'intro', stage: -1,
     say: "• IPCEI-CIS: mākoņa un EDGE infrastruktūra\n• Mūsu daļa: HVAC AI platforma, iekārtas ēkā ↔ ES mākonis\n• Slaidu nebūs, rādīšu pašu platformu\n• Sekosim vienai kWh: ēka → iekšiene → MI un rēķins" },
@@ -1005,7 +997,6 @@ function go(i) {
     go.toastT = setTimeout(() => toast.classList.remove('on'), 1800);
   }
   go.lastStage = step.stage;
-  $('notesText').textContent = step.say || '';
 
   setRail(step);
   $('count').textContent = `${i + 1} / ${STEPS.length}`;
@@ -1025,9 +1016,7 @@ document.addEventListener('keydown', (e) => {
   else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
   else if (e.key === 'Home') go(0);
   else if (e.key === 'End') go(STEPS.length - 1);
-  else if (e.key === 'n' || e.key === 'N') document.body.classList.toggle('show-notes');
 });
-if (new URLSearchParams(location.search).has('notes')) document.body.classList.add('show-notes');
 let wheelLock = 0;
 addEventListener('wheel', (e) => {
   if (Date.now() < wheelLock || Math.abs(e.deltaY) < 25) return;
