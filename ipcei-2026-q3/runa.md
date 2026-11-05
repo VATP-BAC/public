@@ -129,13 +129,15 @@ Kopā sanāk 60 kilovati siltuma. Lielāko daļu dod zeme, elektrība tikai pace
 _Uz ekrāna:_ Lielā tvertne krāj siltumu kā baterija. Radiatori šobrīd atdod telpām 19,9 kW siltuma, grīdas apkure vēl 1,6 kW.
 
 Trešais solis. Siltums nonāk lielā tvertnē, kas to krāj kā baterija. No tvertnes silts ūdens aiziet uz radiatoriem un grīdas apkuri.  
-19,9 kilovati ir siltums, ko radiatori telpām atdod tieši tagad. To mēra siltuma skaitītājs: ūdens radiatoros ienāk ar 33 grādiem un atpakaļ aiziet ar 29. Grīdas apkure šobrīd dod vēl 1,6 kilovatus.
+19,9 kilovati ir siltums, ko radiatori telpām atdod tieši tagad. To mēra Siemens ultraskaņas siltuma skaitītājs uz radiatoru loka, un platforma to nolasa caur M-Bus. Ūdens radiatoros ienāk ar 33 grādiem un atpakaļ aiziet ar 29.  
+Grīdas apkure šobrīd dod vēl 1,6 kilovatus. Tai ir savs siltuma skaitītājs.
 
 **#12 · 4. Siltais gaiss**  
-_Uz ekrāna:_ Siltais ūdens plūst arī caur ventilācijas sildītāju, līdzīgu auto radiatoram. Ventilators caur to pūš svaigu gaisu, un telpās ieplūst silts gaiss.
+_Uz ekrāna:_ Siltais ūdens plūst arī caur ventilācijas sildītāju. Tas strādā kā auto salona apsilde: ventilators pūš gaisu caur karstu radiatoru, un telpās ieplūst silts gaiss.
 
 Ceturtais solis. Silto ūdeni izmanto arī ventilācija.  
-Ūdens no tvertnes plūst caur ventilācijas iekārtas sildītāju. Tas izskatās kā auto radiators, plānas caurulītes ar ribām. Ventilators caur to pūš svaigo āra gaisu, gaiss paņem siltumu no ūdens un ieplūst telpās jau silts.  
+Tas strādā tāpat kā apsilde automašīnā. Karsts ūdens plūst caur nelielu radiatoru, ventilators pūš caur to gaisu, un salonā ieplūst silts gaiss.  
+Ventilācijas iekārtā ir tieši tas pats, tikai lielāks: ūdens no tvertnes plūst caur sildītāju, ventilators caur to pūš svaigo āra gaisu, un telpās gaiss ieplūst jau silts.  
 Siemens vārsts mēra, cik siltuma tā aiziet. Šobrīd tie ir 21 kilovats.
 
 **#13 · 5. Karstais ūdens**  
@@ -150,61 +152,56 @@ _Uz ekrāna:_ Pēdējās 24 stundās 301 kWh elektrības: apkurei 53 %, ventilā
 Lai varētu runāt par energoefektivitāti, viss ir jāizmēra.  
 Elektrību mēra 11 skaitītāji, katrai iekārtai savs. Siltumu mēra siltumsūkņi un vārsti. Tā platforma zina, kur aizgāja katra kilovatstunda.
 
-**#15 · Iekārtas rādījumi**  
-_Uz ekrāna:_ Katrs siltumsūkņa rādījums nāk tieši no iekārtas: temperatūras, starti, darba stundas un kļūdu kodi.
-
-Bez enerģijas katra iekārta dod vēl desmitiem rādījumu, un visi ir atjaunoti pēdējās minūtēs.  
-No šiem datiem mācās visi mūsu MI modeļi.
-
 ## 4. Enerģija
 
-**#16 · Patērējām mazāk, samaksājām vairāk**  
-_Uz ekrāna:_ Apkures sezonā patēriņš samazinājās par 21 %, bet rēķins pieauga par 10 %, jo elektrība kļuva dārgāka.
+**#15 · Tagad sīkāk par enerģiju**  
+_Uz ekrāna:_ Apkures sezonā patērējām par 21 % mazāk nekā mēnesi iepriekš, bet samaksājām par 10 % vairāk, jo elektrība kļuva dārgāka.
 
-Tagad par rēķinu. Apkures sezonā patērējām par piekto daļu mazāk nekā mēnesi iepriekš, bet samaksājām vairāk, jo elektrība kļuva dārgāka.  
+Tagad iedziļināsimies enerģijā. Šī ir enerģijas sadaļa, un šeit redzams viss apkures sezonas periods.  
+Patērējām par piekto daļu mazāk nekā mēnesi iepriekš, bet samaksājām vairāk, jo elektrība kļuva dārgāka.  
 Ar taupīšanu vien nepietiek. Svarīgi ir arī tas, kurās stundās elektrību pērkam, un ar to nodarbojas MI.
 
-**#17 · Kurš atceras, ko nozīmē COP?**  
-_Uz ekrāna:_ Visā periodā COP bija 5,50: no katras elektrības kWh ieguvām piecarpus kWh siltuma. Kopā 11 207 kWh.
+**#16 · Kurš atceras, ko nozīmē COP?**  
+_Uz ekrāna:_ Visā periodā COP bija 5,50: no katras elektrības kWh ieguvām piecarpus kWh siltuma. Dzesēšana bija oktobra sākumā, tagad tā ir apstājusies.
 
 Pajautājiet zālei, vai kāds atceras, ko nozīmē COP. (Pagaidiet atbildi.)  
 Tas ir, cik siltuma dabūjam no vienas elektrības kilovatstundas. Visā periodā mūsu siltumsūkņiem tas bija 5,5, kopā 11 tūkstoši kilovatstundu siltuma.  
-Šis skaitlis ir izmērīts mūsu ēkā.
+Blakus redzama dzesēšana. Oktobra sākumā ēku vēl dzesējām, bet tagad līkne ir plakana: dzesēšana ir apstājusies, un strādā tikai apkure.
 
-**#18 · Kur aizgāja nauda**  
-_Uz ekrāna:_ Plūsma no ēkas uz sistēmām un iekārtām: ventilācija 49 %, apkure 41 %.
+**#17 · Kur aiziet elektrība**  
+_Uz ekrāna:_ Redzam, kur aiziet katra kilovatstunda, pa sistēmām un pa iekārtām. Šajā periodā ventilācija iztērēja vairāk elektrības nekā abi siltumsūkņi.
 
-Diagramma rāda, kur aizgāja nauda.  
-Daudziem tas ir pārsteigums, bet ventilācija patērē vairāk nekā apkure. Tāpēc MI ar ventilāciju sāk.
+Platforma parāda, kur aiziet elektrība: no ēkas uz sistēmām un tālāk uz katru iekārtu.  
+Šajā periodā ventilācija iztērēja vairāk elektrības nekā abi siltumsūkņi kopā. Daudziem tas ir pārsteigums, un tāpēc MI ar ventilāciju sāk.
 
-**#19 · Patēriņš pa stundām**  
+**#18 · Patēriņš pa stundām**  
 _Uz ekrāna:_ Redzams, kad ēka pārslēdzās no dzesēšanas uz apkuri. Ventilācija patērē daudz visu laiku.
 
 Šeit ir patēriņš pa stundām, katrai stundai sava biržas cena.  
 Labi redzams brīdis, kad ēka pārslēdzās no dzesēšanas uz apkuri.  
 Ventilācija visu laiku ir augstu. Tā ir lielākā patērētāja, un ietaupījumu MI meklē vispirms tur.
 
-**#20 · Par 55 % lētāk nekā pilsētas siltums**  
+**#19 · Par 55 % lētāk nekā pilsētas siltums**  
 _Uz ekrāna:_ Mūsu siltums maksāja €33.6/MWh, pilsētas €75/MWh. Ja elektrība kļūst ļoti dārga, varam pārslēgties uz pilsētas siltumu.
 
 Mūsu siltuma megavatstunda maksāja 34 eiro, pilsētas siltums maksā 75.  
 Turklāt mēs neesam atkarīgi tikai no elektrības cenas. Ja elektrība kļūst ļoti dārga, varam pārslēgties uz pilsētas siltumu. Mums ir divi avoti, un izmantojam lētāko.
 
-**#21 · Desmit reizes mazāk CO₂ nekā gāzei**  
+**#20 · Desmit reizes mazāk CO₂ nekā gāzei**  
 _Uz ekrāna:_ Mūsu siltums: 21 g CO₂/kWh. Gāzes katls: 213 g. Ventspils pilsētas siltums ir līdzīgā līmenī kā mūsējais.
 
 Katrai kilovatstundai ir arī oglekļa pēda. Tā kā lielāko daļu siltuma dod zeme, mūsu siltumam tie ir tikai 21 grams CO₂ uz kilovatstundu. Gāzes katlam būtu 213, desmit reizes vairāk.  
 Ventspils pilsētas siltums ir līdzīgā līmenī kā mūsējais, tāpēc pret to mūsu ieguvums ir cena.  
 Platforma CO₂ rēķina automātiski, un to prasīs arī ES ziņošana.
 
-**#22 · Atskaite ar vienu klikšķi**  
+**#21 · Atskaite ar vienu klikšķi**  
 _Uz ekrāna:_ Excel enerģijas atskaite par jebkuru mēnesi.
 
 Mēneša beigās pietiek ar vienu pogu, un grāmatvedībai ir gatava atskaite.
 
 ## 5. MI
 
-**#23 · Ko MI ņem vērā**
+**#22 · Ko MI ņem vērā**
 
 MI plānotājs katru stundu ņem vērā visus rādītājus kopā.  
 Ko tas ņem vērā:  
@@ -224,29 +221,29 @@ Ja jautā par modeļiem: dziļo mācīšanos neizmantojam. Tai vajag tūkstošie
 • Karstā ūdens grafiks: pārbaudām visus iespējamos variantus, tāpēc tas vienmēr ir labākais.  
 Katru modeli pārbaudām uz vēsturiskiem datiem. Ja tas nav precīzāks par vienkāršu pieņēmumu “rīt būs kā šodien”, mēs to neizmantojam.
 
-**#24 · Vadība pēc elektrības cenas (interaktīvs)**
+**#23 · Vadība pēc elektrības cenas (interaktīvs)**
 
 Šis ir īstais algoritms, kas strādā mūsu ēkā, ar īstām biržas cenām.  
 Pirms rādāt, pajautājiet zālei: kurās stundās jūs sildītu ūdeni? (Pagaidiet.)  
 Platforma izvēlas šīs piecas stundas, un vidēji tas ir par 13 % lētāk. Uzklikšķiniet uz citas dienas, un plāns mainās.  
 Apakšējā joslā redzamas stundas, kurās siltumsūkņa siltums ir lētāks par pilsētas siltumu.
 
-**#25 · Platforma strādā pati**
+**#24 · Platforma strādā pati**
 
 Viss strādā pats. Katru dienu platforma saplāno grafiku, pati ieslēdz un izslēdz karstā ūdens sistēmu un izmēra ietaupījumu eiro.  
 Visu diennakti, bez cilvēka.
 
-**#26 · Dārgās stundas ventilācijā**  
+**#25 · Dārgās stundas ventilācijā**  
 _Uz ekrāna:_ PN1 strādāja par 29 % dārgāk nekā lētākajās stundās: no €94.81 varēja ietaupīt €21.40.
 
 To pašu MI dara ar ventilāciju. Tas salīdzina, cik iztērējām, ar to, cik būtu iztērējuši, ja iekārta strādātu lētākajās stundās, un iesaka pārcelt darba laiku.
 
-**#27 · Secinājumi vienkāršā valodā**  
+**#26 · Secinājumi vienkāršā valodā**  
 _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %”. Platforma tos uzraksta pati.
 
 Platforma pati uzraksta secinājumus vienkāršā valodā. Šos teikumus neviens nerakstīja, tie ir izveidoti automātiski no datiem.
 
-**#28 · MI meklē novirzes**
+**#27 · MI meklē novirzes**
 
 MI meklē arī to, ko cilvēks viegli palaistu garām.  
 • Siltuma atgūšana ventilācijā. MI seko, cik efektīvi tā strādā. Ja efektivitāte lēnām krītas, visticamāk ir netīrs filtrs vai iesprūdis vārsts.  
@@ -254,7 +251,7 @@ MI meklē arī to, ko cilvēks viegli palaistu garām.
 • Telpu modeļi. Katrai telpai ir modelis, kas zina, cik ātri tā atdziest, un prognozē temperatūru uz priekšu.  
 • Neparasts patēriņš. Platforma pamana, ka 39 procenti enerģijas aiziet naktī, kad ēka ir tukša, kā arī iekārtu kļūdas un sensorus, kas vairs nesūta datus.
 
-**#29 · MI asistents**
+**#28 · MI asistents**
 
 Pie šī jau strādājam: MI asistents.  
 Var vienkārši pajautāt, piemēram, kāpēc ventilācija šomēnes maksāja vairāk, un tas atbild no ēkas datiem un parāda avotus. Šis piemērs ir ar šī mēneša reāliem skaitļiem.  
@@ -262,13 +259,13 @@ Valodas modelis darbojas ES mākonī, un tā ir mūsu IPCEI-CIS mākoņa daļa. 
 
 ## 6. Kontrole
 
-**#30 · Brīdinājumi**  
+**#29 · Brīdinājumi**  
 _Uz ekrāna:_ Siltumsūkņa kļūdu kodi, gaiss vārstos, sensori bez datiem. Viss vienuviet, sagrupēts pa telpām.
 
 Protams, ne viss vienmēr strādā. Šie ir reāli šīs nedēļas brīdinājumi, piemēram, siltumsūkņa kļūdu kodi un gaiss hidraulikā.  
 Platforma tos atrada pati un parāda, kur tie ir.
 
-**#31 · Serveris ēkā (DATI Group)**
+**#30 · Serveris ēkā (DATI Group)**
 
 Tagad par IPCEI-CIS daļu: EDGE un mākonis kā viena sistēma.  
 EDGE līmenī ir iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Ar tiem runā vārteja, un tālāk dati nonāk serverī tepat ēkā.  
@@ -279,7 +276,7 @@ EDGE daļu apspriedām arī ar Siemens. Viņu IPCEI-CIS projektā izveidots Indu
 Mūsu ēkai tas neder. Pati vide un tās pārvaldība ir slēgta Siemens platforma ar licencēm, un aparatūra ir dārgāka. Mums ēkā ir dažādu ražotāju iekārtas, tāpēc izvēlējāmies atvērtu vārteju uz parastas aparatūras.  
 Tiem projekta dalībniekiem, kuru rūpnīcās jau ir Siemens iekārtas, Industrial Edge var būt labs ceļš.
 
-**#32 · Testēšana (TestDevLab)**
+**#31 · Testēšana (TestDevLab)**
 
 Kā zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem, no atsevišķām funkcijām līdz pieņemšanai reālā ēkā, un septiņām testu grupām. Mēs to pielāgojām HVAC platformai.  
 • Vairāk nekā 3200 testu pārbauda katru funkciju atsevišķi.  
@@ -290,11 +287,11 @@ Testi palaižas automātiski pie katras koda izmaiņas uz tā paša servera ēk�
 
 ## 7. Tālāk
 
-**#33 · Kas tālāk**
+**#32 · Kas tālāk**
 
 Ko darīsim tālāk. MI asistentu dosim visiem lietotājiem, platformu pieslēgsim nākamajām ēkām un būvēsim digitālo dvīni, kurā izmaiņas var izmēģināt, pirms tās veic īstajā ēkā.
 
-**#34 · Paldies**
+**#33 · Paldies**
 
 Paldies. Mūsu kilovatstunda ir nonākusi galā. Katrā pieturā platforma zināja, kur tā ir, cik tā maksā un kā to nopirkt lētāk.  
 Labprāt atbildēšu uz jautājumiem.
