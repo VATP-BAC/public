@@ -39,6 +39,9 @@ Mūsu ēka siltumu ņem no zemes, un MI izlemj, kad pirkt elektrību. Tāpēc si
 3. Slaidu nebūs, rādīšu pašu platformu
 4. Sekosim vienai kWh: ēka → iekšiene → MI un rēķins
 
+> **Pāreja:** Sāksim ar pašu ēku.
+
+
 ## 1. Ēka
 
 **#2 · Mūsu objekts: VATP ēka**  
@@ -48,6 +51,9 @@ _Uz ekrāna:_ Katrs punktiņš ir reāla iekārta. Abi siltumsūkņi šobrīd st
 2. 3D ir eksperiments: ko rādīt lietotājiem un apmeklētājiem
 3. Konferencēs redzējām, ka dažos tirgos to izvēlas
 4. Abi siltumsūkņi strādā: 18 kW elektrības → ~97 kW siltuma
+
+> **Pāreja:** Bet 3D nav tikai skaists attēls. Uzspiedīsim uz vienas iekārtas un paskatīsimies, ko tā dara tieši tagad.
+
 
 **#3 · Viens klikšķis, un iekārta ir redzama dzīvajā**  
 _Uz ekrāna:_ Uzspiežot uz iekārtas, redzam, kā tā strādā tieši tagad: galvenais siltumsūknis no 6 kW elektrības dod 30,9 kW siltuma.
@@ -59,6 +65,9 @@ _Uz ekrāna:_ Uzspiežot uz iekārtas, redzam, kā tā strādā tieši tagad: ga
 5. Var uzspiest uz jebkuras iekārtas
 6. Kā tas iespējams, vēlāk · dati no kontrollera = EDGE
 
+> **Pāreja:** 3D labi parāda ēku. Bet ko lietotājs atver katru dienu?
+
+
 ## 2. Pārskats
 
 **#4 · Sākumlapa, ko katrs pielāgo sev**  
@@ -69,6 +78,9 @@ _Uz ekrāna:_ Šo lietotājs redz katru rītu. Katrs pats izvēlas, ko šeit rā
 3. Pārvaldniekam izmaksas un brīdinājumi, tehniķim iekārtas
 4. Šodienas kWh, €, salīdzinājums ar vakardienu, cena, laiks
 
+> **Pāreja:** Kādus ieskatus šeit var redzēt? Piemēram, prognozi.
+
+
 **#5 · Prognoze nākamajām stundām**  
 _Uz ekrāna:_ Viens no ieskatiem, ko pētām: MI prognozē ēkas patēriņu. Zaļās joslas ir lētās stundas, sārtās dārgās.
 
@@ -77,12 +89,17 @@ _Uz ekrāna:_ Viens no ieskatiem, ko pētām: MI prognozē ēkas patēriņu. Za�
 3. Līnija = izmērīts, raustītā = prognoze
 4. Zaļās joslas lētas, sārtās dārgas → vēlāk lēmums, kad tērēt
 
+> **Pāreja:** Prognoze ir viens ieskats. Otrs: ko šodien vajag zināt.
+
+
 **#6 · Kas jāzina šodien**  
 _Uz ekrāna:_ Svarīgākais dažās ziņās: neapskatīti brīdinājumi, 39 % enerģijas patērēts naktī un MI ieteikums ventilācijai.
 
 1. Nav jāpēta grafiki, svarīgākais dažās ziņās
 2. Neapskatīti brīdinājumi · 39 % naktī · ventilācija uz lētām stundām
-3. PĀREJA: no kurienes šīs ziņas? Ieskatīsimies, kā ēka strādā
+
+> **Pāreja:** No kurienes šīs ziņas rodas? Lai to saprastu, vispirms: kā ēka iegūst siltumu.
+
 
 
 _Ja jautā, no kurienes ziņas:_
@@ -114,12 +131,18 @@ _Ja jautā, kā strādā modeļi (2 līdz 5 parametri, bez neironu tīkliem):_
 6. Vasarā otrādi: lieko siltumu uz zemi
 7. 1 daļa elektrības → 5 daļas siltuma · sildītājs 1 · gāze ~0,9 · mēs 5,5
 
+> **Pāreja:** Tagad to pašu mūsu ēkas dzīvajā shēmā.
+
+
 **#8 · Siltummezgls dzīvajā**  
 _Uz ekrāna:_ Visa sistēma vienā shēmā: urbumi, divi siltumsūkņi, tvertnes, radiatori un ventilācija.
 
 1. Tas pats mūsu ēkā, shēma dzīva
 2. Sarkans silts, zils auksts
 3. Iesim no zemes līdz telpām
+
+> **Pāreja:** Sāksim no apakšas, no zemes.
+
 
 **#9 · 1. Siltums no 18 urbumiem**  
 _Uz ekrāna:_ Ziemā šķidrums urbumos uzņem zemes siltumu, vasarā ēkas siltumu aizvedam zemē. Šobrīd zeme dod 42 kW.
@@ -128,6 +151,9 @@ _Uz ekrāna:_ Ziemā šķidrums urbumos uzņem zemes siltumu, vasarā ēkas silt
 2. Zeme dod 42 kW, par tiem nemaksājam
 3. Mēra siltuma skaitītājs: ~7 m³/h, +4 līdz 5 °C
 4. Vasarā otrādi, zeme = siltuma krātuve visam gadam
+
+> **Pāreja:** Bet 42 kW no zemes vēl nav gatavs siltums. Kāpēc?
+
 
 **#10 · 2. Siltumsūkņi uzsilda**  
 _Uz ekrāna:_ Šķidrums no zemes ir tikai ap 5 °C, ar to telpu nesasildīt. Ar 13 kW elektrības siltumsūkņi to uzsilda līdz 38 °C, un kopā sanāk 60 kW siltuma.
@@ -139,6 +165,9 @@ _Uz ekrāna:_ Šķidrums no zemes ir tikai ap 5 °C, ar to telpu nesasildīt. Ar
 5. Siltumsūknis "paceļ" siltumu kā sūknis ūdeni kalnā: 13 kW elektrības
 6. Kopā 60 kW, lielāko daļu dod zeme
 
+> **Pāreja:** Kur siltums aiziet tālāk? Uz tvertni un radiatoriem.
+
+
 **#11 · 3. Tvertne un radiatori**  
 _Uz ekrāna:_ Lielā tvertne krāj siltumu kā baterija. Radiatori šobrīd atdod telpām 19,9 kW siltuma, grīdas apkure vēl 1,6 kW.
 
@@ -148,6 +177,9 @@ _Uz ekrāna:_ Lielā tvertne krāj siltumu kā baterija. Radiatori šobrīd atdo
 4. Ienāk 33 °C, iziet 29 °C
 5. Grīdas apkure vēl 1,6 kW, savs skaitītājs
 
+> **Pāreja:** No tās pašas tvertnes siltums aiziet arī uz ventilāciju.
+
+
 **#12 · 4. Siltais gaiss**  
 _Uz ekrāna:_ Siltais ūdens plūst arī caur ventilācijas sildītāju. Tas strādā kā auto salona apsilde: ventilators pūš gaisu caur karstu radiatoru, un telpās ieplūst silts gaiss.
 
@@ -156,12 +188,18 @@ _Uz ekrāna:_ Siltais ūdens plūst arī caur ventilācijas sildītāju. Tas str
 3. Iekārtā tas pats, tikai lielāks: āra gaiss ienāk silts
 4. Siemens vārsts mēra: tagad 21 kW
 
+> **Pāreja:** Un pēdējais: karstais ūdens krānos.
+
+
 **#13 · 5. Karstais ūdens**  
 _Uz ekrāna:_ Atsevišķa tvertne, šobrīd 51 °C. Kad to sildīt, platforma izlemj pēc elektrības cenas.
 
 1. Karstajam ūdenim sava tvertne
 2. Šeit MI sāka strādāt pirmais
 3. Pats izvēlas lētās stundas sildīšanai
+
+> **Pāreja:** Lai to visu varētu vadīt, katrs solis jāizmēra.
+
 
 **#14 · Mēs mērām katru soli**  
 _Uz ekrāna:_ Pēdējās 24 stundās 301 kWh elektrības: apkurei 53 %, ventilācijai 40 %, karstajam ūdenim 5 %.
@@ -170,6 +208,9 @@ _Uz ekrāna:_ Pēdējās 24 stundās 301 kWh elektrības: apkurei 53 %, ventilā
 2. 11 elektrības skaitītāji, katrai iekārtai savs
 3. Siltumu mēra siltumsūkņi, vārsti un siltuma skaitītāji
 4. Zinām, kur aiziet katra kWh
+
+> **Pāreja:** Ko mērījumi saka par visu sezonu? Atveram enerģijas sadaļu.
+
 
 ## 4. Enerģija
 
@@ -181,6 +222,9 @@ _Uz ekrāna:_ Apkures sezonā patērējām par 21 % mazāk nekā mēnesi iepriek
 3. +10 % rēķins, elektrība dārgāka
 4. Ar taupīšanu nepietiek, svarīgi, KAD pērkam → to dara MI
 
+> **Pāreja:** Cik efektīvi siltumsūkņi strādāja visā sezonā?
+
+
 **#16 · Kurš atceras, ko nozīmē COP?**  
 _Uz ekrāna:_ Visā periodā COP bija 5,50: no katras elektrības kWh ieguvām piecarpus kWh siltuma. Dzesēšana bija oktobra sākumā, tagad tā ir apstājusies.
 
@@ -189,12 +233,18 @@ _Uz ekrāna:_ Visā periodā COP bija 5,50: no katras elektrības kWh ieguvām p
 3. Sezonā 5,5 · 11 207 kWh siltuma
 4. Dzesēšana: oktobra sākumā vēl bija, tagad plakana, strādā tikai apkure
 
+> **Pāreja:** Zinām, cik siltuma saražojām. Bet kur aizgāja elektrība?
+
+
 **#17 · Kur aiziet elektrība**  
 _Uz ekrāna:_ Redzam, kur aiziet katra kilovatstunda, pa sistēmām un pa iekārtām. Šajā periodā ventilācija iztērēja vairāk elektrības nekā abi siltumsūkņi.
 
 1. Kur aiziet elektrība: ēka → sistēmas → katra iekārta
 2. Ventilācija iztērēja vairāk nekā abi siltumsūkņi
 3. Pārsteigums → tāpēc MI sāk ar ventilāciju
+
+> **Pāreja:** Kā tas izskatās pa stundām?
+
 
 **#18 · Patēriņš pa stundām**  
 _Uz ekrāna:_ Redzams, kad ēka pārslēdzās no dzesēšanas uz apkuri. Ventilācija patērē daudz visu laiku.
@@ -203,12 +253,18 @@ _Uz ekrāna:_ Redzams, kad ēka pārslēdzās no dzesēšanas uz apkuri. Ventil�
 2. Redzams pārslēgums no dzesēšanas uz apkuri
 3. Ventilācija visu laiku augstu, lielākā patērētāja
 
+> **Pāreja:** Cik mums maksā siltums, salīdzinot ar pilsētas siltumu?
+
+
 **#19 · Par 55 % lētāk nekā pilsētas siltums**  
 _Uz ekrāna:_ Mūsu siltums maksāja €33.6/MWh, pilsētas €75/MWh. Ja elektrība kļūst ļoti dārga, varam pārslēgties uz pilsētas siltumu.
 
 1. Mūsu siltums €34/MWh, pilsētas €75 → −55 %
 2. Ja elektrība ļoti dārga, pārslēdzamies uz pilsētas siltumu
 3. Divi avoti, izmantojam lētāko
+
+> **Pāreja:** Ne tikai cena, arī CO₂.
+
 
 **#20 · Desmit reizes mazāk CO₂ nekā gāzei**  
 _Uz ekrāna:_ Mūsu siltums: 21 g CO₂/kWh. Gāzes katls: 213 g. Ventspils pilsētas siltums ir līdzīgā līmenī kā mūsējais.
@@ -217,11 +273,17 @@ _Uz ekrāna:_ Mūsu siltums: 21 g CO₂/kWh. Gāzes katls: 213 g. Ventspils pils
 2. Ventspils pilsētas siltums līdzīgā līmenī, pret to ieguvums ir cena
 3. CO₂ rēķinām automātiski, to prasīs ES ziņošana
 
+> **Pāreja:** Un to visu var dabūt vienā atskaitē.
+
+
 **#21 · Atskaite ar vienu klikšķi**  
 _Uz ekrāna:_ Excel enerģijas atskaite par jebkuru mēnesi.
 
 1. Mēneša atskaite ar vienu pogu
 2. Excel grāmatvedībai
+
+> **Pāreja:** Līdz šim redzējām, kas notiek. Tagad: kā MI izlemj, ko darīt.
+
 
 ## 5. MI
 
@@ -232,6 +294,9 @@ _Uz ekrāna:_ Excel enerģijas atskaite par jebkuru mēnesi.
 3. Karsto ūdeni MI vada pats
 4. Apkurei un dzesēšanai: kopš nesen indekss, kad izdevīgāk; nākamais solis ar to vadīt siltumsūkņus
 5. Ventilācijai: ieteikums pārcelt darba stundas
+
+> **Pāreja:** Kā tas izskatās vienā dienā ar īstām cenām?
+
 
 
 _Ko ņem vērā:_
@@ -262,11 +327,17 @@ _Ja jautā par modeļiem (bez dziļās mācīšanās, viena ēka, daži mēneši
 4. Nedēļā vidēji −13 %
 5. Apakšā: stundas, kad siltumsūknis lētāks par pilsētas siltumu
 
+> **Pāreja:** MI ne tikai plāno, tas arī meklē problēmas.
+
+
 **#24 · Brīdinājumi: iekārtu kļūdas un MI atradumi**  
 _Uz ekrāna:_ Siltumsūkņu kļūdu kodi, gaiss vārstos, sensori bez datiem un MI ieteikumi. Viss vienuviet, sagrupēts pa telpām.
 
 1. Viss, ko platforma atrod, vienuviet, pa telpām
 2. Reāli šīs nedēļas brīdinājumi: kļūdu kodi, gaiss hidraulikā
+
+> **Pāreja:** Viens no MI atradumiem tuvāk.
+
 
 
 _Ko platforma meklē pati:_
@@ -275,7 +346,6 @@ _Ko platforma meklē pati:_
 2. Neparasts patēriņš: 39 % naktī tukšā ēkā
 3. Siltuma atgūšana krītas → ritenis netīrs vai iesprūdis
 4. Ventilācija tērē vairāk, nekā modelis sagaida
-5. Dārgās stundas → nākamais slaids
 
 **#25 · Dārgās stundas ventilācijā**  
 _Uz ekrāna:_ PN1 strādāja par 29 % dārgāk nekā lētākajās stundās: no €94.81 varēja ietaupīt €21.40.
@@ -285,11 +355,17 @@ _Uz ekrāna:_ PN1 strādāja par 29 % dārgāk nekā lētākajās stundās: no �
 3. PN1: 29 dienās €95, no tiem €21 varēja ietaupīt
 4. Ieteikums: pārcelt darba laiku
 
+> **Pāreja:** Atradumus platforma arī pati apraksta vārdos.
+
+
 **#26 · Secinājumi vienkāršā valodā**  
 _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %”. Platforma tos uzraksta pati.
 
 1. Secinājumus platforma uzraksta pati
 2. Neviens tos neraksta ar roku, tie rodas no datiem
+
+> **Pāreja:** Nākamais solis: pajautāt platformai pašam.
+
 
 **#27 · MI asistents**
 
@@ -298,6 +374,9 @@ _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazināj�
 3. Atbild no ēkas datiem, rāda avotus
 4. Piemērs ar šī mēneša reāliem skaitļiem
 5. Valodas modelis ES mākonī = IPCEI-CIS mākoņa daļa
+
+> **Pāreja:** Kur tas viss darbojas? EDGE un mākonis.
+
 
 ## 6. Kontrole
 
@@ -309,6 +388,9 @@ _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazināj�
 4. Uz servera platforma, datubāze, MI → lēmumi ēkā
 5. ES mākonis: rezerves kopijas, valodas modelis, cenas, laika prognoze
 6. Kopija katru nakti, bloķēta; katru mēnesi atjaunošanas tests
+
+> **Pāreja:** Kā zinām, ka tas viss strādā pareizi?
+
 
 
 _Siemens (atvērts diskusijai):_
@@ -330,6 +412,9 @@ _Siemens (atvērts diskusijai):_
 7. Testi pie katras izmaiņas uz servera ēkā
 8. Ēkā nonāk tikai pēc testiem un cilvēka apstiprinājuma
 
+> **Pāreja:** Ko darīsim tālāk?
+
+
 ## 7. Tālāk
 
 **#30 · Kas tālāk**
@@ -337,6 +422,9 @@ _Siemens (atvērts diskusijai):_
 1. MI asistents visiem lietotājiem
 2. Nākamās ēkas
 3. Digitālais dvīnis: izmēģināt izmaiņas pirms īstās ēkas
+
+> **Pāreja:** Noslēgumā.
+
 
 **#31 · Paldies**
 

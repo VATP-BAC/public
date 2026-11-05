@@ -31,6 +31,8 @@
   .say ol { margin: 0 0 1.2em; padding-left: 1.9em; }
   .say li { margin-bottom: .75em; padding-left: .2em; }
   .say li::marker { color: var(--mint); font-weight: 800; }
+  .say .handoff { margin: .4em 0 1.4em; padding: .55em .8em; border-left: 4px solid var(--mint); background: rgba(140,196,173,.12); border-radius: 0 12px 12px 0; }
+  .say .handoff small { display: block; font-size: .5em; letter-spacing: .16em; text-transform: uppercase; color: var(--mint); font-weight: 800; margin-bottom: .2em; }
   .say h3 { font-size: .62em; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); margin: 1.4em 0 .7em; }
   aside { border-left: 1px solid var(--line); padding: 24px; background: var(--panel); overflow-y: auto; }
   aside .label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--mint); font-weight: 700; margin-bottom: 8px; }
@@ -101,6 +103,14 @@ function renderSay(el, say) {
   for (const raw of say.split('\n')) {
     const line = raw.trim();
     if (!line) { list = null; continue; }
+    if (line.startsWith('→')) {
+      list = null;
+      const box = el.appendChild(document.createElement('div'));
+      box.className = 'handoff';
+      box.appendChild(document.createElement('small')).textContent = 'Pāreja uz nākamo';
+      box.appendChild(document.createTextNode(line.replace(/^→\s*/, '')));
+      continue;
+    }
     if (line.startsWith('•')) {
       if (!list) list = el.appendChild(document.createElement('ol'));
       list.appendChild(document.createElement('li')).textContent = line.replace(/^•\s*/, '');
