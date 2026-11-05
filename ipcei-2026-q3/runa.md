@@ -375,7 +375,7 @@ _Ja jautā par Siemens_
 **#30 · Kas tālāk**
 
 1. MI asistents visiem lietotājiem.
-2. Nākamās ēkas.
+2. Vairāk iekārtu un sensoru pieslēgsim EDGE līmenī.
 3. Digitālais dvīnis.
 
 > **Pāreja:** Noslēgumā.
