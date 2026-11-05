@@ -204,6 +204,10 @@ Mēneša beigās pietiek ar vienu pogu, un grāmatvedībai ir gatava atskaite.
 **#22 · Ko MI ņem vērā**
 
 MI plānotājs katru stundu ņem vērā visus rādītājus kopā.  
+Ēkā strādā ražotne, tāpēc ar kritiskām iekārtām esam ļoti uzmanīgi. Ko MI dara šodien:  
+• Karsto ūdeni MI vada pats: izvēlas lētākās stundas un pats ieslēdz sildīšanu.  
+• Apkurei un dzesēšanai MI kopš nesen katru stundu aprēķina indeksu, cik izdevīgi ir sildīt vai dzesēt tieši tagad. Nākamais solis ir ar šo indeksu vadīt siltumsūkņus.  
+• Ventilācijai MI iesaka darba stundas pārcelt uz lētāko laiku.  
 Ko tas ņem vērā:  
 • elektrības cenu katrai rītdienas stundai no Nord Pool;  
 • laika prognozi 48 stundām uz priekšu: āra temperatūru, sauli, mākoņus un vēju, kā arī ēkā izmērīto āra temperatūru;  
@@ -212,7 +216,6 @@ Ko tas ņem vērā:
 • komforta robežas: telpu temperatūru, CO₂, mitrumu un to, ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām;  
 • iekārtu stāvokli: tvertņu temperatūras, kompresora startus un kļūdas;  
 • pilsētas siltuma tarifu salīdzinājumam.  
-Ko tas izlemj: karsto ūdeni sildām lētajās stundās, ēku un tvertni uzsildām, kamēr elektrība ir lēta, dzesējam laicīgi, un ventilācijas darba stundas pārceļam uz lētāko laiku.  
 Ja jautā par modeļiem: dziļo mācīšanos neizmantojam. Tai vajag tūkstošiem vai miljoniem parametru un ļoti daudz datu, bet mums ir viena ēka un daži mēneši datu. Mūsu modeļiem ir 2 līdz 5 parametri.  
 • Slodzes prognoze: lineārā regresija pret āra temperatūru.  
 • Telpu modeļi: fizikas modelis katrai telpai, kas zina, cik ātri tā atdziest.  
@@ -221,51 +224,44 @@ Ja jautā par modeļiem: dziļo mācīšanos neizmantojam. Tai vajag tūkstošie
 • Karstā ūdens grafiks: pārbaudām visus iespējamos variantus, tāpēc tas vienmēr ir labākais.  
 Katru modeli pārbaudām uz vēsturiskiem datiem. Ja tas nav precīzāks par vienkāršu pieņēmumu “rīt būs kā šodien”, mēs to neizmantojam.
 
-**#23 · Vadība pēc elektrības cenas (interaktīvs)**
+**#23 · Karstais ūdens pēc elektrības cenas**
 
 Šis ir īstais algoritms, kas strādā mūsu ēkā, ar īstām biržas cenām.  
 Pirms rādāt, pajautājiet zālei: kurās stundās jūs sildītu ūdeni? (Pagaidiet.)  
-Platforma izvēlas šīs piecas stundas, un vidēji tas ir par 13 % lētāk. Uzklikšķiniet uz citas dienas, un plāns mainās.  
+Šī ir 30. oktobra diena. Platforma izvēlējās šīs piecas stundas, un tas ir par 21 % lētāk nekā sildot vienmērīgi visu dienu. Nedēļā vidēji tie ir 13 %.  
 Apakšējā joslā redzamas stundas, kurās siltumsūkņa siltums ir lētāks par pilsētas siltumu.
 
-**#24 · Platforma strādā pati**
+**#24 · Brīdinājumi: iekārtu kļūdas un MI atradumi**  
+_Uz ekrāna:_ Siltumsūkņu kļūdu kodi, gaiss vārstos, sensori bez datiem un MI ieteikumi. Viss vienuviet, sagrupēts pa telpām.
 
-Viss strādā pats. Katru dienu platforma saplāno grafiku, pati ieslēdz un izslēdz karstā ūdens sistēmu un izmēra ietaupījumu eiro.  
-Visu diennakti, bez cilvēka.
+Viss, ko platforma atrod, nonāk vienā vietā, sagrupēts pa telpām. Šie ir reāli šīs nedēļas brīdinājumi, piemēram, siltumsūkņa kļūdu kodi un gaiss hidraulikā.  
+Tos atrod platforma pati. Ko tā meklē:  
+• Iekārtu kļūdas un sensorus, kas vairs nesūta datus.  
+• Neparastu patēriņu, piemēram, ka 39 procenti enerģijas aiziet naktī, kad ēka ir tukša.  
+• Siltuma atgūšanu ventilācijā. Ja tās efektivitāte lēnām krītas, visticamāk ritenis ir netīrs vai iesprūdis.  
+• Ventilācijas patēriņu. Modelis zina, cik iekārtai būtu jāpatērē šādā laikā un režīmā, un redz, ja tā tērē vairāk.  
+• Dārgās stundas. Tūlīt parādīšu vienu piemēru.
 
 **#25 · Dārgās stundas ventilācijā**  
 _Uz ekrāna:_ PN1 strādāja par 29 % dārgāk nekā lētākajās stundās: no €94.81 varēja ietaupīt €21.40.
 
-To pašu MI dara ar ventilāciju. Tas salīdzina, cik iztērējām, ar to, cik būtu iztērējuši, ja iekārta strādātu lētākajās stundās, un iesaka pārcelt darba laiku.
+Šis ir viens MI atradums tuvāk. MI salīdzina, cik ventilācija iztērēja, ar to, cik būtu iztērējusi, ja strādātu lētākajās stundās.  
+PN1 29 dienās iztērēja 95 eiro, un 21 no tiem varēja palikt kabatā. MI iesaka pārcelt darba laiku.
 
 **#26 · Secinājumi vienkāršā valodā**  
 _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %”. Platforma tos uzraksta pati.
 
 Platforma pati uzraksta secinājumus vienkāršā valodā. Šos teikumus neviens nerakstīja, tie ir izveidoti automātiski no datiem.
 
-**#27 · MI meklē novirzes**
-
-MI meklē arī to, ko cilvēks viegli palaistu garām.  
-• Siltuma atgūšana ventilācijā. MI seko, cik efektīvi tā strādā. Ja efektivitāte lēnām krītas, visticamāk ir netīrs filtrs vai iesprūdis vārsts.  
-• Ventilācijas patēriņš. Modelis zina, cik iekārtai būtu jāpatērē šādā laikā un režīmā, un redz, ja tā tērē vairāk.  
-• Telpu modeļi. Katrai telpai ir modelis, kas zina, cik ātri tā atdziest, un prognozē temperatūru uz priekšu.  
-• Neparasts patēriņš. Platforma pamana, ka 39 procenti enerģijas aiziet naktī, kad ēka ir tukša, kā arī iekārtu kļūdas un sensorus, kas vairs nesūta datus.
-
-**#28 · MI asistents**
+**#27 · MI asistents**
 
 Pie šī jau strādājam: MI asistents.  
 Var vienkārši pajautāt, piemēram, kāpēc ventilācija šomēnes maksāja vairāk, un tas atbild no ēkas datiem un parāda avotus. Šis piemērs ir ar šī mēneša reāliem skaitļiem.  
-Valodas modelis darbojas ES mākonī, un tā ir mūsu IPCEI-CIS mākoņa daļa. Izmaksām ir griesti, viens eiro dienā visai ēkai.
+Valodas modelis darbojas ES mākonī, un tā ir mūsu IPCEI-CIS mākoņa daļa.
 
 ## 6. Kontrole
 
-**#29 · Brīdinājumi**  
-_Uz ekrāna:_ Siltumsūkņa kļūdu kodi, gaiss vārstos, sensori bez datiem. Viss vienuviet, sagrupēts pa telpām.
-
-Protams, ne viss vienmēr strādā. Šie ir reāli šīs nedēļas brīdinājumi, piemēram, siltumsūkņa kļūdu kodi un gaiss hidraulikā.  
-Platforma tos atrada pati un parāda, kur tie ir.
-
-**#30 · Serveris ēkā (DATI Group)**
+**#28 · Serveris ēkā (DATI Group)**
 
 Tagad par IPCEI-CIS daļu: EDGE un mākonis kā viena sistēma.  
 EDGE līmenī ir iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Ar tiem runā vārteja, un tālāk dati nonāk serverī tepat ēkā.  
@@ -276,29 +272,29 @@ EDGE daļu apspriedām arī ar Siemens. Viņu IPCEI-CIS projektā izveidots Indu
 Mūsu ēkai tas neder. Pati vide un tās pārvaldība ir slēgta Siemens platforma ar licencēm, un aparatūra ir dārgāka. Mums ēkā ir dažādu ražotāju iekārtas, tāpēc izvēlējāmies atvērtu vārteju uz parastas aparatūras.  
 Tiem projekta dalībniekiem, kuru rūpnīcās jau ir Siemens iekārtas, Industrial Edge var būt labs ceļš.
 
-**#31 · Testēšana (TestDevLab)**
+**#29 · Testēšana (TestDevLab)**
 
 Kā zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem, no atsevišķām funkcijām līdz pieņemšanai reālā ēkā, un septiņām testu grupām. Mēs to pielāgojām HVAC platformai.  
 • Vairāk nekā 3200 testu pārbauda katru funkciju atsevišķi.  
 • Ap 450 testu pārbauda kodu kopā ar īstu datubāzi.  
 • 57 scenāriji pārlūkā darbojas kā īsts lietotājs: pieslēdzas, atver enerģijas paneļus un iekārtas, pārbauda visu septiņu lomu tiesības.  
-Pieci no sešiem līmeņiem jau strādā, sestais ir pilota pieņemšana. No septiņām testu grupām piecas ir pilnībā, noturība daļēji, veiktspēju vēl tikai sāksim.  
+TestDevLab stratēģiju jau ieviešam, līmeni pa līmenim.  
 Testi palaižas automātiski pie katras koda izmaiņas uz tā paša servera ēkā. Labojums nonāk ēkā tikai tad, kad visi testi ir izturēti un cilvēks to ir apstiprinājis.
 
 ## 7. Tālāk
 
-**#32 · Kas tālāk**
+**#30 · Kas tālāk**
 
 Ko darīsim tālāk. MI asistentu dosim visiem lietotājiem, platformu pieslēgsim nākamajām ēkām un būvēsim digitālo dvīni, kurā izmaiņas var izmēģināt, pirms tās veic īstajā ēkā.
 
-**#33 · Paldies**
+**#31 · Paldies**
 
 Paldies. Mūsu kilovatstunda ir nonākusi galā. Katrā pieturā platforma zināja, kur tā ir, cik tā maksā un kā to nopirkt lētāk.  
 Labprāt atbildēšu uz jautājumiem.
 
 ## Sagatave jautājumiem
 
-- **Ko tieši MI vada?** Karsto ūdeni, apkuri un dzesēšanu pēc elektrības cenas un pārējiem rādītājiem (sk. MI plānotāja piezīmes). Ventilācijai pārceļ darba stundas uz lētāko laiku.
+- **Ko tieši MI vada?** Karsto ūdeni MI vada pats: izvēlas lētākās stundas un pats ieslēdz sildīšanu. Apkurei un dzesēšanai MI kopš nesen aprēķina indeksu, kad sildīt vai dzesēt izdevīgāk; nākamais solis ir ar to vadīt siltumsūkņus. Ēkā strādā ražotne, tāpēc ar kritiskām iekārtām esam ļoti uzmanīgi. Ventilācijai MI iesaka darba laiku.
 - **Zeme dod 42 kW, bet siltumsūkņi 60 kW. Kur pārējais?** Siltums ir zemes siltums plus elektrība: 42 + 13 ≈ 55. Atlikums ir skaitītāju precizitāte un nobīde laikā starp tiem.
 - **Vai CO₂ ir labāks nekā pilsētas siltumam?** Nē, līdzīgs, jo arī Ventspils pilsētas siltums ir ar zemu oglekļa pēdu. Mūsu priekšrocība ir cena (−55 %) un tas, ka to izmērām. Salīdzinot ar gāzes apkuri, CO₂ ir ap 10 reizēm mazāk.
 - **Kas notiek, ja elektrība kļūst ļoti dārga?** Varam pārslēgties uz pilsētas siltumu. Ir divi avoti, un izmantojam lētāko.
@@ -306,8 +302,8 @@ Labprāt atbildēšu uz jautājumiem.
 - **Kur ir IPCEI-CIS daļa?** EDGE: iekārtu kontrolleri (Climatix ×2, Luxtronik ×2, Siemens vārsti, 11 Shelly), vārteja un serveris ēkā, ko izveidojām kopā ar DATI Group. Mākonis ES: rezerves kopijas (Scaleway, Varšava, bloķētas 7 dienas), asistenta valodas modelis (Scaleway, Parīze), Nord Pool cenas un laika prognozes.
 - **Kāpēc ne Siemens Industrial Edge?** Siemens IPCEI-CIS projektā izveidoja Industrial Edge ierīču komplektu (IEDK, atvērts kods), ar ko arī citu ražotāju iekārtas var darbināt Siemens Industrial Edge vidi. Pati vide un tās pārvaldība paliek slēgta Siemens platforma ar licencēm, un Siemens aparatūra ir dārgāka. Mums ēkā ir Siemens, Luxtronik un Shelly iekārtas, tāpēc izvēlējāmies atvērtu Node-RED vārteju uz parastas aparatūras, bez piesaistes vienam ražotājam. Dalībniekiem, kuru rūpnīcās jau ir Siemens iekārtas, tas var būt labs ceļš.
 - **Vai 3D ir dzīvs?** Jā, rādījumi ir reāli. Pats 3D skats ir eksperiments, kā ēku rādīt lietotājiem un apmeklētājiem.
-- **Vai MI asistents jau strādā?** Prototips ir gatavs: valodas modelis ES mākonī, izmaksu griesti €1 dienā. Slaidā ir piemērs ar šī mēneša reāliem datiem. Nākamais solis ir to dot lietotājiem.
-- **Ko dara TestDevLab?** Viņi izstrādāja IPCEI testēšanas stratēģiju ar līmeņiem A līdz F un septiņām testu grupām. Mēs to pielāgojām HVAC platformai. Līmeņi A līdz E jau strādā, F ir pilota pieņemšana reālos apstākļos.
+- **Vai MI asistents jau strādā?** Prototips ir gatavs: valodas modelis ES mākonī. Slaidā ir piemērs ar šī mēneša reāliem datiem. Nākamais solis ir to dot lietotājiem.
+- **Ko dara TestDevLab?** Viņi izstrādāja IPCEI testēšanas stratēģiju ar līmeņiem A līdz F un septiņām testu grupām. Mēs to pielāgojām HVAC platformai. Stratēģiju jau ieviešam, līmeni pa līmenim.
 - **Kādi ML modeļi tie ir, dziļā mācīšanās?** Nē. Klasiskā statistika un fizika, ko var izskaidrot:
   - slodzes prognoze: lineārā regresija pret āra temperatūru;
   - telpu modeļi: fizikas modelis (ARX), ko pielāgo ar ridge regresiju;

@@ -139,7 +139,7 @@
   /* ── Full-stage scenes (intro, chapters, panels, outro) ───── */
   .scene {
     position: fixed; inset: 64px 0 0 0; z-index: 4; display: flex; flex-direction: column; justify-content: center;
-    padding: 4vh 8vw; opacity: 0; pointer-events: none; transition: opacity .7s var(--ease);
+    padding: 4vh max(8vw, calc((100vw - max(1280px, 60vw)) / 2)); opacity: 0; pointer-events: none; transition: opacity .7s var(--ease);
   }
   .scene.on { opacity: 1; pointer-events: auto; }
   .scene .kick { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--mint); font-weight: 700; margin-bottom: 2.4vh; }
@@ -266,12 +266,15 @@
   .partner { margin-top: 4vh; align-self: flex-start; display: inline-flex; align-items: center; gap: 16px; background: #fff; color: var(--ink);
     border-radius: 999px; padding: 1vh 1.6vw 1vh 1vh; font-weight: 600; font-size: clamp(13px, 1.8vh, 17px); }
   .pnote { margin-top: 1.6vh; max-width: 900px; font-size: clamp(12px, 1.7vh, 16px); color: var(--cream-dim); line-height: 1.45; }
+  .open-card { margin-top: 3.2vh; max-width: 900px; border: 1.5px dashed var(--mint); border-radius: 18px; padding: 1.8vh 1.6vw; background: rgba(140,196,173,.08); }
+  .open-card small { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); font-weight: 700; margin-bottom: .8vh; }
+  .open-card p { font-size: clamp(14px, 2vh, 19px); line-height: 1.45; color: var(--cream); }
   .partner img { height: clamp(26px, 4.4vh, 44px); width: auto; padding: 0 .8vw; }
   .levels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1vw; margin-top: 4.5vh; max-width: 1240px; align-items: end; }
   .lvl { background: rgba(255,250,242,.06); border: 1px solid var(--line); border-radius: 18px; padding: 2vh 1vw; }
   .lvl:nth-child(1) { min-height: 15vh; } .lvl:nth-child(2) { min-height: 18vh; } .lvl:nth-child(3) { min-height: 21vh; }
   .lvl:nth-child(4) { min-height: 24vh; } .lvl:nth-child(5) { min-height: 27vh; } .lvl:nth-child(6) { min-height: 30vh; }
-  .lvl i { font-style: normal; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-weight: 800; font-size: 14px; margin-bottom: 1.4vh; }
+  .lvl i { background: rgba(140,196,173,.18); color: var(--mint); font-style: normal; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-weight: 800; font-size: 14px; margin-bottom: 1.4vh; }
   .lvl.ok i { background: var(--mint); color: var(--night); }
   .lvl.wait { border-style: dashed; } .lvl.wait i { border: 2px dashed var(--mint); color: var(--mint); }
   .lvl b { display: block; font-size: clamp(14px, 2vh, 19px); font-weight: 700; line-height: 1.25; margin-bottom: .8vh; }
@@ -470,19 +473,19 @@
       </div>
       <div class="brain" id="brain"><div><b>MI<br>plānotājs</b><small>katru stundu</small></div></div>
       <div class="col-list" id="sigOut">
-        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.7s6 6.6 6 11.3a6 6 0 01-12 0c0-4.7 6-11.3 6-11.3z"/></svg></div><div><b>Karstais ūdens</b><small>sildām, kad elektrība ir lēta</small></div></div>
-        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M10 21v-6h4v6"/></svg></div><div><b>Apkure</b><small>uzsildīt ēku un tvertni lētajās stundās</small></div></div>
-        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4.9 7l14.2 10M4.9 17L19.1 7"/></svg></div><div><b>Dzesēšana</b><small>atdzesēt iepriekš, kamēr elektrība lēta</small></div></div>
-        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7M14 12c4 0 7 1 7 4M12 14c0 4-1 7-4 7M10 12c-4 0-7-1-7-4"/></svg></div><div><b>Ventilācija</b><small>darba stundas uz lētāko laiku</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.7s6 6.6 6 11.3a6 6 0 01-12 0c0-4.7 6-11.3 6-11.3z"/></svg></div><div><b>Karstais ūdens</b><small>MI vada pats, sildām lētajās stundās</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M10 21v-6h4v6"/></svg></div><div><b>Apkure</b><small>MI indekss: kad sildīt izdevīgāk</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4.9 7l14.2 10M4.9 17L19.1 7"/></svg></div><div><b>Dzesēšana</b><small>MI indekss: kad dzesēt izdevīgāk</small></div></div>
+        <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7M14 12c4 0 7 1 7 4M12 14c0 4-1 7-4 7M10 12c-4 0-7-1-7-4"/></svg></div><div><b>Ventilācija</b><small>ieteikums: darba stundas uz lētāko laiku</small></div></div>
       </div>
     </div>
-  </section>
+    <p class="pnote">Ēkā strādā ražotne, tāpēc ar kritiskām iekārtām esam ļoti uzmanīgi. Karsto ūdeni MI vada pats, apkurei un dzesēšanai tas aprēķina, kad sildīt vai dzesēt izdevīgāk.</p>
+</section>
 
   <!-- AI: live hot-water optimiser on real prices -->
   <section class="scene" id="scene-optimizer">
-    <div class="kick">Vadība pēc elektrības cenas · reālas Nord Pool cenas</div>
+    <div class="kick">Karstais ūdens · 30. oktobris · reālas Nord Pool cenas</div>
     <h2>Kad elektrība lēta, sildām. Kad <em>dārga</em>, gaidām.</h2>
-    <div class="days" id="days"></div>
     <div class="opt">
       <div class="chart">
         <svg id="optChart" viewBox="0 0 960 390"></svg>
@@ -541,7 +544,7 @@
       <div class="asst-facts">
         <div><b>Atbild no ēkas datiem</b><span>un vienmēr norāda avotu</span></div>
         <div><b>Valodas modelis ES mākonī</b><span>Scaleway, Parīze · IPCEI-CIS mākoņa daļa</span></div>
-        <div><b>€1 dienā</b><span>izmaksu griesti visai ēkai</span></div>
+        <div><b>Jautā vienkāršā valodā</b><span>nav jāzina, kur dati glabājas</span></div>
         <small>Piemērs uz šī mēneša reālajiem datiem</small>
       </div>
     </div>
@@ -557,14 +560,8 @@
       <div class="node core"><small>Edge · serveris ēkā</small><b>Platforma, datubāze, MI un testi</b><span>14 kodoli · 15 GB · 450 GB</span></div>
       <div class="node"><small>Mākonis · ES</small><b>Rezerves kopijas, valodas modelis, cenas un laiks</b><span>Scaleway (Varšava, Parīze) · Nord Pool · Open-Meteo</span></div>
     </div>
-    <div class="facts">
-      <div><b>Ēkā</b><span>platforma strādā uz servera ēkā, EDGE līmenī</span></div>
-      <div><b>Katru nakti</b><span>rezerves kopija ES mākonī, bloķēta 7 dienas</span></div>
-      <div><b>Katru mēnesi</b><span>atjaunošanas tests no kopijas izturēts</span></div>
-      <div><b>Vadība ēkā</b><span>lēmumi notiek EDGE līmenī, mākonis tos papildina</span></div>
-    </div>
     <div class="partner"><img src="logos/dati-group.png" alt="DATI Group"><span>Servera un tīkla risinājums kopā ar DATI Group</span></div>
-    <p class="pnote">Ar Siemens izvērtējām viņu Industrial Edge platformu. Mūsu ēkai ar dažādu ražotāju iekārtām izvēlējāmies atvērtu vārteju. Projekta dalībniekiem ar Siemens rūpnīcas iekārtām tā var derēt.</p>
+    <div class="open-card"><small>Atvērts diskusijai · Siemens Industrial Edge</small><p>Kopā ar Siemens izvērtējām viņu Industrial Edge platformu. Mūsu ēkai ar dažādu ražotāju iekārtām izvēlējāmies atvērtu vārteju. Projekta dalībniekiem ar Siemens rūpnīcas iekārtām tā var būt labs ceļš, un esam gatavi to apspriest.</p></div>
   </section>
 
   <!-- Quality: TestDevLab test levels -->
@@ -572,15 +569,15 @@
     <div class="kick">Kvalitāte · pēc TestDevLab testēšanas stratēģijas</div>
     <h2>Kā mēs zinām, ka tas <em>strādā</em></h2>
     <div class="levels">
-      <div class="lvl ok"><i>A</i><b>Koda daļas</b><span>3 231 testi · katra funkcija atsevišķi</span></div>
-      <div class="lvl ok"><i>B</i><b>Ar īstu datubāzi</b><span>449 testi · kods un dati kopā</span></div>
-      <div class="lvl ok"><i>C</i><b>Pārlūkā</b><span>57 scenāriji · pieslēgšanās, enerģija, iekārtas, 7 lomu tiesības</span></div>
-      <div class="lvl ok"><i>D</i><b>Ar īstām iekārtām</b><span>Luxtronik, Siemens, Shelly dzīvajā</span></div>
-      <div class="lvl ok"><i>E</i><b>Uz servera ēkā</b><span>testi un atjaunošanas tests uz servera</span></div>
-      <div class="lvl wait"><i>F</i><b>Pilota pieņemšana</b><span>reālos apstākļos ēkā</span></div>
+      <div class="lvl"><i>A</i><b>Koda daļas</b><span>3 231 testi · katra funkcija atsevišķi</span></div>
+      <div class="lvl"><i>B</i><b>Ar īstu datubāzi</b><span>449 testi · kods un dati kopā</span></div>
+      <div class="lvl"><i>C</i><b>Pārlūkā</b><span>57 scenāriji · pieslēgšanās, enerģija, iekārtas, 7 lomu tiesības</span></div>
+      <div class="lvl"><i>D</i><b>Ar īstām iekārtām</b><span>Luxtronik, Siemens, Shelly dzīvajā</span></div>
+      <div class="lvl"><i>E</i><b>Uz servera ēkā</b><span>testi un atjaunošanas tests uz servera</span></div>
+      <div class="lvl"><i>F</i><b>Pilota pieņemšana</b><span>reālos apstākļos ēkā</span></div>
     </div>
-    <div class="suites"><b>TestDevLab testu grupas</b><span class="ok">Drošības vārti</span><span class="ok">Dūmu testi</span><span class="ok">Integrācija</span><span class="ok">Datu plūsma</span><span class="ok">Atjaunināšana un atgriešana</span><span class="part">Noturība</span><span class="todo">Veiktspēja</span></div>
-    <div class="partner"><img src="logos/testdevlab.png" alt="TestDevLab"><span>Pārklāti 5 no 6 TestDevLab līmeņiem · 5 no 7 testu grupām pilnībā, 1 daļēji</span></div>
+    <div class="suites"><b>TestDevLab testu grupas</b><span>Drošības vārti</span><span>Dūmu testi</span><span>Integrācija</span><span>Datu plūsma</span><span>Atjaunināšana un atgriešana</span><span>Noturība</span><span>Veiktspēja</span></div>
+    <div class="partner"><img src="logos/testdevlab.png" alt="TestDevLab"><span>Testēšanu veidojam pēc TestDevLab stratēģijas, un tās ieviešana jau notiek</span></div>
   </section>
 
   <!-- Next -->
@@ -599,7 +596,6 @@
   <section class="scene" id="scene-outro">
     <div class="kick">VATP · Ventspils Augsto Tehnoloģiju Parks</div>
     <h1>Paldies!</h1>
-    <p class="sub">Platforma tavai izaugsmei.</p>
     <div class="logos">
       <img src="logos/eu-nextgen.png" alt="Finansē Eiropas Savienība, NextGenerationEU">
       <img src="logos/nap2027.png" alt="Nacionālais attīstības plāns 2027">
@@ -693,25 +689,21 @@ const STEPS = [
   { type: 'cam', stage: 3, screen: 'energyMenu', rect: [1256, 127, 320, 542], title: "Atskaite ar vienu klikšķi", text: "Excel enerģijas atskaite par jebkuru mēnesi.",
     say: "Mēneša beigās pietiek ar vienu pogu, un grāmatvedībai ir gatava atskaite." },
   { type: 'scene', id: 'signals', stage: 4,
-    say: "MI plānotājs katru stundu ņem vērā visus rādītājus kopā.\nKo tas ņem vērā:\n• elektrības cenu katrai rītdienas stundai no Nord Pool;\n• laika prognozi 48 stundām uz priekšu: āra temperatūru, sauli, mākoņus un vēju, kā arī ēkā izmērīto āra temperatūru;\n• siltumsūkņu efektivitāti (COP un EER), ko mērām katru stundu;\n• prognozi, cik enerģijas ēkai vajadzēs;\n• komforta robežas: telpu temperatūru, CO₂, mitrumu un to, ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām;\n• iekārtu stāvokli: tvertņu temperatūras, kompresora startus un kļūdas;\n• pilsētas siltuma tarifu salīdzinājumam.\nKo tas izlemj: karsto ūdeni sildām lētajās stundās, ēku un tvertni uzsildām, kamēr elektrība ir lēta, dzesējam laicīgi, un ventilācijas darba stundas pārceļam uz lētāko laiku.\nJa jautā par modeļiem: dziļo mācīšanos neizmantojam. Tai vajag tūkstošiem vai miljoniem parametru un ļoti daudz datu, bet mums ir viena ēka un daži mēneši datu. Mūsu modeļiem ir 2 līdz 5 parametri.\n• Slodzes prognoze: lineārā regresija pret āra temperatūru.\n• Telpu modeļi: fizikas modelis katrai telpai, kas zina, cik ātri tā atdziest.\n• Ventilācijas enerģija: regresija pret ventilatoru jaudu, siltuma atgūšanu un āra temperatūru.\n• Siltuma atgūšanas efektivitāte: fizikas formula, un sekojam, vai tā nekrītas.\n• Karstā ūdens grafiks: pārbaudām visus iespējamos variantus, tāpēc tas vienmēr ir labākais.\nKatru modeli pārbaudām uz vēsturiskiem datiem. Ja tas nav precīzāks par vienkāršu pieņēmumu “rīt būs kā šodien”, mēs to neizmantojam." },
+    say: "MI plānotājs katru stundu ņem vērā visus rādītājus kopā.\nĒkā strādā ražotne, tāpēc ar kritiskām iekārtām esam ļoti uzmanīgi. Ko MI dara šodien:\n• Karsto ūdeni MI vada pats: izvēlas lētākās stundas un pats ieslēdz sildīšanu.\n• Apkurei un dzesēšanai MI kopš nesen katru stundu aprēķina indeksu, cik izdevīgi ir sildīt vai dzesēt tieši tagad. Nākamais solis ir ar šo indeksu vadīt siltumsūkņus.\n• Ventilācijai MI iesaka darba stundas pārcelt uz lētāko laiku.\nKo tas ņem vērā:\n• elektrības cenu katrai rītdienas stundai no Nord Pool;\n• laika prognozi 48 stundām uz priekšu: āra temperatūru, sauli, mākoņus un vēju, kā arī ēkā izmērīto āra temperatūru;\n• siltumsūkņu efektivitāti (COP un EER), ko mērām katru stundu;\n• prognozi, cik enerģijas ēkai vajadzēs;\n• komforta robežas: telpu temperatūru, CO₂, mitrumu un to, ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām;\n• iekārtu stāvokli: tvertņu temperatūras, kompresora startus un kļūdas;\n• pilsētas siltuma tarifu salīdzinājumam.\nJa jautā par modeļiem: dziļo mācīšanos neizmantojam. Tai vajag tūkstošiem vai miljoniem parametru un ļoti daudz datu, bet mums ir viena ēka un daži mēneši datu. Mūsu modeļiem ir 2 līdz 5 parametri.\n• Slodzes prognoze: lineārā regresija pret āra temperatūru.\n• Telpu modeļi: fizikas modelis katrai telpai, kas zina, cik ātri tā atdziest.\n• Ventilācijas enerģija: regresija pret ventilatoru jaudu, siltuma atgūšanu un āra temperatūru.\n• Siltuma atgūšanas efektivitāte: fizikas formula, un sekojam, vai tā nekrītas.\n• Karstā ūdens grafiks: pārbaudām visus iespējamos variantus, tāpēc tas vienmēr ir labākais.\nKatru modeli pārbaudām uz vēsturiskiem datiem. Ja tas nav precīzāks par vienkāršu pieņēmumu “rīt būs kā šodien”, mēs to neizmantojam." },
   { type: 'scene', id: 'optimizer', stage: 4,
-    say: "Šis ir īstais algoritms, kas strādā mūsu ēkā, ar īstām biržas cenām.\nPirms rādāt, pajautājiet zālei: kurās stundās jūs sildītu ūdeni? (Pagaidiet.)\nPlatforma izvēlas šīs piecas stundas, un vidēji tas ir par 13 % lētāk. Uzklikšķiniet uz citas dienas, un plāns mainās.\nApakšējā joslā redzamas stundas, kurās siltumsūkņa siltums ir lētāks par pilsētas siltumu." },
-  { type: 'scene', id: 'loop', stage: 4,
-    say: "Viss strādā pats. Katru dienu platforma saplāno grafiku, pati ieslēdz un izslēdz karstā ūdens sistēmu un izmēra ietaupījumu eiro.\nVisu diennakti, bez cilvēka." },
+    say: "Šis ir īstais algoritms, kas strādā mūsu ēkā, ar īstām biržas cenām.\nPirms rādāt, pajautājiet zālei: kurās stundās jūs sildītu ūdeni? (Pagaidiet.)\nŠī ir 30. oktobra diena. Platforma izvēlējās šīs piecas stundas, un tas ir par 21 % lētāk nekā sildot vienmērīgi visu dienu. Nedēļā vidēji tie ir 13 %.\nApakšējā joslā redzamas stundas, kurās siltumsūkņa siltums ir lētāks par pilsētas siltumu." },
+  { type: 'cam', stage: 4, screen: 'alerts', rect: [180, 80, 1240, 900], spot: false, title: "Brīdinājumi: iekārtu kļūdas un MI atradumi", text: "Siltumsūkņu kļūdu kodi, gaiss vārstos, sensori bez datiem un MI ieteikumi. Viss vienuviet, sagrupēts pa telpām.",
+    say: "Viss, ko platforma atrod, nonāk vienā vietā, sagrupēts pa telpām. Šie ir reāli šīs nedēļas brīdinājumi, piemēram, siltumsūkņa kļūdu kodi un gaiss hidraulikā.\nTos atrod platforma pati. Ko tā meklē:\n• Iekārtu kļūdas un sensorus, kas vairs nesūta datus.\n• Neparastu patēriņu, piemēram, ka 39 procenti enerģijas aiziet naktī, kad ēka ir tukša.\n• Siltuma atgūšanu ventilācijā. Ja tās efektivitāte lēnām krītas, visticamāk ritenis ir netīrs vai iesprūdis.\n• Ventilācijas patēriņu. Modelis zina, cik iekārtai būtu jāpatērē šādā laikā un režīmā, un redz, ja tā tērē vairāk.\n• Dārgās stundas. Tūlīt parādīšu vienu piemēru." },
   { type: 'cam', stage: 4, screen: 'alerts', rect: [200, 1210, 1200, 124], chip: "MI", title: "Dārgās stundas ventilācijā", text: "PN1 strādāja par 29 % dārgāk nekā lētākajās stundās: no €94.81 varēja ietaupīt €21.40.",
-    say: "To pašu MI dara ar ventilāciju. Tas salīdzina, cik iztērējām, ar to, cik būtu iztērējuši, ja iekārta strādātu lētākajās stundās, un iesaka pārcelt darba laiku." },
+    say: "Šis ir viens MI atradums tuvāk. MI salīdzina, cik ventilācija iztērēja, ar to, cik būtu iztērējusi, ja strādātu lētākajās stundās.\nPN1 29 dienās iztērēja 95 eiro, un 21 no tiem varēja palikt kabatā. MI iesaka pārcelt darba laiku." },
   { type: 'cam', stage: 4, screen: 'energy', rect: [24, 565, 925, 630], chip: "MI", title: "Secinājumi vienkāršā valodā", text: "“Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %”. Platforma tos uzraksta pati.",
     say: "Platforma pati uzraksta secinājumus vienkāršā valodā. Šos teikumus neviens nerakstīja, tie ir izveidoti automātiski no datiem." },
-  { type: 'scene', id: 'anomalies', stage: 4,
-    say: "MI meklē arī to, ko cilvēks viegli palaistu garām.\n• Siltuma atgūšana ventilācijā. MI seko, cik efektīvi tā strādā. Ja efektivitāte lēnām krītas, visticamāk ir netīrs filtrs vai iesprūdis vārsts.\n• Ventilācijas patēriņš. Modelis zina, cik iekārtai būtu jāpatērē šādā laikā un režīmā, un redz, ja tā tērē vairāk.\n• Telpu modeļi. Katrai telpai ir modelis, kas zina, cik ātri tā atdziest, un prognozē temperatūru uz priekšu.\n• Neparasts patēriņš. Platforma pamana, ka 39 procenti enerģijas aiziet naktī, kad ēka ir tukša, kā arī iekārtu kļūdas un sensorus, kas vairs nesūta datus." },
   { type: 'scene', id: 'assistant', stage: 4,
-    say: "Pie šī jau strādājam: MI asistents.\nVar vienkārši pajautāt, piemēram, kāpēc ventilācija šomēnes maksāja vairāk, un tas atbild no ēkas datiem un parāda avotus. Šis piemērs ir ar šī mēneša reāliem skaitļiem.\nValodas modelis darbojas ES mākonī, un tā ir mūsu IPCEI-CIS mākoņa daļa. Izmaksām ir griesti, viens eiro dienā visai ēkai." },
-  { type: 'cam', stage: 5, screen: 'alerts', rect: [180, 80, 1240, 900], spot: false, title: "Brīdinājumi", text: "Siltumsūkņa kļūdu kodi, gaiss vārstos, sensori bez datiem. Viss vienuviet, sagrupēts pa telpām.",
-    say: "Protams, ne viss vienmēr strādā. Šie ir reāli šīs nedēļas brīdinājumi, piemēram, siltumsūkņa kļūdu kodi un gaiss hidraulikā.\nPlatforma tos atrada pati un parāda, kur tie ir." },
+    say: "Pie šī jau strādājam: MI asistents.\nVar vienkārši pajautāt, piemēram, kāpēc ventilācija šomēnes maksāja vairāk, un tas atbild no ēkas datiem un parāda avotus. Šis piemērs ir ar šī mēneša reāliem skaitļiem.\nValodas modelis darbojas ES mākonī, un tā ir mūsu IPCEI-CIS mākoņa daļa." },
   { type: 'scene', id: 'server', stage: 5,
     say: "Tagad par IPCEI-CIS daļu: EDGE un mākonis kā viena sistēma.\nEDGE līmenī ir iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Ar tiem runā vārteja, un tālāk dati nonāk serverī tepat ēkā.\nServeri izveidojām kopā ar DATI Group. Uz tā strādā platforma, datubāze un MI, tāpēc lēmumi tiek pieņemti ēkā.\nMākonī, ES datu centros, glabājas rezerves kopijas un strādā asistenta valodas modelis. No turienes nāk arī elektrības cenas un laika prognozes.\nRezerves kopiju taisām katru nakti, un ārpus ēkas glabātā kopija ir bloķēta, lai to nevarētu izdzēst. Katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu.\nEDGE daļu apspriedām arī ar Siemens. Viņu IPCEI-CIS projektā izveidots Industrial Edge ierīču komplekts, ar kuru arī citu ražotāju iekārtas var darbināt Siemens Industrial Edge vidi. Siemens mums piedāvāja būvēt uz šīs platformas.\nMūsu ēkai tas neder. Pati vide un tās pārvaldība ir slēgta Siemens platforma ar licencēm, un aparatūra ir dārgāka. Mums ēkā ir dažādu ražotāju iekārtas, tāpēc izvēlējāmies atvērtu vārteju uz parastas aparatūras.\nTiem projekta dalībniekiem, kuru rūpnīcās jau ir Siemens iekārtas, Industrial Edge var būt labs ceļš." },
   { type: 'scene', id: 'testing', stage: 5,
-    say: "Kā zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem, no atsevišķām funkcijām līdz pieņemšanai reālā ēkā, un septiņām testu grupām. Mēs to pielāgojām HVAC platformai.\n• Vairāk nekā 3200 testu pārbauda katru funkciju atsevišķi.\n• Ap 450 testu pārbauda kodu kopā ar īstu datubāzi.\n• 57 scenāriji pārlūkā darbojas kā īsts lietotājs: pieslēdzas, atver enerģijas paneļus un iekārtas, pārbauda visu septiņu lomu tiesības.\nPieci no sešiem līmeņiem jau strādā, sestais ir pilota pieņemšana. No septiņām testu grupām piecas ir pilnībā, noturība daļēji, veiktspēju vēl tikai sāksim.\nTesti palaižas automātiski pie katras koda izmaiņas uz tā paša servera ēkā. Labojums nonāk ēkā tikai tad, kad visi testi ir izturēti un cilvēks to ir apstiprinājis." },
+    say: "Kā zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem, no atsevišķām funkcijām līdz pieņemšanai reālā ēkā, un septiņām testu grupām. Mēs to pielāgojām HVAC platformai.\n• Vairāk nekā 3200 testu pārbauda katru funkciju atsevišķi.\n• Ap 450 testu pārbauda kodu kopā ar īstu datubāzi.\n• 57 scenāriji pārlūkā darbojas kā īsts lietotājs: pieslēdzas, atver enerģijas paneļus un iekārtas, pārbauda visu septiņu lomu tiesības.\nTestDevLab stratēģiju jau ieviešam, līmeni pa līmenim.\nTesti palaižas automātiski pie katras koda izmaiņas uz tā paša servera ēkā. Labojums nonāk ēkā tikai tad, kad visi testi ir izturēti un cilvēks to ir apstiprinājis." },
   { type: 'scene', id: 'next', stage: 6,
     say: "Ko darīsim tālāk. MI asistentu dosim visiem lietotājiem, platformu pieslēgsim nākamajām ēkām un būvēsim digitālo dvīni, kurā izmaiņas var izmēģināt, pirms tās veic īstajā ēkā." },
   { type: 'scene', id: 'outro', stage: 6,
@@ -958,13 +950,6 @@ function renderOptimizer(day) {
   $('optWeek').textContent = `−${Math.round(week.reduce((s, v) => s + v, 0) / week.length * 100)}%`;
 }
 
-Object.keys(PRICE_DAYS).forEach((day) => {
-  const b = document.createElement('button');
-  b.textContent = day;
-  b.dataset.day = day;
-  b.addEventListener('click', (e) => { e.stopPropagation(); renderOptimizer(day); });
-  $('days').appendChild(b);
-});
 
 function drawWires() {
   // Curved dashed wires from every signal into the planner, and from it to every decision.
