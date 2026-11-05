@@ -67,32 +67,42 @@ Katrs lietotājs pats izvēlas, kuras kartītes un ieskatus šeit redz. Ēkas p�
 Augšā ir šodienas patēriņš, cik tas maksāja un kā tas salīdzinās ar vakardienu. Blakus ir elektrības cena šobrīd un laiks ārā.
 
 **#5 · Prognoze nākamajām stundām**  
-_Uz ekrāna:_ Viens no ieskatiem, ko pētām: MI prognozē ēkas patēriņu. Pelēkās joslas ir lētās stundas, sārtās dārgās.
+_Uz ekrāna:_ Viens no ieskatiem, ko pētām: MI prognozē ēkas patēriņu. Zaļās joslas ir lētās stundas, sārtās dārgās.
 
 Mēs joprojām pētām, kādus ieskatus šeit ir vērts rādīt. Šis ir viens piemērs.  
 MI prognozē, cik enerģijas ēkai vajadzēs nākamajās stundās. Līnija ir izmērītais patēriņš, raustītā līnija ir prognoze.  
-Fonā redzam, kuras stundas būs lētas un kuras dārgas. No prognozes un cenas vēlāk izriet lēmums, kad tērēt.
+Zaļās joslas ir lētās stundas, sārtās dārgās. No prognozes un cenas vēlāk izriet lēmums, kad tērēt.
 
 **#6 · Kas jāzina šodien**  
 _Uz ekrāna:_ Svarīgākais dažās ziņās: neapskatīti brīdinājumi, 39 % enerģijas patērēts naktī un MI ieteikums ventilācijai.
 
 Pārvaldniekam nav jāpēta grafiki. Platforma pati apkopo svarīgāko dažās īsās ziņās.  
 Šodien ir neapskatīti brīdinājumi. 39 procenti enerģijas aizgāja naktī, kad ēkā neviena nav. Un ir ieteikums ventilāciju darbināt lētākajās stundās.  
-Ja jautā, kā ziņas rodas, tās nāk no trim avotiem:  
+Bet no kurienes šīs ziņas rodas? Lai to saprastu, vispirms ieskatīsimies, kā ēka strādā.  
+  
+(Sagatavei, ja jautā.) Ziņas nāk no trim avotiem:  
 • Brīdinājumi: platforma pati pārbauda iekārtas un sensorus, piemēram, kļūdu kodus un sensorus bez datiem.  
-• Vienkārši noteikumi, ko var pārbaudīt grafikā: vai naktī (no 22 līdz 6) iztērēti vairāk nekā 35 % enerģijas, vai bāzes slodze mainījusies vairāk par 10 %, vai kāda sistēma augusi vairāk par 15 %, vai dārgākajā stundu ceturtdaļā iztērēti vairāk nekā 35 % enerģijas, un cik maksā siltums salīdzinājumā ar pilsētas siltumu.  
-• MI modeļi: ventilācijas modelis salīdzina, cik iztērējām, ar to, cik maksātu lētākajās stundās, un siltuma atgūšanas modelis seko, vai efektivitāte nekrītas.  
-Rāda tikai to, kam vajag uzmanību, ne vairāk par četrām ziņām.  
-Lai MI varētu ko ieteikt, tam jāsaprot, kā ēka strādā. Tāpēc ieskatīsimies ēkas iekšienē.
+• Vienkārši noteikumi, ko var pārbaudīt grafikā: vai naktī (no 22 līdz 6) iztērēti vairāk nekā 35 % enerģijas, vai bāzes slodze mainījusies vairāk par 10 %, vai kāda sistēma augusi vairāk par 15 %, vai dārgākajā stundu ceturtdaļā iztērēti vairāk nekā 35 % enerģijas.  
+• MI modeļi. Rāda tikai to, kam vajag uzmanību, ne vairāk par četrām ziņām.  
+  
+Kā strādā mūsu modeļi, vienkāršā valodā. Visi ir klasiskā statistika vai fizika ar 2 līdz 5 parametriem, neironu tīklu nav.  
+• Patēriņa prognoze (lineārā regresija). Platforma skatās, cik ēka patērēja pie dažādām āra temperatūrām, un novelk taisni caur šiem punktiem: jo aukstāks, jo vairāk. Tad ieliek rītdienas laika prognozi un nolasa, cik vajadzēs.  
+• Telpu modelis (fizikas modelis). Telpa atdziest, ja ārā ir aukstāks. No datiem modelis uzzina divus skaitļus: cik ātri šī telpa zaudē siltumu un cik siltuma tai pienāk no cilvēkiem un iekārtām. Ar tiem var paredzēt, kāda temperatūra būs pēc dažām stundām.  
+• Ventilācijas patēriņš (regresija). Modelis iemācās, cik elektrības ventilācijai vajadzētu, zinot ventilatoru jaudu, siltuma atgūšanu, elektrisko sildītāju un āra temperatūru. Ja iekārta tērē vairāk, nekā vajadzētu, visticamāk aizsērējis filtrs vai nolietojies motors.  
+• Siltuma atgūšana (formula, nevis apmācīts modelis). Ventilācija izpūš no telpām siltu gaisu un iesūc aukstu āra gaisu. Siltuma atgūšanas ritenis paņem siltumu no izplūstošā gaisa un atdod to ienākošajam. Efektivitāte ir, par cik ienākošais gaiss sasilst, salīdzinot ar to, cik to vispār varētu sasildīt. Piemērs: ārā 0 °C, telpā 20 °C, pēc riteņa ienākošais gaiss ir 10 °C, tātad 50 %. Platforma salīdzina pēdējo stundu vidējo ar ilgtermiņa vidējo. Ja efektivitāte lēnām krītas, ritenis, visticamāk, ir netīrs vai iesprūdis.  
+• Dārgās stundas (aritmētika). Katrai dienai rēķinām, cik samaksājām un cik maksātu tās pašas kilovatstundas, ja tās iztērētu dienas lētākajās stundās. Starpība ir lielākais iespējamais ietaupījums.  
+• Karstā ūdens grafiks (pārlase). Platforma izmēģina visus iespējamos sildīšanas laikus nākamajai diennaktij un izvēlas lētāko, ievērojot, cik bieži ūdens jāuzsilda.  
+Katru apmācīto modeli pārbaudām uz vēsturiskiem datiem. Ja tas nav precīzāks par pieņēmumu “rīt būs kā šodien”, to neizmantojam.
 
 ## 3. Iekārtas
 
 **#7 · Siltums no zemes (skaidrojums)**
 
-Vispirms par to, kā mūsu sistēma vispār iegūst siltumu.  
-Zeme visu gadu ir ap astoņiem grādiem silta. Mēs auksto ūdeni izlaižam caur 18 urbumiem zemē, un tas atgriežas siltāks. Jau iesildītu ūdeni uzsildīt līdz vajadzīgajai temperatūrai ir daudz vieglāk, tāpēc elektrības vajag maz. Var teikt, ka mēs pārstrādājam zemes siltumu.  
-Vasarā viss notiek otrādi, un ēkas lieko siltumu aizvedam zemē.  
-Kopumā no vienas elektrības daļas iegūstam piecas siltuma daļas. Elektriskais sildītājs dod vienu pret vienu, gāzes katls pat nedaudz mazāk. Mūsu sistēma šajā apkures sezonā deva piecarpus.
+Tātad, kā mūsu ēka iegūst siltumu.  
+Pie ēkas izurbām 18 dziļus urbumus. Zeme dziļumā visu gadu ir ap astoņiem grādiem silta. Pa urbumiem riņķo šķidrums: auksts aiziet lejā un atgriežas siltāks.  
+Šo jau iesildīto šķidrumu divi siltumsūkņi uzsilda līdz vajadzīgajai temperatūrai. Tā kā daļu darba jau izdarīja zeme, elektrības vajag maz. Var teikt, ka mēs pārstrādājam zemes siltumu.  
+Vasarā viss notiek otrādi: ēkas lieko siltumu aizvedam zemē, un tā ēku atvēsinām.  
+No vienas daļas elektrības iegūstam piecas daļas siltuma. Elektriskais sildītājs dod vienu pret vienu, gāzes katls pat nedaudz mazāk. Mūsu sistēma šajā apkures sezonā deva piecarpus.
 
 **#8 · Siltummezgls dzīvajā**  
 _Uz ekrāna:_ Visa sistēma vienā shēmā: urbumi, divi siltumsūkņi, tvertnes, radiatori un ventilācija.
@@ -103,20 +113,23 @@ Iesim pa soļiem no zemes līdz telpām.
 **#9 · 1. Siltums no 18 urbumiem**  
 _Uz ekrāna:_ Ziemā šķidrums urbumos uzņem zemes siltumu, vasarā ēkas siltumu aizvedam zemē. Šobrīd zeme dod 42 kW.
 
-Pirmais solis ir zeme. Pie VATP ir 18 dziļi urbumi, pa kuriem riņķo šķidrums. Ziemā tas urbumos sasilst un nes siltumu uz siltumsūkņiem. Šobrīd zeme mums dod 42 kilovatus, un par tiem mēs nemaksājam.  
+Pirmais solis ir zeme. Pie VATP ir 18 dziļi urbumi, pa kuriem riņķo šķidrums. Ziemā tas urbumos sasilst un nes siltumu uz siltumsūkņiem.  
+Šobrīd zeme mums dod 42 kilovatus, un par tiem mēs nemaksājam. To mēra siltuma skaitītājs uz urbumu loka: caur urbumiem plūst ap 7 kubikmetri šķidruma stundā, un tas sasilst par 4 līdz 5 grādiem.  
 Vasarā ir otrādi: ēkas lieko siltumu aizvedam uz zemi, un tas mūs atvēsina. Zeme mums kalpo kā liela siltuma krātuve visam gadam.
 
 **#10 · 2. Siltumsūkņi uzsilda**  
-_Uz ekrāna:_ 42 kW no zemes un 13 kW elektrības kopā dod 60 kW siltuma. Gandrīz ¾ siltuma nāk no zemes.
+_Uz ekrāna:_ Šķidrums no zemes ir tikai ap 5 °C, ar to telpu nesasildīt. Ar 13 kW elektrības siltumsūkņi to uzsilda līdz 38 °C, un kopā sanāk 60 kW siltuma.
 
-Otrais solis. Zemes siltums ir tikai daži grādi, ar to ēku nesasildīt. Siltumsūkņi to uzsilda līdz vajadzīgajai temperatūrai, un tam vajag 13 kilovatus elektrības.  
-Kopā sanāk 60 kilovati siltuma. Lielāko daļu dod zeme, elektrība tikai palīdz, un tāpēc sistēma ir tik efektīva.
+Otrais solis. Kāpēc nepietiek ar 42 kilovatiem no zemes?  
+Siltuma ir daudz, bet tas ir pārāk vēss. Šķidrums no zemes nāk ar dažiem grādiem, ap pieci. Siltums pats plūst tikai no siltāka uz vēsāku, tāpēc ar piecu grādu ūdeni divdesmit grādu telpu nesasildīt. Radiatoriem vajag ūdeni ap 35 grādiem, karstajam ūdenim vēl karstāku.  
+Siltumsūknis ar elektrību šo siltumu paceļ augstākā temperatūrā, līdzīgi kā sūknis paceļ ūdeni kalnā. Tam vajag 13 kilovatus elektrības.  
+Kopā sanāk 60 kilovati siltuma. Lielāko daļu dod zeme, elektrība tikai paceļ temperatūru, un tāpēc sistēma ir tik efektīva.
 
 **#11 · 3. Tvertne un radiatori**  
-_Uz ekrāna:_ Lielā tvertne krāj siltumu kā baterija. No tās silts ūdens iet uz radiatoriem, šobrīd 19,9 kW.
+_Uz ekrāna:_ Lielā tvertne krāj siltumu kā baterija. Radiatori šobrīd atdod telpām 19,9 kW siltuma, grīdas apkure vēl 1,6 kW.
 
 Trešais solis. Siltums nonāk lielā tvertnē, kas to krāj kā baterija. No tvertnes silts ūdens aiziet uz radiatoriem un grīdas apkuri.  
-Skaitļi ir šī brīža jauda.
+19,9 kilovati ir siltums, ko radiatori telpām atdod tieši tagad. To mēra siltuma skaitītājs: ūdens radiatoros ienāk ar 33 grādiem un atpakaļ aiziet ar 29. Grīdas apkure šobrīd dod vēl 1,6 kilovatus.
 
 **#12 · 4. Siltais gaiss**  
 _Uz ekrāna:_ Siltais ūdens plūst arī caur ventilācijas sildītāju, līdzīgu auto radiatoram. Ventilators caur to pūš svaigu gaisu, un telpās ieplūst silts gaiss.
