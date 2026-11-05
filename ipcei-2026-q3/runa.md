@@ -35,7 +35,8 @@ Mūsu ēka siltumu ņem no zemes, un MI izlemj, kad pirkt elektrību. Tāpēc si
 **#1 · Titulslaids**
 
 Labdien. Šis ir IPCEI-CIS projekts par mākoņa un EDGE skaitļošanas infrastruktūru. Mūsu daļa ir HVAC AI platforma, kas savieno iekārtas ēkā ar ES mākoni.  
-Slaidu par platformu nebūs, rādīšu pašu platformu. Lai būtu vieglāk sekot, sekosim vienai kilovatstundai: kā to nopērkam biržā, kā tā silda telpu un kā tā parādās rēķinā. Pa ceļam parādīšu, kur mākslīgais intelekts palīdz to nopirkt lētāk.
+Slaidu par platformu nebūs, rādīšu pašu platformu. Lai būtu vieglāk sekot, sekosim vienai kilovatstundai.  
+Sāksim ar ēku un to, ko platforma rāda ikdienā. Tad ieskatīsimies ēkas iekšienē un redzēsim, kā siltums no zemes nonāk līdz telpai. Beigās parādīšu, kā mākslīgais intelekts palīdz elektrību pirkt lētāk un kā tas parādās rēķinā.
 
 ## 1. Ēka
 
@@ -46,33 +47,43 @@ _Uz ekrāna:_ Katrs punktiņš ir reāla iekārta. Abi siltumsūkņi šobrīd st
 3D skats pagaidām ir eksperiments. Mēģinām saprast, ko un kā rādīt ikdienas lietotājiem un ko cilvēkiem, kas ēku apmeklē. Konferencēs redzējām, ka dažos tirgos uzņēmumi šādus 3D modeļus izvēlas labprāt, tāpēc pamēģinājām arī mēs.  
 Augšā redzams, ka abi siltumsūkņi šobrīd strādā: patērē 18 kilovatus elektrības un dod gandrīz 97 kilovatus siltuma.
 
-**#3 · Galvenais siltumsūknis**  
-_Uz ekrāna:_ 6 kW elektrības → 30,9 kW siltuma. Kā tas sanāk, parādīšu, kad būsim ēkas iekšienē.
+**#3 · Viens klikšķis, un iekārta ir redzama dzīvajā**  
+_Uz ekrāna:_ Uzspiežot uz iekārtas, redzam, kā tā strādā tieši tagad: galvenais siltumsūknis no 6 kW elektrības dod 30,9 kW siltuma.
 
-Uzspiežam uz galvenā siltumsūkņa. Šeit mūsu kilovatstunda kļūst par siltumu.  
-Siltumsūknis patērē 6 kilovatus elektrības un dod gandrīz 31 kilovatu siltuma. No zemes šķidrums ienāk ar 6 grādiem un atpakaļ aiziet ar nulli. Šo starpību siltumsūknis paņēma sev.  
-Kā no 6 kilovatiem sanāk 31, izstāstīšu, kad būsim ēkas iekšienē. Dati nāk tieši no siltumsūkņa kontrollera, un tas ir mūsu sistēmas EDGE līmenis.
+Šis skats ir domāts, lai jebkurš saprastu, kas ēkā notiek, arī bez tehniskām zināšanām.  
+Uzspiežam uz galvenā siltumsūkņa.  
+Pirms skatāmies skaitļus, pajautājiet zālei: ja iekārta patērē 6 kilovatus elektrības, cik siltuma tā dod? (Pagaidiet atbildi.)  
+Gandrīz 31 kilovatu, piecas reizes vairāk. Un tas ir tagad, nevis vakar vai pagājušajā mēnesī.  
+Tāpat varam uzspiest uz ventilācijas, skaitītāja vai jebkuras citas iekārtas un uzreiz redzēt, vai tā strādā normāli.  
+Kā no 6 sanāk 31, pastāstīšu nedaudz vēlāk. Dati nāk tieši no iekārtas kontrollera, un tas ir mūsu sistēmas EDGE līmenis.
 
 ## 2. Pārskats
 
-**#4 · Galvenais panelis**  
-_Uz ekrāna:_ Šo pārvaldnieks atver katru rītu: šodienas patēriņš, izmaksas un salīdzinājums ar vakardienu.
+**#4 · Sākumlapa, ko katrs pielāgo sev**  
+_Uz ekrāna:_ Šo lietotājs redz katru rītu. Katrs pats izvēlas, ko šeit rādīt: patēriņu, izmaksas, cenu vai brīdinājumus.
 
-3D izskatās labi, bet ikdienā pārvaldnieks atver galveno paneli.  
-Augšā ir šodienas patēriņš kilovatstundās, cik tas maksāja un kā tas salīdzinās ar vakardienu. Blakus ir elektrības cena šobrīd un laiks ārā.
+3D skats labi parāda ēku. Ikdienā lietotājs atver šo, platformas sākumlapu.  
+Katrs lietotājs pats izvēlas, kuras kartītes un ieskatus šeit redz. Ēkas pārvaldniekam svarīgākas ir izmaksas un brīdinājumi, tehniķim iekārtu stāvoklis.  
+Augšā ir šodienas patēriņš, cik tas maksāja un kā tas salīdzinās ar vakardienu. Blakus ir elektrības cena šobrīd un laiks ārā.
 
 **#5 · Prognoze nākamajām stundām**  
-_Uz ekrāna:_ Līnija rāda ēkas patēriņu, raustītā līnija ir MI prognoze. Pelēkās joslas ir lētās stundas, sārtās dārgās.
+_Uz ekrāna:_ Viens no ieskatiem, ko pētām: MI prognozē ēkas patēriņu. Pelēkās joslas ir lētās stundas, sārtās dārgās.
 
-Šeit pirmo reizi parādās mākslīgais intelekts. Tas prognozē, cik enerģijas ēkai vajadzēs nākamajās stundās.  
+Mēs joprojām pētām, kādus ieskatus šeit ir vērts rādīt. Šis ir viens piemērs.  
+MI prognozē, cik enerģijas ēkai vajadzēs nākamajās stundās. Līnija ir izmērītais patēriņš, raustītā līnija ir prognoze.  
 Fonā redzam, kuras stundas būs lētas un kuras dārgas. No prognozes un cenas vēlāk izriet lēmums, kad tērēt.
 
 **#6 · Kas jāzina šodien**  
-_Uz ekrāna:_ MI apkopo svarīgāko trīs ziņās: neapskatīti brīdinājumi, 39 % enerģijas patērēts naktī un ieteikums ventilācijai.
+_Uz ekrāna:_ Svarīgākais dažās ziņās: neapskatīti brīdinājumi, 39 % enerģijas patērēts naktī un MI ieteikums ventilācijai.
 
-Pārvaldniekam nav jāpēta grafiki. MI pats apkopo svarīgāko trīs īsās ziņās.  
+Pārvaldniekam nav jāpēta grafiki. Platforma pati apkopo svarīgāko dažās īsās ziņās.  
 Šodien ir neapskatīti brīdinājumi. 39 procenti enerģijas aizgāja naktī, kad ēkā neviena nav. Un ir ieteikums ventilāciju darbināt lētākajās stundās.  
-Lai saprastu, no kurienes šīs ziņas nāk, ieskatīsimies ēkas iekšienē.
+Ja jautā, kā ziņas rodas, tās nāk no trim avotiem:  
+• Brīdinājumi: platforma pati pārbauda iekārtas un sensorus, piemēram, kļūdu kodus un sensorus bez datiem.  
+• Vienkārši noteikumi, ko var pārbaudīt grafikā: vai naktī (no 22 līdz 6) iztērēti vairāk nekā 35 % enerģijas, vai bāzes slodze mainījusies vairāk par 10 %, vai kāda sistēma augusi vairāk par 15 %, vai dārgākajā stundu ceturtdaļā iztērēti vairāk nekā 35 % enerģijas, un cik maksā siltums salīdzinājumā ar pilsētas siltumu.  
+• MI modeļi: ventilācijas modelis salīdzina, cik iztērējām, ar to, cik maksātu lētākajās stundās, un siltuma atgūšanas modelis seko, vai efektivitāte nekrītas.  
+Rāda tikai to, kam vajag uzmanību, ne vairāk par četrām ziņām.  
+Lai MI varētu ko ieteikt, tam jāsaprot, kā ēka strādā. Tāpēc ieskatīsimies ēkas iekšienē.
 
 ## 3. Iekārtas
 
@@ -250,7 +261,10 @@ Tagad par IPCEI-CIS daļu: EDGE un mākonis kā viena sistēma.
 EDGE līmenī ir iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Ar tiem runā vārteja, un tālāk dati nonāk serverī tepat ēkā.  
 Serveri izveidojām kopā ar DATI Group. Uz tā strādā platforma, datubāze un MI, tāpēc lēmumi tiek pieņemti ēkā.  
 Mākonī, ES datu centros, glabājas rezerves kopijas un strādā asistenta valodas modelis. No turienes nāk arī elektrības cenas un laika prognozes.  
-Rezerves kopiju taisām katru nakti, un ārpus ēkas glabātā kopija ir bloķēta, lai to nevarētu izdzēst. Katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu.
+Rezerves kopiju taisām katru nakti, un ārpus ēkas glabātā kopija ir bloķēta, lai to nevarētu izdzēst. Katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu.  
+EDGE daļu apspriedām arī ar Siemens. Viņu IPCEI-CIS projektā izveidots Industrial Edge ierīču komplekts, ar kuru arī citu ražotāju iekārtas var darbināt Siemens Industrial Edge vidi. Siemens mums piedāvāja būvēt uz šīs platformas.  
+Mūsu ēkai tas neder. Pati vide un tās pārvaldība ir slēgta Siemens platforma ar licencēm, un aparatūra ir dārgāka. Mums ēkā ir dažādu ražotāju iekārtas, tāpēc izvēlējāmies atvērtu vārteju uz parastas aparatūras.  
+Tiem projekta dalībniekiem, kuru rūpnīcās jau ir Siemens iekārtas, Industrial Edge var būt labs ceļš.
 
 **#32 · Testēšana (TestDevLab)**
 
@@ -280,6 +294,7 @@ Labprāt atbildēšu uz jautājumiem.
 - **Kas notiek, ja elektrība kļūst ļoti dārga?** Varam pārslēgties uz pilsētas siltumu. Ir divi avoti, un izmantojam lētāko.
 - **Cik droša ir automātiskā vadība?** Katrai komandai ir robežas (piemēram, CO₂ mērķi var mainīt tikai no 400 līdz 2000), iekārta apstiprina izpildi, un, ja kaut kas nav skaidrs, sistēma izvēlas izslēgt.
 - **Kur ir IPCEI-CIS daļa?** EDGE: iekārtu kontrolleri (Climatix ×2, Luxtronik ×2, Siemens vārsti, 11 Shelly), vārteja un serveris ēkā, ko izveidojām kopā ar DATI Group. Mākonis ES: rezerves kopijas (Scaleway, Varšava, bloķētas 7 dienas), asistenta valodas modelis (Scaleway, Parīze), Nord Pool cenas un laika prognozes.
+- **Kāpēc ne Siemens Industrial Edge?** Siemens IPCEI-CIS projektā izveidoja Industrial Edge ierīču komplektu (IEDK, atvērts kods), ar ko arī citu ražotāju iekārtas var darbināt Siemens Industrial Edge vidi. Pati vide un tās pārvaldība paliek slēgta Siemens platforma ar licencēm, un Siemens aparatūra ir dārgāka. Mums ēkā ir Siemens, Luxtronik un Shelly iekārtas, tāpēc izvēlējāmies atvērtu Node-RED vārteju uz parastas aparatūras, bez piesaistes vienam ražotājam. Dalībniekiem, kuru rūpnīcās jau ir Siemens iekārtas, tas var būt labs ceļš.
 - **Vai 3D ir dzīvs?** Jā, rādījumi ir reāli. Pats 3D skats ir eksperiments, kā ēku rādīt lietotājiem un apmeklētājiem.
 - **Vai MI asistents jau strādā?** Prototips ir gatavs: valodas modelis ES mākonī, izmaksu griesti €1 dienā. Slaidā ir piemērs ar šī mēneša reāliem datiem. Nākamais solis ir to dot lietotājiem.
 - **Ko dara TestDevLab?** Viņi izstrādāja IPCEI testēšanas stratēģiju ar līmeņiem A līdz F un septiņām testu grupām. Mēs to pielāgojām HVAC platformai. Līmeņi A līdz E jau strādā, F ir pilota pieņemšana reālos apstākļos.
