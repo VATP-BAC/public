@@ -275,6 +275,14 @@
   .lvl.wait { border-style: dashed; } .lvl.wait i { border: 2px dashed var(--mint); color: var(--mint); }
   .lvl b { display: block; font-size: clamp(14px, 2vh, 19px); font-weight: 700; line-height: 1.25; margin-bottom: .8vh; }
   .lvl span { font-size: clamp(12px, 1.6vh, 15px); color: var(--cream-dim); line-height: 1.4; }
+  .suites { margin-top: 3vh; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 1240px; }
+  .suites b { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); margin-right: 6px; }
+  .suites span { padding: .8vh 1vw; border-radius: 999px; font-size: clamp(12px, 1.6vh, 15px); font-weight: 600; border: 1px solid var(--line); }
+  .suites .ok { background: rgba(140,196,173,.16); border-color: rgba(140,196,173,.5); color: var(--cream); }
+  .suites .ok::before { content: '✓ '; color: var(--mint); }
+  .suites .part { border-style: dashed; border-color: rgba(140,196,173,.5); color: var(--cream-dim); }
+  .suites .part::before { content: '◐ '; color: var(--mint); }
+  .suites .todo { color: rgba(246,239,227,.45); border-style: dashed; }
   .gate { margin-top: 3.4vh; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: var(--mint); font-weight: 700; }
   .gate span { padding: .9vh 1.1vw; border-radius: 999px; border: 1px solid rgba(140,196,173,.4); color: var(--cream); font-weight: 600; font-size: clamp(12px, 1.7vh, 16px); }
 
@@ -326,6 +334,7 @@
   .sv b { display: block; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(40px, 7.4vh, 84px); line-height: .9; color: var(--mint); }
   .sv h4 { font-size: clamp(15px, 2.2vh, 22px); font-weight: 800; margin: 1.8vh 0 .6vh; }
   .sv p { font-size: clamp(12px, 1.7vh, 16px); color: var(--cream-dim); line-height: 1.45; }
+  .save.four { grid-template-columns: repeat(4, 1fr); }
   .sv.soon { border-style: dashed; } .sv.soon b { color: #e39467; }
 
   /* Nav + progress */
@@ -359,7 +368,7 @@
   @media (max-width: 760px) {
     .stage span, .brand span { display: none; }
     .rail { gap: 12px; padding: 0 14px; }
-    .grid4, .journey, .opt, .loop, .flow, .ind, .arch, .facts, .asst, .save { grid-template-columns: 1fr; }
+    .grid4, .journey, .opt, .loop, .flow, .ind, .arch, .facts, .asst, .save, .save.four { grid-template-columns: 1fr; }
     .levels { grid-template-columns: repeat(2, 1fr); } .lvl { min-height: 0 !important; }
     .flow svg.wires, .step3::after, .node::after { display: none; }
     .brain { margin: 0 auto; }
@@ -424,9 +433,9 @@
 
   <!-- ELI5: how a heat pump works -->
   <section class="scene" id="scene-heatpump">
-    <div class="kick">Vispirms · kā strādā siltumsūknis</div>
-    <h2>Siltumsūknis siltumu <em>neražo</em> — tas to pārnes</h2>
-    <p class="sub">Zeme zem mūsu kājām visu gadu ir ap 8 °C silta. Siltumsūknis šo siltumu savāc un “saspiež” siltākā — tāpat kā velosipēda pumpis sasilst, kad saspiež gaisu.</p>
+    <div class="kick">Vispirms · kā strādā mūsu sistēma</div>
+    <h2>Siltums no <em>zemes</em> — ziemā ņemam, vasarā atdodam</h2>
+    <p class="sub">Aukstu ūdeni izlaižam caur 18 urbumiem zemē — tas atgriežas siltāks, un to sasildīt līdz vajadzīgajam ir daudz vieglāk. Vasarā otrādi: ēkas lieko siltumu aizvedam zemē.</p>
     <div class="eq">
       <div class="term ground"><div class="blocks"><i></i><i></i><i></i><i></i></div><b>Siltums no zemes</b><span>4 daļas · bez maksas</span></div>
       <div class="op">+</div>
@@ -438,7 +447,7 @@
       <div class="cmp-t">Cik siltuma dabū no 1 kWh enerģijas</div>
       <div class="row"><span>Elektriskais sildītājs</span><div class="bar"><i style="--w:18%"></i></div><b>1 kWh</b></div>
       <div class="row"><span>Gāzes katls</span><div class="bar"><i style="--w:16%"></i></div><b>0,9 kWh</b></div>
-      <div class="row us"><span>Mūsu siltumsūkņi · izmērīts</span><div class="bar"><i style="--w:100%"></i></div><b>5,5 kWh</b></div>
+      <div class="row us"><span>Mūsu sistēma · izmērīts</span><div class="bar"><i style="--w:100%"></i></div><b>5,5 kWh</b></div>
     </div>
   </section>
 
@@ -464,7 +473,6 @@
         <div class="sig out"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7M14 12c4 0 7 1 7 4M12 14c0 4-1 7-4 7M10 12c-4 0-7-1-7-4"/></svg></div><div><b>Ventilācija</b><small>darba stundas uz lētāko laiku</small></div></div>
       </div>
     </div>
-    <div class="principle">Modeļi: lineārā regresija un fizikas modeļi — katru lēmumu var izskaidrot</div>
   </section>
 
   <!-- AI: live hot-water optimiser on real prices -->
@@ -502,6 +510,18 @@
       <div class="step3"><div class="k">03</div><h4>Mēra</h4><p>Ietaupījumu rēķina katru dienu — patērētās kWh pēc reālās stundas cenas pret dienas vidējo cenu.</p><div class="tagline"><span>reāli eiro</span><span>katru dienu</span></div></div>
     </div>
     <div class="status"><i></i>Strādā pats — 24 stundas diennaktī, bez cilvēka</div>
+  </section>
+
+  <!-- AI: what the models watch for -->
+  <section class="scene" id="scene-anomalies">
+    <div class="kick">MI · novirzes un prognozes</div>
+    <h2>MI pamana to, ko <em>cilvēks</em> nepamanītu</h2>
+    <div class="save four">
+      <div class="sv"><b>η</b><h4>Siltuma atgūšana</h4><p>Ja ventilācijas efektivitāte lēnām krītas — netīrs filtrs vai iesprūdis vārsts</p></div>
+      <div class="sv"><b>kWh</b><h4>Ventilācijas patēriņš</h4><p>Zina, cik iekārtai jāpatērē pie šī laika un režīma — redz pārtēriņu</p></div>
+      <div class="sv"><b>°C</b><h4>Telpu modeļi</h4><p>Zina, cik ātri katra telpa atdziest, un prognozē temperatūru uz priekšu</p></div>
+      <div class="sv"><b>39 %</b><h4>Neparasts patēriņš</h4><p>Enerģija naktī, kad ēka tukša; iekārtu kļūdas; klusējoši sensori</p></div>
+    </div>
   </section>
 
   <!-- AI: grounded assistant (in development) -->
@@ -548,15 +568,15 @@
     <div class="kick">Kvalitāte · pēc TestDevLab testēšanas stratēģijas</div>
     <h2>Kā mēs zinām, ka tas <em>strādā</em></h2>
     <div class="levels">
-      <div class="lvl ok"><i>A</i><b>Koda daļas</b><span>katra funkcija atsevišķi</span></div>
-      <div class="lvl ok"><i>B</i><b>Ar īstu datubāzi</b><span>kods un dati kopā</span></div>
-      <div class="lvl ok"><i>C</i><b>Pārlūkā</b><span>kā īsts lietotājs</span></div>
+      <div class="lvl ok"><i>A</i><b>Koda daļas</b><span>3 231 testi · katra funkcija atsevišķi</span></div>
+      <div class="lvl ok"><i>B</i><b>Ar īstu datubāzi</b><span>449 testi · kods un dati kopā</span></div>
+      <div class="lvl ok"><i>C</i><b>Pārlūkā</b><span>57 scenāriji · pieslēgšanās, enerģija, iekārtas, 7 lomu tiesības</span></div>
       <div class="lvl ok"><i>D</i><b>Ar īstām iekārtām</b><span>Luxtronik, Siemens, Shelly dzīvajā</span></div>
-      <div class="lvl ok"><i>E</i><b>Uz servera ēkā</b><span>ar atjaunošanas testu</span></div>
+      <div class="lvl ok"><i>E</i><b>Uz servera ēkā</b><span>testi un atjaunošanas tests uz servera</span></div>
       <div class="lvl wait"><i>F</i><b>Pilota pieņemšana</b><span>reālos apstākļos ēkā</span></div>
     </div>
-    <div class="gate"><span>Katra koda izmaiņa</span>→<span>tipi un stils</span>→<span>visi testi</span>→<span>cilvēks apstiprina</span>→<span>automātiski ēkā</span></div>
-    <div class="partner"><img src="logos/testdevlab.png" alt="TestDevLab"><span>Testēšanas līmeņi A–F pēc TestDevLab stratēģijas</span></div>
+    <div class="suites"><b>TestDevLab testu grupas</b><span class="ok">Drošības vārti</span><span class="ok">Dūmu testi</span><span class="ok">Integrācija</span><span class="ok">Datu plūsma</span><span class="ok">Atjaunināšana un atgriešana</span><span class="part">Noturība</span><span class="todo">Veiktspēja</span></div>
+    <div class="partner"><img src="logos/testdevlab.png" alt="TestDevLab"><span>Pārklāti 5 no 6 TestDevLab līmeņiem · 5 no 7 testu grupām pilnībā, 1 daļēji</span></div>
   </section>
 
   <!-- Next -->
@@ -642,7 +662,7 @@ const STEPS = [
     say: 'Pārvaldniekam nav jārok grafikos — MI pats saliek svarīgāko trīs teikumos. Šodien: ir neapskatīti brīdinājumi; 39 procenti enerģijas aizgāja naktī, kad ēka ir tukša; un ieteikums ventilāciju darbināt lētākajās stundās. Tālāk paskatīsimies, no kurienes tas viss nāk — ēkas iekšienē.' },
 
   { type: 'scene', id: 'heatpump', stage: 2,
-    say: 'Pirms ejam iekšā — kā vispār strādā siltumsūknis? Svarīgākais: tas siltumu neražo, tas to pārnes. Zeme zem mūsu kājām visu gadu ir ap astoņiem grādiem silta — gan janvārī, gan jūlijā. Siltumsūknis šo siltumu savāc un “saspiež”, līdz tas kļūst pietiekami silts ēkai. Tāpat kā velosipēda pumpis sasilst, kad ar to saspiežat gaisu. Elektrību tērējam tikai šai “saspiešanai”, pašu siltumu zeme dod par brīvu. Tāpēc no vienas elektrības daļas iznāk piecas siltuma daļas. Elektriskais sildītājs dod vienu pret vienu, gāzes katls pat mazāk. Mūsu siltumsūkņi — piecarpus, un tas ir izmērīts.' },
+    say: 'Pirms ejam iekšā — kā mūsu sistēma vispār iegūst siltumu? Zeme zem mūsu kājām visu gadu ir ap astoņiem grādiem silta. Mēs aukstu ūdeni izlaižam caur 18 urbumiem zemē, un tas atgriežas siltāks. Šo jau iesildīto ūdeni sasildīt līdz ēkai vajadzīgajai temperatūrai ir daudz vieglāk nekā no nulles — tāpēc elektrības vajag maz. Būtībā mēs pārstrādājam zemes siltumu. Vasarā viss notiek otrādi: ēkas lieko siltumu aizvedam uz zemi, un tā mūs atvēsina. Rezultāts: no vienas elektrības daļas iznāk piecas siltuma daļas. Elektriskais sildītājs dod vienu pret vienu, gāzes katls pat mazāk. Mūsu sistēma — piecarpus, un tas ir izmērīts.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [240, 90, 1120, 860], spot: false, title: 'Tagad — mūsu ēkā, dzīvajā', text: 'Viss siltummezgls vienā dzīvā shēmā: zemes urbumi, divi siltumsūkņi, tvertnes, radiatori un ventilācija.',
     say: 'Tagad tas pats mūsu ēkā, dzīvajā. Šī shēma kustas — plūsmas iet pa caurulēm, sarkans ir silts, zils auksts. Iesim pa soļiem: no zemes līdz telpām.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [240, 622, 120, 155], chip: 'Ģeotermija', title: '1. Siltums no 18 urbumiem', text: 'Pie VATP zemē ir 18 urbumi. Ziemā šķidrums tajos uzņem zemes siltumu, vasarā otrādi — ēkas siltumu atdodam zemē. Šobrīd zeme dod 42 kW.',
@@ -651,8 +671,8 @@ const STEPS = [
     say: 'Otrais solis: zemes siltums ir vēss — tikai daži grādi. Siltumsūknis to saspiež un sasilda līdz temperatūrai, ar ko var sildīt ēku. Tam vajag elektrību — 13 kilovatus. Rezultātā 60 kilovati siltuma. Tā ir mūsu energoefektivitāte: lielāko daļu siltuma dod zeme, elektrība tikai palīdz.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [1012, 430, 275, 265], title: '3. Siltums nonāk telpās', text: 'Lielā tvertne strādā kā siltuma baterija. No tās silts ūdens iet uz radiatoriem — šobrīd 19,9 kW.',
     say: 'Trešais solis: siltums nonāk lielā tvertnē — tā ir kā baterija, kas krāj siltumu. No tās silts ūdens aiziet uz radiatoriem un grīdas apkuri. Šie skaitļi ir tieši šī brīža jauda.' },
-  { type: 'cam', stage: 2, screen: 'schematic', rect: [388, 94, 352, 224], chip: 'Edge · BACnet', title: '4. …un siltais gaiss', text: 'Siltumsūkņu siltums aiziet arī uz ventilāciju — tā telpās iepūš svaigu, siltu gaisu. Šobrīd tam aiziet 21 kW.',
-    say: 'Ceturtais solis: siltumu ražo siltumsūkņi, bet daļu no tā aizved ventilācija. Ārā ir septiņi grādi; ventilācija ņem svaigu gaisu, laiž to caur siltumsūkņu sildīto spirāli un iepūš telpās jau siltu. Siemens vārsts mēra, cik siltuma tai aiziet — šobrīd 21 kilovats.' },
+  { type: 'cam', stage: 2, screen: 'schematic', rect: [388, 94, 352, 224], chip: 'Edge · BACnet', title: '4. …un siltais gaiss', text: 'Siltais ūdens no tvertnes plūst caur ventilācijas sildītāju — kā auto radiatoru. Ventilators pūš cauri svaigu gaisu, tas sasilst un ieplūst telpās. Šobrīd 21 kW.',
+    say: 'Ceturtais solis: silto ūdeni izmanto ne tikai radiatori. Tas no tvertnes plūst arī uz ventilācijas iekārtu, kur iet caur sildītāju — tas izskatās kā auto radiators: plānas caurulītes ar ribām. Ventilators pūš cauri svaigo āra gaisu, gaiss paņem siltumu no ūdens un ieplūst telpās jau silts. Siemens vārsts mēra, cik siltuma tā aiziet — šobrīd 21 kilovats.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [693, 765, 132, 172], title: '5. Un karstais ūdens krānā', text: 'Atsevišķa tvertne, šobrīd 51 °C. Kad to sildīt, izlemj platforma — pēc elektrības cenas.',
     say: 'Un karstais ūdens krānos. Šī tvertne ir MI pirmais darba lauks: platforma pati izvēlas, kurās stundās to sildīt, lai elektrība būtu vislētākā.' },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [1168, 94, 188, 300], title: 'Un mēs izmērām katru soli', text: 'Pēdējās 24 h: 301 kWh elektrības — apkurei 53 %, ventilācijai 40 %, karstajam ūdenim 5 %.',
@@ -677,7 +697,7 @@ const STEPS = [
     say: 'Un mēneša beigās — viena poga, un grāmatvedībai ir gatava atskaite.' },
 
   { type: 'scene', id: 'signals', stage: 4,
-    say: 'MI plānotājs katru stundu skatās uz visu reizē. Ievadē: elektrības cena katrai stundai rītdienai no Nord Pool; laika prognoze 48 stundām — āra temperatūra, saule, mākoņi, vējš — un ēkā izmērītā āra temperatūra; siltumsūkņu efektivitāte, ko mērām katru stundu; MI prognoze, cik enerģijas ēkai vajadzēs; komforta robežas — telpu temperatūra, CO₂, mitrums, un ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām; iekārtu stāvoklis — tvertņu temperatūras, kompresora starti, kļūdas; un pilsētas siltuma tarifs salīdzinājumam. Izvadē: karsto ūdeni sildām lētajās stundās; apkurē ēku un tvertni uzsildām, kamēr elektrība lēta; dzesēšanā atdzesējam iepriekš; ventilācijas darba stundas pārceļam uz lētāko laiku. Kādi modeļi? Nekādas melnās kastes un dziļās mācīšanās. Ēkas slodzes prognoze ir lineārā regresija pret āra temperatūru. Katrai telpai ir fizikas modelis, kas zina, cik ātri tā atdziest. Ventilācijas enerģijas modelis ir regresija pret ventilatoru jaudu, siltuma atgūšanu un āra temperatūru. Siltuma atgūšanas efektivitāte ir fizikas formula ar novirzes detektoru. Un karstā ūdens plānu atrod, pārbaudot visus iespējamos grafikus — tas ir garantēti labākais. Katru modeli pārbaudām uz vēsturiskiem datiem: ja tas nav labāks par vienkāršu “rīt būs kā šodien”, mēs to neizmantojam.' },
+    say: 'MI plānotājs katru stundu skatās uz visu reizē. Ievadē: elektrības cena katrai stundai rītdienai no Nord Pool; laika prognoze 48 stundām — āra temperatūra, saule, mākoņi, vējš — un ēkā izmērītā āra temperatūra; siltumsūkņu efektivitāte, ko mērām katru stundu; MI prognoze, cik enerģijas ēkai vajadzēs; komforta robežas — telpu temperatūra, CO₂, mitrums, un ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām; iekārtu stāvoklis — tvertņu temperatūras, kompresora starti, kļūdas; un pilsētas siltuma tarifs salīdzinājumam. Izvadē: karsto ūdeni sildām lētajās stundās; apkurē ēku un tvertni uzsildām, kamēr elektrība lēta; dzesēšanā atdzesējam iepriekš; ventilācijas darba stundas pārceļam uz lētāko laiku. Kādi modeļi? Nekādas melnās kastes un dziļās mācīšanās — tai vajag tūkstošiem līdz miljoniem parametru un milzum daudz datu, bet mums ir viena ēka un daži mēneši datu. Mūsu modeļiem ir 2 līdz 5 parametri. Ēkas slodzes prognoze ir lineārā regresija pret āra temperatūru. Katrai telpai ir fizikas modelis, kas zina, cik ātri tā atdziest. Ventilācijas enerģijas modelis ir regresija pret ventilatoru jaudu, siltuma atgūšanu un āra temperatūru. Siltuma atgūšanas efektivitāte ir fizikas formula ar novirzes detektoru. Un karstā ūdens plānu atrod, pārbaudot visus iespējamos grafikus — tas ir garantēti labākais. Katru modeli pārbaudām uz vēsturiskiem datiem: ja tas nav labāks par vienkāršu “rīt būs kā šodien”, mēs to neizmantojam.' },
   { type: 'scene', id: 'optimizer', stage: 4,
     say: 'Šis ir īstais algoritms, kas strādā mūsu ēkā, uz īstām biržas cenām. Pirms rādu — kurās stundās jūs sildītu ūdeni? … Platforma izvēlas šīs piecas stundas, un tas ir vidēji 13 % lētāk. Uzklikšķiniet uz citas dienas — plāns mainās. Apakšā: stundas, kad siltumsūkņa siltums ir lētāks par pilsētas.' },
   { type: 'scene', id: 'loop', stage: 4,
@@ -686,6 +706,8 @@ const STEPS = [
     say: 'To pašu MI dara ar ventilāciju: salīdzina, cik iztērējām, ar to, cik būtu iztērējuši lētākajās stundās, un iesaka pārcelt darba laiku.' },
   { type: 'cam', stage: 4, screen: 'energy', rect: [24, 565, 925, 630], chip: 'MI', title: 'Platforma pati paskaidro', text: '“Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %” — bez neviena iestatījuma.',
     say: 'Un platforma pati raksta secinājumus vienkāršā valodā. Šie teikumi ir uzrakstīti automātiski, no datiem.' },
+  { type: 'scene', id: 'anomalies', stage: 4,
+    say: 'MI ne tikai izvēlas lētās stundas. Tas arī meklē to, ko cilvēks nepamanītu. Ventilācijas siltuma atgūšana: MI seko, cik efektīvi tā strādā, un ja efektivitāte lēnām krītas — tas nozīmē netīru filtru vai iesprūdušu vārstu. Ventilācijas patēriņš: modelis zina, cik iekārtai būtu jāpatērē pie šī laika un režīma, un redz, ja tā tērē vairāk. Katrai telpai ir modelis, kas zina, cik ātri tā atdziest, un prognozē temperatūru uz priekšu. Un platforma pati pamana neparastu patēriņu — piemēram, ka 39 procenti enerģijas aiziet naktī, kad ēka ir tukša — kā arī iekārtu kļūdas un sensorus, kas pārstājuši sūtīt datus.' },
   { type: 'scene', id: 'assistant', stage: 4,
     say: 'Nākamais solis, ko jau būvējam: MI asistents. Jūs vienkārši pajautājat — “kāpēc ventilācija šomēnes maksāja vairāk?” — un tas atbild no ēkas datiem, ar avotiem. Šeit piemērs uz šī mēneša reālajiem skaitļiem. Valodas modelis darbojas ES mākonī — tā ir mūsu IPCEI-CIS mākoņa daļa — un izmaksām ir griesti: eiro dienā visai ēkai.' },
 
@@ -694,7 +716,7 @@ const STEPS = [
   { type: 'scene', id: 'server', stage: 5,
     say: 'Šī ir IPCEI-CIS būtība: EDGE un mākonis kā viena sistēma. EDGE līmenī — iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Tos visus apkalpo vārteja un serveris tepat ēkā, ko izveidojām kopā ar DATI Group — tur strādā platforma, datubāze un MI, tāpēc lēmumi notiek ēkā, EDGE līmenī. Mākonī, ES datu centros — rezerves kopijas, valodas modelis asistentam, elektrības cenas un laika prognozes. Dati un vadība glabājas ēkā, rezerves kopija — ES. Katru nakti kopija, viena ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.' },
   { type: 'scene', id: 'testing', stage: 5,
-    say: 'Kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem — no atsevišķām funkcijām līdz pieņemšanai reālā ēkā. Mēs to pielāgojām HVAC platformai. Pirmie pieci līmeņi jau strādā, un testi iet automātiski uz katru koda izmaiņu, uz tā paša servera ēkā. Neviens labojums nenonāk ēkā, kamēr testi nav zaļi un cilvēks to nav apstiprinājis. Pēdējais līmenis — pilota pieņemšana reālos apstākļos.' },
+    say: 'Kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju: sešus līmeņus — no atsevišķām funkcijām līdz pieņemšanai reālā ēkā — un septiņas testu grupas. Mēs to pielāgojām HVAC platformai. Šobrīd: vairāk nekā 3 200 testu pārbauda katru funkciju atsevišķi, ap 450 testu — kodu kopā ar īstu datubāzi, un 57 scenāriji pārlūkā spēlē īstu lietotāju — pieslēgšanos, enerģijas paneļus, iekārtas un visu septiņu lomu tiesības. Pieci no sešiem līmeņiem jau strādā; sestais ir pilota pieņemšana. No septiņām testu grupām piecas ir pilnībā, noturība daļēji, veiktspēja vēl priekšā. Testi iet automātiski uz katru koda izmaiņu, uz tā paša servera ēkā, un neviens labojums nenonāk ēkā, kamēr testi nav zaļi un cilvēks to nav apstiprinājis.' },
 
   { type: 'scene', id: 'next', stage: 6,
     say: 'Tālāk: MI asistents visiem lietotājiem, platforma nākamajām ēkām un digitālais dvīnis, kurā izmēģināt izmaiņas pirms īstās ēkas.' },

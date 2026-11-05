@@ -67,7 +67,7 @@ Pārvaldniekam nav jārok grafikos — MI pats saliek svarīgāko trīs teikumos
 
 **#7 · Kā strādā siltumsūknis (skaidrojums)**
 
-Pirms ejam iekšā — kā vispār strādā siltumsūknis? Svarīgākais: tas siltumu neražo, tas to pārnes. Zeme zem mūsu kājām visu gadu ir ap astoņiem grādiem silta — gan janvārī, gan jūlijā. Siltumsūknis šo siltumu savāc un “saspiež”, līdz tas kļūst pietiekami silts ēkai. Tāpat kā velosipēda pumpis sasilst, kad ar to saspiežat gaisu. Elektrību tērējam tikai šai “saspiešanai”, pašu siltumu zeme dod par brīvu. Tāpēc no vienas elektrības daļas iznāk piecas siltuma daļas. Elektriskais sildītājs dod vienu pret vienu, gāzes katls pat mazāk. Mūsu siltumsūkņi — piecarpus, un tas ir izmērīts.
+Pirms ejam iekšā — kā mūsu sistēma vispār iegūst siltumu? Zeme zem mūsu kājām visu gadu ir ap astoņiem grādiem silta. Mēs aukstu ūdeni izlaižam caur 18 urbumiem zemē, un tas atgriežas siltāks. Šo jau iesildīto ūdeni sasildīt līdz ēkai vajadzīgajai temperatūrai ir daudz vieglāk nekā no nulles — tāpēc elektrības vajag maz. Būtībā mēs pārstrādājam zemes siltumu. Vasarā viss notiek otrādi: ēkas lieko siltumu aizvedam uz zemi, un tā mūs atvēsina. Rezultāts: no vienas elektrības daļas iznāk piecas siltuma daļas. Elektriskais sildītājs dod vienu pret vienu, gāzes katls pat mazāk. Mūsu sistēma — piecarpus, un tas ir izmērīts.
 
 **#8 · Tagad — mūsu ēkā, dzīvajā**  
 _Uz ekrāna:_ Viss siltummezgls vienā dzīvā shēmā: zemes urbumi, divi siltumsūkņi, tvertnes, radiatori un ventilācija.
@@ -90,9 +90,9 @@ _Uz ekrāna:_ Lielā tvertne strādā kā siltuma baterija. No tās silts ūdens
 Trešais solis: siltums nonāk lielā tvertnē — tā ir kā baterija, kas krāj siltumu. No tās silts ūdens aiziet uz radiatoriem un grīdas apkuri. Šie skaitļi ir tieši šī brīža jauda.
 
 **#12 · 4. …un siltais gaiss**  
-_Uz ekrāna:_ Siltumsūkņu siltums aiziet arī uz ventilāciju — tā telpās iepūš svaigu, siltu gaisu. Šobrīd tam aiziet 21 kW.
+_Uz ekrāna:_ Siltais ūdens no tvertnes plūst caur ventilācijas sildītāju — kā auto radiatoru. Ventilators pūš cauri svaigu gaisu, tas sasilst un ieplūst telpās. Šobrīd 21 kW.
 
-Ceturtais solis: siltumu ražo siltumsūkņi, bet daļu no tā aizved ventilācija. Ārā ir septiņi grādi; ventilācija ņem svaigu gaisu, laiž to caur siltumsūkņu sildīto spirāli un iepūš telpās jau siltu. Siemens vārsts mēra, cik siltuma tai aiziet — šobrīd 21 kilovats.
+Ceturtais solis: silto ūdeni izmanto ne tikai radiatori. Tas no tvertnes plūst arī uz ventilācijas iekārtu, kur iet caur sildītāju — tas izskatās kā auto radiators: plānas caurulītes ar ribām. Ventilators pūš cauri svaigo āra gaisu, gaiss paņem siltumu no ūdens un ieplūst telpās jau silts. Siemens vārsts mēra, cik siltuma tā aiziet — šobrīd 21 kilovats.
 
 **#13 · 5. Un karstais ūdens krānā**  
 _Uz ekrāna:_ Atsevišķa tvertne, šobrīd 51 °C. Kad to sildīt, izlemj platforma — pēc elektrības cenas.
@@ -150,7 +150,7 @@ Un mēneša beigās — viena poga, un grāmatvedībai ir gatava atskaite.
 
 **#23 · Ko MI ņem vērā**
 
-MI plānotājs katru stundu skatās uz visu reizē. Ievadē: elektrības cena katrai stundai rītdienai no Nord Pool; laika prognoze 48 stundām — āra temperatūra, saule, mākoņi, vējš — un ēkā izmērītā āra temperatūra; siltumsūkņu efektivitāte, ko mērām katru stundu; MI prognoze, cik enerģijas ēkai vajadzēs; komforta robežas — telpu temperatūra, CO₂, mitrums, un ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām; iekārtu stāvoklis — tvertņu temperatūras, kompresora starti, kļūdas; un pilsētas siltuma tarifs salīdzinājumam. Izvadē: karsto ūdeni sildām lētajās stundās; apkurē ēku un tvertni uzsildām, kamēr elektrība lēta; dzesēšanā atdzesējam iepriekš; ventilācijas darba stundas pārceļam uz lētāko laiku. Kādi modeļi? Nekādas melnās kastes un dziļās mācīšanās. Ēkas slodzes prognoze ir lineārā regresija pret āra temperatūru. Katrai telpai ir fizikas modelis, kas zina, cik ātri tā atdziest. Ventilācijas enerģijas modelis ir regresija pret ventilatoru jaudu, siltuma atgūšanu un āra temperatūru. Siltuma atgūšanas efektivitāte ir fizikas formula ar novirzes detektoru. Un karstā ūdens plānu atrod, pārbaudot visus iespējamos grafikus — tas ir garantēti labākais. Katru modeli pārbaudām uz vēsturiskiem datiem: ja tas nav labāks par vienkāršu “rīt būs kā šodien”, mēs to neizmantojam.
+MI plānotājs katru stundu skatās uz visu reizē. Ievadē: elektrības cena katrai stundai rītdienai no Nord Pool; laika prognoze 48 stundām — āra temperatūra, saule, mākoņi, vējš — un ēkā izmērītā āra temperatūra; siltumsūkņu efektivitāte, ko mērām katru stundu; MI prognoze, cik enerģijas ēkai vajadzēs; komforta robežas — telpu temperatūra, CO₂, mitrums, un ka karstais ūdens jāuzsilda ik 3 līdz 8 stundām; iekārtu stāvoklis — tvertņu temperatūras, kompresora starti, kļūdas; un pilsētas siltuma tarifs salīdzinājumam. Izvadē: karsto ūdeni sildām lētajās stundās; apkurē ēku un tvertni uzsildām, kamēr elektrība lēta; dzesēšanā atdzesējam iepriekš; ventilācijas darba stundas pārceļam uz lētāko laiku. Kādi modeļi? Nekādas melnās kastes un dziļās mācīšanās — tai vajag tūkstošiem līdz miljoniem parametru un milzum daudz datu, bet mums ir viena ēka un daži mēneši datu. Mūsu modeļiem ir 2 līdz 5 parametri. Ēkas slodzes prognoze ir lineārā regresija pret āra temperatūru. Katrai telpai ir fizikas modelis, kas zina, cik ātri tā atdziest. Ventilācijas enerģijas modelis ir regresija pret ventilatoru jaudu, siltuma atgūšanu un āra temperatūru. Siltuma atgūšanas efektivitāte ir fizikas formula ar novirzes detektoru. Un karstā ūdens plānu atrod, pārbaudot visus iespējamos grafikus — tas ir garantēti labākais. Katru modeli pārbaudām uz vēsturiskiem datiem: ja tas nav labāks par vienkāršu “rīt būs kā šodien”, mēs to neizmantojam.
 
 **#24 · Vadība pēc elektrības cenas (interaktīvs)**
 
@@ -170,32 +170,36 @@ _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazināj�
 
 Un platforma pati raksta secinājumus vienkāršā valodā. Šie teikumi ir uzrakstīti automātiski, no datiem.
 
-**#28 · MI asistents**
+**#28 · undefined**
+
+MI ne tikai izvēlas lētās stundas. Tas arī meklē to, ko cilvēks nepamanītu. Ventilācijas siltuma atgūšana: MI seko, cik efektīvi tā strādā, un ja efektivitāte lēnām krītas — tas nozīmē netīru filtru vai iesprūdušu vārstu. Ventilācijas patēriņš: modelis zina, cik iekārtai būtu jāpatērē pie šī laika un režīma, un redz, ja tā tērē vairāk. Katrai telpai ir modelis, kas zina, cik ātri tā atdziest, un prognozē temperatūru uz priekšu. Un platforma pati pamana neparastu patēriņu — piemēram, ka 39 procenti enerģijas aiziet naktī, kad ēka ir tukša — kā arī iekārtu kļūdas un sensorus, kas pārstājuši sūtīt datus.
+
+**#29 · MI asistents**
 
 Nākamais solis, ko jau būvējam: MI asistents. Jūs vienkārši pajautājat — “kāpēc ventilācija šomēnes maksāja vairāk?” — un tas atbild no ēkas datiem, ar avotiem. Šeit piemērs uz šī mēneša reālajiem skaitļiem. Valodas modelis darbojas ES mākonī — tā ir mūsu IPCEI-CIS mākoņa daļa — un izmaksām ir griesti: eiro dienā visai ēkai.
 
 ## 6. Kontrole
 
-**#29 · Kad kaut kas noiet greizi**  
+**#30 · Kad kaut kas noiet greizi**  
 _Uz ekrāna:_ Siltumsūkņa kļūdu kodi, gaiss vārstos, novecojuši sensori — viss vienā iesūtnē, grupēts pa telpām.
 
 Ne viss vienmēr strādā. Šeit reāli brīdinājumi no šīs nedēļas — siltumsūkņa kļūdas kodi un gaiss hidraulikā. Platforma tos atrada pati un pastāstīja, kur tie ir.
 
-**#30 · Serveris ēkā (DATI Group)**
+**#31 · Serveris ēkā (DATI Group)**
 
 Šī ir IPCEI-CIS būtība: EDGE un mākonis kā viena sistēma. EDGE līmenī — iekārtu kontrolleri: divi Siemens Climatix ventilācijai, divi Luxtronik siltumsūkņiem, Siemens enerģijas vārsti un 11 Shelly skaitītāji. Tos visus apkalpo vārteja un serveris tepat ēkā, ko izveidojām kopā ar DATI Group — tur strādā platforma, datubāze un MI, tāpēc lēmumi notiek ēkā, EDGE līmenī. Mākonī, ES datu centros — rezerves kopijas, valodas modelis asistentam, elektrības cenas un laika prognozes. Dati un vadība glabājas ēkā, rezerves kopija — ES. Katru nakti kopija, viena ārpus ēkas, bloķēta, lai to nevar izdzēst. Un katru mēnesi pārbaudām, ka no kopijas tiešām var atjaunot visu sistēmu — pirmais tests izturēts.
 
-**#31 · Testēšana (TestDevLab)**
+**#32 · Testēšana (TestDevLab)**
 
-Kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju ar sešiem līmeņiem — no atsevišķām funkcijām līdz pieņemšanai reālā ēkā. Mēs to pielāgojām HVAC platformai. Pirmie pieci līmeņi jau strādā, un testi iet automātiski uz katru koda izmaiņu, uz tā paša servera ēkā. Neviens labojums nenonāk ēkā, kamēr testi nav zaļi un cilvēks to nav apstiprinājis. Pēdējais līmenis — pilota pieņemšana reālos apstākļos.
+Kā mēs zinām, ka tas strādā? TestDevLab izstrādāja IPCEI testēšanas stratēģiju: sešus līmeņus — no atsevišķām funkcijām līdz pieņemšanai reālā ēkā — un septiņas testu grupas. Mēs to pielāgojām HVAC platformai. Šobrīd: vairāk nekā 3 200 testu pārbauda katru funkciju atsevišķi, ap 450 testu — kodu kopā ar īstu datubāzi, un 57 scenāriji pārlūkā spēlē īstu lietotāju — pieslēgšanos, enerģijas paneļus, iekārtas un visu septiņu lomu tiesības. Pieci no sešiem līmeņiem jau strādā; sestais ir pilota pieņemšana. No septiņām testu grupām piecas ir pilnībā, noturība daļēji, veiktspēja vēl priekšā. Testi iet automātiski uz katru koda izmaiņu, uz tā paša servera ēkā, un neviens labojums nenonāk ēkā, kamēr testi nav zaļi un cilvēks to nav apstiprinājis.
 
 ## 7. Tālāk
 
-**#32 · Kas tālāk**
+**#33 · Kas tālāk**
 
 Tālāk: MI asistents visiem lietotājiem, platforma nākamajām ēkām un digitālais dvīnis, kurā izmēģināt izmaiņas pirms īstās ēkas.
 
-**#33 · Paldies**
+**#34 · Paldies**
 
 Paldies. Mūsu kilovatstunda ir nonākusi galā — un katrā pieturā platforma zināja, kur tā ir, cik tā maksā un kā to nopirkt lētāk.
 
@@ -210,4 +214,4 @@ Paldies. Mūsu kilovatstunda ir nonākusi galā — un katrā pieturā platforma
 - **“Vai MI asistents jau strādā?”** Prototips ir izstrādāts (ES mitināts modelis, izmaksu griesti €1 dienā); slaidā ir piemērs uz šī mēneša reāliem datiem. Ieviešana lietotājiem — nākamais solis.
 - **“Ko dara TestDevLab?”** Viņi izstrādāja IPCEI testēšanas stratēģiju ar līmeņiem A–F; mēs to pielāgojām HVAC platformai. Līmeņi A–E jau strādā, F — pilota pieņemšana reālos apstākļos.
 - **“Kādi ML modeļi tie ir — dziļā mācīšanās?”** Nē. Klasiskā statistika un fizika, izskaidrojama: ēkas slodzes prognoze — lineārā regresija pret āra temperatūru; telpu termālie modeļi — “pelēkās kastes” ARX (fizikas modelis, ko pielāgo ar ridge regresiju); ventilācijas enerģija — ridge regresija pret ventilatoru jaudu, siltuma atgūšanu, el. sildītāju un āra temperatūru; siltuma atgūšanas efektivitāte — fizikas formula + EWMA novirzes detektors; karstā ūdens grafiks un “dārgo stundu” analīze — optimizācija (pārbauda visus variantus). Katrs modelis jāpārspēj “rīt būs kā šodien” uz vēsturiskiem datiem, citādi to neizmanto. Vienīgais dziļās mācīšanās elements — valodas modelis asistentam (ES mākonī).
-- **“Kāpēc ne neironu tīkli?”** Datu ir maz (viena ēka, mēneši), un mums jāspēj izskaidrot katrs lēmums par iekārtām. Lineārie un fizikas modeļi uz maziem datiem ir stabilāki, un tos var pārbaudīt.
+- **“Kāpēc ne neironu tīkli?”** Dziļajai mācībai vajag tūkstošiem–miljoniem parametru un ļoti daudz datu; mūsu modeļiem ir 2–5 parametri. Datu ir maz (viena ēka, mēneši), un mums jāspēj izskaidrot katrs lēmums par iekārtām. Lineārie un fizikas modeļi uz maziem datiem ir stabilāki, un tos var pārbaudīt.
