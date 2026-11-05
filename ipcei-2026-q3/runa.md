@@ -76,7 +76,7 @@ Lai saprastu, no kurienes šīs ziņas nāk, ieskatīsimies ēkas iekšienē.
 
 ## 3. Iekārtas
 
-**#7 · Kā strādā siltumsūknis (skaidrojums)**
+**#7 · Siltums no zemes (skaidrojums)**
 
 Vispirms par to, kā mūsu sistēma vispār iegūst siltumu.  
 Zeme visu gadu ir ap astoņiem grādiem silta. Mēs auksto ūdeni izlaižam caur 18 urbumiem zemē, un tas atgriežas siltāks. Jau iesildītu ūdeni uzsildīt līdz vajadzīgajai temperatūrai ir daudz vieglāk, tāpēc elektrības vajag maz. Var teikt, ka mēs pārstrādājam zemes siltumu.  
@@ -207,7 +207,7 @@ Pirms rādāt, pajautājiet zālei: kurās stundās jūs sildītu ūdeni? (Pagai
 Platforma izvēlas šīs piecas stundas, un vidēji tas ir par 13 % lētāk. Uzklikšķiniet uz citas dienas, un plāns mainās.  
 Apakšējā joslā redzamas stundas, kurās siltumsūkņa siltums ir lētāks par pilsētas siltumu.
 
-**#25 · Plāno. Vada. Mēra.**
+**#25 · Platforma strādā pati**
 
 Viss strādā pats. Katru dienu platforma saplāno grafiku, pati ieslēdz un izslēdz karstā ūdens sistēmu un izmēra ietaupījumu eiro.  
 Visu diennakti, bez cilvēka.
@@ -222,7 +222,7 @@ _Uz ekrāna:_ “Apkure sākās šajā periodā”, “bāzes slodze samazināj�
 
 Platforma pati uzraksta secinājumus vienkāršā valodā. Šos teikumus neviens nerakstīja, tie ir izveidoti automātiski no datiem.
 
-**#28 · undefined**
+**#28 · MI meklē novirzes**
 
 MI meklē arī to, ko cilvēks viegli palaistu garām.  
 • Siltuma atgūšana ventilācijā. MI seko, cik efektīvi tā strādā. Ja efektivitāte lēnām krītas, visticamāk ir netīrs filtrs vai iesprūdis vārsts.  
