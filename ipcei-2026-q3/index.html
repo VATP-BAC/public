@@ -169,6 +169,10 @@
   .wires path { fill: none; stroke: rgba(140,196,173,.35); stroke-width: 1.5; stroke-dasharray: 5 7; animation: dash 1.4s linear infinite; }
   .wires path.out { stroke: rgba(227,148,103,.55); }
   @keyframes dash { to { stroke-dashoffset: -24; } }
+  #scene-signals .flow { margin-top: 3vh; }
+  #scene-signals .col-list { gap: .9vh; }
+  #scene-signals .sig { padding: .9vh 1vw; }
+  #scene-signals .pnote { margin-top: 1.4vh; }
   .col-list { display: flex; flex-direction: column; gap: 1.4vh; position: relative; z-index: 1; }
   .sig {
     display: flex; align-items: center; gap: 12px; padding: 1.4vh 1.2vw; border-radius: 14px;
@@ -451,8 +455,8 @@
 
   <!-- AI: signals in, decisions out -->
   <section class="scene" id="scene-signals">
-    <div class="kick">MI · ko tas ņem vērā</div>
-    <h2>MI plānotājs: kad <em>sildīt</em> un kad <em>dzesēt</em>?</h2>
+    <div class="kick">MI plānotājs</div>
+    <h2>Ko MI ņem vērā un ko tas <em>dara</em></h2>
     <div class="flow" id="flow">
       <svg class="wires" id="wires"></svg>
       <div class="col-list" id="sigIn">
@@ -553,7 +557,7 @@
       <div class="node"><small>Mākonis · ES</small><b>Rezerves kopijas, valodas modelis, cenas un laiks</b><span>Scaleway (Varšava, Parīze) · Nord Pool · Open-Meteo</span></div>
     </div>
     <div class="partner"><img src="logos/dati-group.png" alt="DATI Group"><span>Servera un tīkla risinājums kopā ar DATI Group</span></div>
-    <div class="open-card"><small>Atvērts diskusijai · Siemens Industrial Edge</small><p>Kopā ar Siemens izvērtējām viņu Industrial Edge platformu. Mūsu ēkai ar dažādu ražotāju iekārtām izvēlējāmies atvērtu vārteju. Projekta dalībniekiem ar Siemens rūpnīcas iekārtām tā var būt labs ceļš, un esam gatavi to apspriest.</p></div>
+    <div class="open-card"><small>Atvērts diskusijai · Siemens Industrial Edge</small><p>Siemens IPCEI-CIS projektā izveidoja Industrial Edge ierīču komplektu. Tas noder ražotājiem, kas grib savas iekārtas savienot ar Siemens Industrial Edge ekosistēmu. Mūsu ēkai ar dažādu ražotāju iekārtām izvēlējāmies atvērtu vārteju. Esam gatavi to apspriest.</p></div>
   </section>
 
   <!-- Quality: TestDevLab test levels -->
@@ -622,7 +626,7 @@ const SCREENS = {
   ahuControl:  { src: 'app/ahu-control.jpg',     h: 1026, url: 'Iekārtas / PN1 ventilācija / Vadība' },
   floor:       { src: 'app/floor.jpg',           h: 1300, url: 'Stāvi / VATP 1A / 2. stāvs' },
   feedback:    { src: 'app/feedback.jpg',        h: 1000, url: 'Telpas / 14. Nākotnes klase / Atsauksmes' },
-  energy:      { src: 'app/energy.jpg',          h: 4795, url: 'Enerģija · apkures sezona' },
+  energy:      { src: 'app/energy.jpg',          h: 4795, url: 'Enerģija · pēdējais mēnesis' },
   energyMenu:  { src: 'app/energy-menu.jpg',     h: 1000, url: 'Enerģija / Eksports' },
   breakdown:   { src: 'app/breakdown.jpg',       h: 3500, url: 'Enerģija / Sadalījums' },
   alerts:      { src: 'app/alerts.jpg',          h: 1829, url: 'Brīdinājumi' },
@@ -639,67 +643,67 @@ const STAGES = ['Ēka', 'Pārskats', 'Iekārtas', 'Enerģija', 'MI', 'Kontrole',
 // cue: what the audience reads.  say: speaker notes (presenter window, press P) — what to tell the room and why it matters.
 const STEPS = [
   { type: 'scene', id: 'intro', stage: -1,
-    say: "• IPCEI-CIS: mākonis un EDGE skaitļošana.\n• Mūsu daļa ir HVAC AI platforma.\n• Sekosim vienai kilovatstundai.\n→ Sāksim ar mūsu ēku." },
+    say: "• Labdien. Šis ir IPCEI-CIS projekts par mākoni un EDGE skaitļošanu.\n• Mūsu daļa ir HVAC AI platforma mūsu ēkai.\n• Stāstīšu caur vienas kilovatstundas ceļu.\n→ Sāksim ar ēku, kur tas viss notiek." },
   { type: 'cam', stage: 0, screen: 'f3d', rect: [0, 0, 1600, 1000], spot: false, title: "Mūsu objekts: VATP ēka", text: "Katrs punktiņš ir reāla iekārta. Abi siltumsūkņi šobrīd strādā: 18 kW elektrības → 96,5 kW siltuma.",
-    say: "• Mūsu ēka 3D skatā.\n• Katrs punktiņš ir reāla iekārta.\n• 3D pagaidām ir eksperiments.\n→ Varam paskatīties, ko katra iekārta dara tieši tagad." },
+    say: "• Šī ir mūsu ēka 3D skatā. Katrs punktiņš ir reāla iekārta.\n• 3D pagaidām ir eksperiments: pētām, ko rādīt lietotājiem un viesiem.\n• Augšā redzams, ka abi siltumsūkņi šobrīd strādā.\n→ Uzspiežot uz iekārtas, redzam, ko tā dara tieši tagad." },
   { type: 'cam', stage: 0, screen: 'f3dHp', rect: [1228, 79, 300, 485], chip: "Edge · Luxtronik", title: "Viens klikšķis, un iekārta ir redzama dzīvajā", text: "Uzspiežot uz iekārtas, redzam, kā tā strādā tieši tagad: galvenais siltumsūknis no 6 kW elektrības dod 30,9 kW siltuma.",
-    say: "• Uzspiežam uz galvenā siltumsūkņa.\n• No 6 kW elektrības tas dod 31 kW siltuma.\n• Dati nāk tieši no iekārtas, tas ir EDGE.\n→ 3D modelis dod ēkas kopskatu, bet jāiet dziļāk. Tam ir sākumlapa." },
+    say: "• Uzspiežam uz galvenā siltumsūkņa.\n• No šejienes kopumā redzam, ko dara katra iekārta.\n• Piemēram, no 6 kW elektrības tas dod 31 kW siltuma.\n• Dati nāk tieši no iekārtas, tas ir EDGE līmenis.\n→ 3D dod ēkas kopskatu, bet ikdienā jāiet dziļāk. Tam ir sākumlapa." },
   { type: 'cam', stage: 1, screen: 'dashboard', rect: [0, 0, 1600, 1000], spot: false, title: "Sākumlapa, ko katrs pielāgo sev", text: "Šo lietotājs redz katru rītu. Katrs pats izvēlas, ko šeit rādīt: patēriņu, izmaksas, cenu vai brīdinājumus.",
-    say: "• Šī ir sākumlapa, to lietotājs atver katru dienu.\n• Katrs pats izvēlas, ko šeit redz.\n• Šodienas patēriņš, izmaksas, cena un laiks.\n→ Viens no ieskatiem šeit ir ēkas patēriņa prognoze." },
+    say: "• Ikdienā lietotājs atver sākumlapu.\n• Katra loma grib redzēt ko citu: pārvaldnieks izmaksas, tehniķis iekārtas.\n• Tāpēc katrs pats izvēlas, kādus ieskatus šeit redz.\n→ Viens no ieskatiem ir ēkas patēriņa prognoze." },
   { type: 'cam', stage: 1, screen: 'dashboard', rect: [100, 301, 923, 444], chip: "MI", title: "Prognoze nākamajām stundām", text: "Viens no ieskatiem, ko pētām: MI prognozē ēkas patēriņu. Zaļās joslas ir lētās stundas, sārtās dārgās.",
-    say: "• MI prognozē, cik enerģijas ēkai vajadzēs nākamajās stundās.\n• Zaļās stundas ir lētas, sārtās dārgas.\n• Vēl pētām, kādus ieskatus šeit rādīt.\n→ Blakus prognozei platforma apkopo, kas šodien jāzina." },
+    say: "• MI prognozē, cik enerģijas ēkai vajadzēs nākamajās stundās.\n• Zaļās stundas ir lētas, sārtās dārgas.\n• Vēl pētām, kādi ieskati ir aktuāli un parāda vērtību, piemēram, cik varam ietaupīt.\n→ Otrs ieskats: kas šodien jāzina." },
   { type: 'cam', stage: 1, screen: 'dashboard', rect: [1039, 301, 461, 444], chip: "MI", title: "Kas jāzina šodien", text: "Svarīgākais dažās ziņās: neapskatīti brīdinājumi, 39 % enerģijas patērēts naktī un MI ieteikums ventilācijai.",
-    say: "• Svarīgākais dažās īsās ziņās.\n• Neapskatīti brīdinājumi, 39 % enerģijas naktī, ieteikums ventilācijai.\n→ Lai saprastu, no kurienes šīs ziņas, vispirms: kā ēka iegūst siltumu.\n\nJa jautā, no kurienes ziņas\n• Brīdinājumi par iekārtām un sensoriem.\n• Vienkārši noteikumi, piemēram, vai naktī iztērēts vairāk par 35 %.\n• MI modeļu ieteikumi.\n\nJa jautā par modeļiem (2 līdz 5 parametri, neironu tīklu nav)\n• Patēriņa prognoze: taisne starp āra temperatūru un patēriņu.\n• Telpu modelis: cik ātri telpa atdziest.\n• Ventilācija: cik tai vajadzētu tērēt. Vairāk nozīmē filtru vai motoru.\n• Siltuma atgūšana: formula. Ja efektivitāte krītas, ritenis ir netīrs.\n• Dārgās stundas: cik maksātu tās pašas kWh lētākajās stundās.\n• Karstais ūdens: izmēģina visus grafikus, ņem lētāko.\n• Modelis jāpārspēj \"rīt būs kā šodien\", citādi to neizmantojam." },
+    say: "• Platforma pati apkopo svarīgāko dažās ziņās.\n• Šodien: neapskatīti brīdinājumi, 39 % enerģijas naktī, ieteikums ventilācijai.\n→ Lai saprastu, no kurienes šīs ziņas, vispirms jāsaprot, kā ēka iegūst siltumu.\n\nJa jautā, no kurienes ziņas\n• Brīdinājumi par iekārtām un sensoriem.\n• Vienkārši noteikumi, piemēram, vai naktī iztērēts vairāk par 35 %.\n• MI modeļu ieteikumi. Par modeļiem vairāk MI daļā." },
   { type: 'scene', id: 'heatpump', stage: 2,
-    say: "• Lielāko daļu siltuma mums dod zeme.\n• 18 urbumi un divi siltumsūkņi.\n• Vasarā siltumu aizvedam atpakaļ zemē.\n• No vienas daļas elektrības dabūjam piecas daļas siltuma.\n→ Tagad to pašu mūsu ēkas dzīvajā shēmā." },
+    say: "• Jūs jau esat dzirdējuši, ka vasarā izracām 18 urbumus.\n• Tie vajadzīgi siltumsūkņiem. Siltumsūknis siltumu no zemes dzīlēm pārvērš siltumā, ko kolēģi sajūt ofisa krēslos.\n• No vienas daļas elektrības dabūjam piecas daļas siltuma. Četras dod zeme.\n• Vasarā otrādi: ēkas lieko siltumu aizvedam zemē.\n→ Kā tas notiek mūsu ēkā, rāda siltuma pārneses shēma." },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [240, 90, 1120, 860], spot: false, title: "Siltummezgls dzīvajā", text: "Visa sistēma vienā shēmā: urbumi, divi siltumsūkņi, tvertnes, radiatori un ventilācija.",
-    say: "• Visa sistēma vienā dzīvā shēmā.\n• Sarkanais ir silts, zilais auksts.\n→ Sāksim no zemes." },
+    say: "• Vēl viena lieta, ko būvējam un rādām: siltuma pārneses shēma.\n• Tā parāda, kā enerģija no zemes kļūst par siltumu, kas ieplūst mūsu telpās.\n• Shēma ir dzīva: sarkanais ir silts, zilais auksts.\n→ Iesim pa soļiem, sākot no zemes." },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [240, 622, 120, 155], chip: "Ģeotermija", title: "1. Siltums no 18 urbumiem", text: "Ziemā šķidrums urbumos uzņem zemes siltumu, vasarā ēkas siltumu aizvedam zemē. Šobrīd zeme dod 42 kW.",
-    say: "• Šķidrums 18 urbumos sasilst.\n• Zeme šobrīd dod 42 kW, un par tiem nemaksājam.\n• To mēra siltuma skaitītājs.\n→ Bet ar 42 kW no zemes vēl nepietiek. Kāpēc?" },
+    say: "• Pirmais solis: šķidrums 18 urbumos sasilst no zemes.\n• Zeme šobrīd dod 42 kW, un par tiem nemaksājam.\n• Vasarā otrādi: ēkas siltumu aizvedam zemē, un tā ēku dzesējam.\n→ Bet ar zemes siltumu vien ēku nesasildīt. Kāpēc?" },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [618, 492, 345, 140], chip: "Edge · Luxtronik", title: "2. Siltumsūkņi uzsilda", text: "Šķidrums no zemes ir tikai ap 5 °C, ar to telpu nesasildīt. Ar 13 kW elektrības siltumsūkņi to uzsilda līdz 38 °C, un kopā sanāk 60 kW siltuma.",
-    say: "• Zemes siltums ir tikai ap 5 °C, pārāk vēss.\n• Siltumsūkņi to uzsilda līdz 38 °C.\n• Tam vajag 13 kW elektrības, kopā sanāk 60 kW.\n→ Uzsildītais ūdens nonāk tvertnē." },
+    say: "• Zemes šķidrums ir tikai ap 5 °C, bet telpā gribam 21 °C.\n• Siltums plūst tikai no siltāka uz vēsāku, tāpēc ūdenim radiatoros jābūt krietni siltākam par telpu.\n• Siltumsūkņi ar 13 kW elektrības to uzsilda līdz 38 °C. Kopā 60 kW siltuma.\n→ Siltumu ne vienmēr vajag tieši tad, kad to saražojam. Tāpēc to krājam tvertnē." },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [1012, 430, 275, 265], title: "3. Tvertne un radiatori", text: "Lielā tvertne krāj siltumu kā baterija. Radiatori šobrīd atdod telpām 19,9 kW siltuma, grīdas apkure vēl 1,6 kW.",
-    say: "• Tvertne krāj siltumu kā baterija.\n• Radiatori telpām šobrīd dod 19,9 kW.\n• To mēra Siemens siltuma skaitītājs.\n→ No tās pašas tvertnes silda arī gaisu." },
+    say: "• Tvertne ir kā baterija: siltumsūkņi to uzpilda, ēka ņem, kad vajag.\n• Tā siltumsūkņiem nav jāieslēdzas un jāizslēdzas ik pēc brīža.\n• No tvertnes radiatori telpām šobrīd dod 19,9 kW. To mēra Siemens skaitītājs.\n→ No tās pašas tvertnes siltumu ņem arī ventilācija." },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [388, 94, 352, 224], chip: "Edge · BACnet", title: "4. Siltais gaiss", text: "Siltais ūdens plūst arī caur ventilācijas sildītāju. Tas strādā kā auto salona apsilde: ventilators pūš gaisu caur karstu radiatoru, un telpās ieplūst silts gaiss.",
-    say: "• Ventilācija silda gaisu ar silto ūdeni.\n• Tas strādā kā auto salona apsilde.\n• Siemens vārsts mēra, cik siltuma aiziet: 21 kW.\n→ Pēdējais solis ir karstais ūdens." },
+    say: "• Ventilācija telpās ievada svaigu āra gaisu, un ziemā tas jāsilda.\n• Vispirms gaiss iesilst siltuma atgūšanas ritenī no izplūstošā gaisa.\n• Tad tas iet caur sildītāju ar silto ūdeni no tvertnes. Tieši kā auto salona apsilde: karsts ūdens radiatorā, ventilators pūš gaisu cauri.\n• Siemens vārsts regulē ūdens plūsmu un mēra, cik siltuma iepūšam telpās: šobrīd 21 kW.\n→ Bez apkures un ventilācijas siltums vajadzīgs arī karstajam ūdenim." },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [693, 765, 132, 172], title: "5. Karstais ūdens", text: "Atsevišķa tvertne, šobrīd 51 °C. Kad to sildīt, platforma izlemj pēc elektrības cenas.",
-    say: "• Karstajam ūdenim ir sava tvertne.\n• Kad to sildīt, MI izlemj pēc elektrības cenas.\n→ To visu varam vadīt, jo katru soli mērām." },
+    say: "• Karstajam ūdenim ir sava tvertne.\n• Šeit MI sāka strādāt pirmais: tas izvēlas, kad sildīt, pēc elektrības cenas.\n→ Lai zinātu, vai viss strādā efektīvi, katru soli mērām." },
   { type: 'cam', stage: 2, screen: 'schematic', rect: [1168, 94, 188, 300], title: "Mēs mērām katru soli", text: "Pēdējās 24 stundās 301 kWh elektrības: apkurei 53 %, ventilācijai 40 %, karstajam ūdenim 5 %.",
-    say: "• 11 elektrības skaitītāji, katrai iekārtai savs.\n• Siltumu mēra skaitītāji un vārsti.\n• Zinām, kur aiziet katra kilovatstunda.\n→ Ko tas rāda par visu sezonu? Atveram enerģijas sadaļu." },
-  { type: 'cam', stage: 3, screen: 'energy', rect: [24, 158, 1552, 192], title: "Tagad sīkāk par enerģiju", text: "Apkures sezonā patērējām par 21 % mazāk nekā mēnesi iepriekš, bet samaksājām par 10 % vairāk, jo elektrība kļuva dārgāka.",
-    say: "• Šeit ir visa apkures sezona.\n• Patērējām par 21 % mazāk.\n• Samaksājām par 10 % vairāk, jo elektrība dārgāka.\n→ Cik efektīvi strādāja siltumsūkņi?" },
-  { type: 'cam', stage: 3, screen: 'energy', rect: [24, 352, 1552, 205], title: "Kurš atceras, ko nozīmē COP?", text: "Visā periodā COP bija 5,50: no katras elektrības kWh ieguvām piecarpus kWh siltuma. Dzesēšana bija oktobra sākumā, tagad tā ir apstājusies.",
-    say: "• Pajautā zālei, kas ir COP.\n• Sezonā COP bija 5,5.\n• Dzesēšana bija oktobra sākumā, tagad tikai apkure.\n→ Ar siltumu skaidrs. Bet kur aizgāja elektrība?" },
+    say: "• 11 elektrības skaitītāji, katrai iekārtai savs.\n• Siltumu mēra skaitītāji un vārsti.\n• Zinām, kur aiziet katra kilovatstunda.\n→ Ko mērījumi rāda par pēdējo mēnesi? Atveram enerģijas sadaļu." },
+  { type: 'cam', stage: 3, screen: 'energy', rect: [24, 158, 1552, 192], title: "Tagad sīkāk par enerģiju", text: "Pēdējā mēnesī patērējām par 21 % mazāk nekā mēnesi pirms tam, bet samaksājām par 10 % vairāk, jo elektrība kļuva dārgāka.",
+    say: "• Šeit salīdzinām pēdējo mēnesi ar mēnesi pirms tam.\n• Patērējām par 21 % mazāk.\n• Bet samaksājām par 10 % vairāk, jo elektrība kļuva dārgāka.\n→ Mums, protams, interesē, cik efektīvi strādāja siltumsūkņi." },
+  { type: 'cam', stage: 3, screen: 'energy', rect: [24, 352, 1552, 205], title: "Siltumsūkņu efektivitāte: COP 5,5", text: "Visā periodā COP bija 5,50: no katras elektrības kWh ieguvām piecarpus kWh siltuma. Dzesēšana bija oktobra sākumā, tagad tā ir apstājusies.",
+    say: "• COP rāda, cik siltuma dabūjam no vienas kilovatstundas elektrības.\n• Mums tas bija 5,5: no vienas kWh elektrības piecarpus kWh siltuma.\n• Dzesēšana bija oktobra sākumā, tagad strādā tikai apkure.\n→ Ar siltumu skaidrs. Bet kur aizgāja elektrība?" },
   { type: 'cam', stage: 3, screen: 'energy', rect: [24, 1648, 925, 650], title: "Kur aiziet elektrība", text: "Redzam, kur aiziet katra kilovatstunda, pa sistēmām un pa iekārtām. Šajā periodā ventilācija iztērēja vairāk elektrības nekā abi siltumsūkņi.",
-    say: "• Elektrība pa sistēmām un iekārtām.\n• Ventilācija iztērēja vairāk nekā siltumsūkņi.\n→ To pašu redzam arī pa stundām." },
+    say: "• Redzam elektrību pa sistēmām un pa iekārtām.\n• Ventilācija iztērēja vairāk nekā abi siltumsūkņi kopā.\n• Tāpēc MI sāk ar ventilāciju.\n→ To pašu varam redzēt pa stundām." },
   { type: 'cam', stage: 3, screen: 'energy', rect: [24, 1211, 1552, 421], title: "Patēriņš pa stundām", text: "Redzams, kad ēka pārslēdzās no dzesēšanas uz apkuri. Ventilācija patērē daudz visu laiku.",
-    say: "• Patēriņš un cena katrai stundai.\n• Redzams, kad pārslēdzāmies uz apkuri.\n• Ventilācija visu laiku ir augstu.\n→ Cik mums maksā siltums?" },
+    say: "• Patēriņš un cena katrai stundai.\n• Redzams brīdis, kad pārslēdzāmies no dzesēšanas uz apkuri.\n• Ventilācija visu laiku ir augstu.\n→ Cik mums tad maksā siltums?" },
   { type: 'cam', stage: 3, screen: 'energy', rect: [24, 3519, 1552, 446], title: "Par 55 % lētāk nekā pilsētas siltums", text: "Mūsu siltums maksāja €33.6/MWh, pilsētas €75/MWh. Ja elektrība kļūst ļoti dārga, varam pārslēgties uz pilsētas siltumu.",
-    say: "• Mūsu siltums maksā 34 eiro par megavatstundu, pilsētas 75.\n• Tas ir par 55 % lētāk.\n• Ja elektrība ļoti dārga, ņemam pilsētas siltumu.\n→ Ne tikai cena, arī CO₂." },
-  { type: 'cam', stage: 3, screen: 'energy', rect: [24, 4389, 1552, 250], title: "Desmit reizes mazāk CO₂ nekā gāzei", text: "Mūsu siltums: 21 g CO₂/kWh. Gāzes katls: 213 g. Ventspils pilsētas siltums ir līdzīgā līmenī kā mūsējais.",
-    say: "• Mūsu siltumam 21 grams CO₂, gāzei 213.\n• Ventspils siltums ir līdzīgā līmenī.\n• CO₂ platforma rēķina pati.\n→ To visu var dabūt vienā atskaitē." },
+    say: "• Mūsu siltums maksā 34 eiro par megavatstundu, pilsētas siltums 75.\n• Tas ir par 55 % lētāk.\n• Ja elektrība kļūst ļoti dārga, varam pārslēgties uz pilsētas siltumu.\n→ Ne tikai cena, arī CO₂." },
+  { type: 'cam', stage: 3, screen: 'energy', rect: [24, 4389, 1552, 250], title: "Desmit reizes mazāk CO₂ nekā gāzei", text: "Mūsu siltums: 21 g CO₂/kWh. Gāzes katls: 213 g.",
+    say: "• Mūsu siltumam 21 grams CO₂ uz kWh, gāzes katlam 213.\n• Tas ir desmit reizes mazāk, jo lielāko daļu siltuma dod zeme.\n• CO₂ platforma rēķina pati, to prasīs ES ziņošana.\n→ To visu var dabūt vienā atskaitē." },
   { type: 'cam', stage: 3, screen: 'energyMenu', rect: [1256, 127, 320, 542], title: "Atskaite ar vienu klikšķi", text: "Excel enerģijas atskaite par jebkuru mēnesi.",
-    say: "• Mēneša atskaite ar vienu klikšķi.\n• Excel fails grāmatvedībai.\n→ Līdz šim redzējām, kas notiek. Tagad: ko izlemj MI." },
+    say: "• Mēneša atskaite ar vienu klikšķi, Excel grāmatvedībai.\n→ Tātad datu mums ir daudz. Daļu lēmumu esam uzticējuši ML modeļiem." },
   { type: 'scene', id: 'signals', stage: 4,
-    say: "• MI plānotājs katru stundu skatās visu kopā.\n• Ēkā strādā ražotne, tāpēc esam uzmanīgi.\n• Karsto ūdeni MI vada pats.\n• Apkurei un dzesēšanai jauns indekss: kad izdevīgāk.\n→ Kā tas izskatās vienā dienā?\n\nKo MI ņem vērā\n• Elektrības cenu katrai rītdienas stundai.\n• Laika prognozi un izmērīto āra temperatūru.\n• Siltumsūkņu efektivitāti.\n• Patēriņa prognozi.\n• Komfortu: temperatūru, CO₂, mitrumu, karsto ūdeni.\n• Iekārtu stāvokli.\n• Pilsētas siltuma tarifu.\n\nJa jautā par modeļiem (dziļās mācīšanās nav: viena ēka, daži mēneši datu)\n• Patēriņa prognoze: lineārā regresija.\n• Telpu modeļi: fizikas modelis ar ridge regresiju.\n• Ventilācija: ridge regresija.\n• Siltuma atgūšana: formula un novirzes detektors.\n• Karstais ūdens: pārlase, vienmēr labākais grafiks." },
+    say: "• MI plānotājs katru stundu skatās visus šos datus kopā.\n• Ēkā strādā ražotne, tāpēc ar kritiskām iekārtām esam uzmanīgi.\n• Karsto ūdeni MI jau vada pats.\n• Apkurei un dzesēšanai MI aprēķina, kad sildīt vai dzesēt izdevīgāk.\n→ Kā tas izskatās vienā dienā ar karsto ūdeni?\n\nKo MI ņem vērā\n• Elektrības cenu katrai rītdienas stundai.\n• Laika prognozi un izmērīto āra temperatūru.\n• Siltumsūkņu efektivitāti.\n• Patēriņa prognozi.\n• Komfortu: temperatūru, CO₂, mitrumu, karsto ūdeni.\n• Iekārtu stāvokli.\n• Pilsētas siltuma tarifu.\n\nJa jautā par modeļiem (2 līdz 5 parametri, neironu tīklu nav: viena ēka, daži mēneši datu)\n• Patēriņa prognoze, lineārā regresija: taisne starp āra temperatūru un patēriņu.\n• Telpu modelis, fizika (ARX): cik ātri telpa atdziest un cik siltuma pienāk.\n• Ventilācija, ridge regresija: cik tai vajadzētu tērēt. Vairāk nozīmē filtru vai motoru.\n• Siltuma atgūšana, formula: ja efektivitāte krītas, ritenis ir netīrs vai iesprūdis.\n• Karstais ūdens: izmēģina visus grafikus, ņem lētāko.\n• Modelim jāpārspēj \"rīt būs kā šodien\", citādi to neizmantojam." },
   { type: 'scene', id: 'optimizer', stage: 4,
-    say: "• 30. oktobris, īstas biržas cenas.\n• Pajautā zālei: kad jūs sildītu ūdeni?\n• MI izvēlējās piecas stundas, 21 % lētāk.\n→ MI ne tikai plāno, tas arī meklē problēmas." },
+    say: "• 30. oktobris, īstas biržas cenas.\n• Pajautā zālei: kurās stundās jūs sildītu ūdeni?\n• MI izvēlējās piecas stundas, 21 % lētāk nekā sildot vienmērīgi.\n• Mums palīdz, ka ražotne strādā visu diennakti: siltums vajadzīgs vienmēr, tāpēc nav jāuzsilda iepriekš.\n→ Bez plānošanas MI arī meklē problēmas." },
   { type: 'cam', stage: 4, screen: 'alerts', rect: [180, 80, 1240, 900], spot: false, title: "Brīdinājumi: iekārtu kļūdas un MI atradumi", text: "Siltumsūkņu kļūdu kodi, gaiss vārstos, sensori bez datiem un MI ieteikumi. Viss vienuviet, sagrupēts pa telpām.",
-    say: "• Visi brīdinājumi vienuviet, pa telpām.\n• Iekārtu kļūdas un MI atradumi.\n→ Viens MI atradums tuvāk.\n\nKo platforma meklē pati\n• Iekārtu kļūdas un sensorus bez datiem.\n• Lielu patēriņu naktī.\n• Siltuma atgūšanu, kas krītas.\n• Ventilāciju, kas tērē par daudz." },
+    say: "• Viss, ko platforma atrod, ir vienuviet, pa telpām.\n• Iekārtu kļūdas un MI atradumi.\n→ Viens MI atradums tuvāk.\n\nKo platforma meklē pati\n• Iekārtu kļūdas un sensorus bez datiem.\n• Lielu patēriņu naktī.\n• Siltuma atgūšanu, kas krītas.\n• Ventilāciju, kas tērē par daudz." },
   { type: 'cam', stage: 4, screen: 'alerts', rect: [200, 1210, 1200, 124], chip: "MI", title: "Dārgās stundas ventilācijā", text: "PN1 strādāja par 29 % dārgāk nekā lētākajās stundās: no €94.81 varēja ietaupīt €21.40.",
-    say: "• PN1 strādāja dārgajās stundās.\n• No 95 eiro varēja ietaupīt 21.\n• MI iesaka pārcelt darba laiku.\n→ Atradumus platforma apraksta arī vārdos." },
+    say: "• PN1 ventilācija strādāja dārgajās stundās.\n• No 95 eiro varēja ietaupīt 21.\n• MI iesaka pārcelt darba laiku.\n→ Atradumus platforma apraksta arī vārdos." },
   { type: 'cam', stage: 4, screen: 'energy', rect: [24, 565, 925, 630], chip: "MI", title: "Secinājumi vienkāršā valodā", text: "“Apkure sākās šajā periodā”, “bāzes slodze samazinājās par 11 %”. Platforma tos uzraksta pati.",
-    say: "• Secinājumus platforma uzraksta pati.\n• No datiem, bez cilvēka.\n→ Nākamais solis: jautāt platformai pašam." },
+    say: "• Secinājumus platforma uzraksta pati, no datiem.\n→ Nākamais solis: jautāt platformai pašam." },
   { type: 'scene', id: 'assistant', stage: 4,
-    say: "• MI asistents, pie tā strādājam.\n• Jautā vienkārši, atbild no ēkas datiem.\n• Valodas modelis ir ES mākonī.\n→ Kur tas viss darbojas?" },
+    say: "• Pie tā strādājam: MI asistents.\n• Var vienkārši pajautāt, un tas atbild no ēkas datiem.\n• Valodas modelis ir ES mākonī.\n→ Kur tas viss darbojas?" },
   { type: 'scene', id: 'server', stage: 5,
-    say: "• EDGE un mākonis kā viena sistēma.\n• Serveris ēkā, kopā ar DATI Group.\n• ES mākonī rezerves kopijas un valodas modelis.\n• Siemens Industrial Edge: atvērts diskusijai.\n→ Kā zinām, ka tas strādā?\n\nJa jautā par Siemens\n• Piedāvāja būvēt uz Industrial Edge.\n• Mums neder: slēgta platforma un licences.\n• Izvēlējāmies atvērtu vārteju.\n• Dalībniekiem ar Siemens rūpnīcām var derēt." },
+    say: "• EDGE un mākonis kā viena sistēma.\n• Serveris ēkā, kopā ar DATI Group. Lēmumi notiek ēkā.\n• ES mākonī rezerves kopijas un valodas modelis.\n• Siemens Industrial Edge: atvērts diskusijai.\n→ Kā zinām, ka tas strādā?\n\nJa jautā par Siemens\n• Siemens IPCEI-CIS projektā izveidoja Industrial Edge ierīču komplektu.\n• Tas noder ražotājiem, kas grib savas iekārtas savienot ar Siemens ekosistēmu, piemēram, Industrial Edge lietotnēm un tirgu.\n• Mums ēkā ir dažādu ražotāju iekārtas, tāpēc izvēlējāmies atvērtu vārteju.\n• Dalībniekiem, kas būvē iekārtas, tas var būt vērtīgi." },
   { type: 'scene', id: 'testing', stage: 5,
     say: "• TestDevLab testēšanas stratēģija, to jau ieviešam.\n• Vairāk nekā 3200 testu, 450 ar datubāzi, 57 pārlūkā.\n• Ēkā nonāk tikai pēc testiem un apstiprinājuma.\n→ Ko darīsim tālāk?" },
   { type: 'scene', id: 'next', stage: 6,
     say: "• MI asistents visiem lietotājiem.\n• Nākamās ēkas.\n• Digitālais dvīnis.\n→ Noslēgumā." },
   { type: 'scene', id: 'outro', stage: 6,
-    say: "• Kilovatstunda ir nonākusi galā.\n• Zinājām, kur tā ir, cik maksā un kā lētāk.\n• Jautājumi." },
+    say: "• Kilovatstunda ir nonākusi galā.\n• Zinājām, kur tā ir, cik maksā un kā to nopirkt lētāk.\n• Jautājumi." },
 ];
 
 /* Real Latvian Nord Pool day-ahead prices (EUR/MWh, local hours) — source: Elering NPS API. */
