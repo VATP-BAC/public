@@ -27,7 +27,11 @@
   .now h1 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 40px; line-height: 1.05; margin-bottom: 10px; }
   .screen { color: var(--cream-dim); font-size: 16px; line-height: 1.45; margin-bottom: 18px; padding-left: 12px; border-left: 2px solid var(--line); }
   .screen:empty { display: none; }
-  .say { font-size: var(--size); line-height: 1.5; white-space: pre-line; }
+  .say { font-size: var(--size); line-height: 1.4; }
+  .say ol { margin: 0 0 1.2em; padding-left: 1.9em; }
+  .say li { margin-bottom: .75em; padding-left: .2em; }
+  .say li::marker { color: var(--mint); font-weight: 800; }
+  .say h3 { font-size: .62em; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); margin: 1.4em 0 .7em; }
   aside { border-left: 1px solid var(--line); padding: 24px; background: var(--panel); overflow-y: auto; }
   aside .label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--mint); font-weight: 700; margin-bottom: 8px; }
   aside h2 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 26px; line-height: 1.1; margin-bottom: 10px; }
@@ -81,12 +85,30 @@ function render(d) {
   $('stage').textContent = d.stage;
   $('title').textContent = d.now.title;
   $('screen').textContent = d.now.text;
-  $('say').textContent = d.now.say;
+  renderSay($('say'), d.now.say);
   $('nextTitle').textContent = d.next ? d.next.title : 'Beigas';
   $('nextSay').textContent = d.next ? d.next.say : '';
   $('status').textContent = 'Savienots';
   $('status').classList.remove('off');
   document.querySelector('.now').scrollTop = 0;
+}
+
+// Notes arrive as "• point" lines; a plain line is a section heading, so numbering restarts
+// under each heading ("Ja jautā…") and the main points stay 1, 2, 3.
+function renderSay(el, say) {
+  el.replaceChildren();
+  let list = null;
+  for (const raw of say.split('\n')) {
+    const line = raw.trim();
+    if (!line) { list = null; continue; }
+    if (line.startsWith('•')) {
+      if (!list) list = el.appendChild(document.createElement('ol'));
+      list.appendChild(document.createElement('li')).textContent = line.replace(/^•\s*/, '');
+    } else {
+      list = null;
+      el.appendChild(document.createElement('h3')).textContent = line;
+    }
+  }
 }
 
 function onMessage(e) { if (e.data?.type === 'step') render(e.data); }
