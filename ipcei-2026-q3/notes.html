@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Runas piezīmes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0d1a15; --panel: #13241d; --line: rgba(246, 239, 227, .14);
+    --cream: #f6efe3; --cream-dim: rgba(246, 239, 227, .62); --mint: #8cc4ad;
+    --size: 26px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--night); color: var(--cream); font-family: Manrope, system-ui, sans-serif; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
+  header { display: flex; align-items: center; gap: 18px; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+  .count { font-weight: 800; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .stage { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--mint); font-weight: 700; }
+  .spacer { flex: 1; }
+  .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 20px; cursor: pointer; }
+  .timer small { display: block; font-size: 10px; letter-spacing: .14em; color: var(--cream-dim); text-transform: uppercase; font-weight: 600; }
+  button { background: transparent; color: var(--cream); border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; font: 600 15px Manrope, sans-serif; cursor: pointer; }
+  button:hover { border-color: var(--mint); }
+  main { display: grid; grid-template-columns: 1fr minmax(240px, 30%); min-height: 0; }
+  .now { padding: 24px 32px; overflow-y: auto; }
+  .now h1 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 40px; line-height: 1.05; margin-bottom: 10px; }
+  .screen { color: var(--cream-dim); font-size: 16px; line-height: 1.45; margin-bottom: 18px; padding-left: 12px; border-left: 2px solid var(--line); }
+  .screen:empty { display: none; }
+  .say { font-size: var(--size); line-height: 1.5; white-space: pre-line; }
+  aside { border-left: 1px solid var(--line); padding: 24px; background: var(--panel); overflow-y: auto; }
+  aside .label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--mint); font-weight: 700; margin-bottom: 8px; }
+  aside h2 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 26px; line-height: 1.1; margin-bottom: 10px; }
+  aside p { color: var(--cream-dim); font-size: 15px; line-height: 1.45; white-space: pre-line; display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden; }
+  footer { display: flex; gap: 10px; align-items: center; padding: 12px 24px; border-top: 1px solid var(--line); color: var(--cream-dim); font-size: 13px; }
+  .status { margin-left: auto; }
+  .status.off { color: #e39467; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } aside { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <span class="count" id="count">–</span>
+  <span class="stage" id="stage"></span>
+  <span class="spacer"></span>
+  <button id="smaller" title="Mazāks teksts">A−</button>
+  <button id="bigger" title="Lielāks teksts">A+</button>
+  <div class="timer" id="timer" title="Klikšķis: sākt no nulles"><small>Laiks</small><span id="clock">00:00</span></div>
+</header>
+<main>
+  <section class="now">
+    <h1 id="title">Gaidu prezentāciju…</h1>
+    <div class="screen" id="screen"></div>
+    <div class="say" id="say">Atver prezentāciju un nospied P, vai atver to citā cilnē šajā pašā pārlūkā. Piezīmes mainīsies līdzi slaidiem.</div>
+  </section>
+  <aside>
+    <div class="label">Nākamais</div>
+    <h2 id="nextTitle">–</h2>
+    <p id="nextSay"></p>
+  </aside>
+</main>
+<footer>
+  <button id="prev">← Iepriekšējais</button>
+  <button id="next">Nākamais →</button>
+  <span>Bultiņas un atstarpe šeit pārslēdz slaidus prezentācijā</span>
+  <span class="status off" id="status">Nav savienots</span>
+</footer>
+<script>
+// Presenter view for index.html. Follows the deck through window.opener (opened with P)
+// or a BroadcastChannel (deck open in another tab of the same browser), and drives it back.
+const $ = (id) => document.getElementById(id);
+const channel = 'BroadcastChannel' in window ? new BroadcastChannel('vatp-ipcei-tour') : null;
+
+function send(msg) {
+  if (window.opener && !window.opener.closed) window.opener.postMessage(msg, '*');
+  else channel?.postMessage(msg);
+}
+
+function render(d) {
+  $('count').textContent = `${d.i + 1} / ${d.total}`;
+  $('stage').textContent = d.stage;
+  $('title').textContent = d.now.title;
+  $('screen').textContent = d.now.text;
+  $('say').textContent = d.now.say;
+  $('nextTitle').textContent = d.next ? d.next.title : 'Beigas';
+  $('nextSay').textContent = d.next ? d.next.say : '';
+  $('status').textContent = 'Savienots';
+  $('status').classList.remove('off');
+  document.querySelector('.now').scrollTop = 0;
+}
+
+function onMessage(e) { if (e.data?.type === 'step') render(e.data); }
+addEventListener('message', onMessage);
+channel?.addEventListener('message', onMessage);
+
+$('prev').addEventListener('click', () => send({ type: 'prev' }));
+$('next').addEventListener('click', () => send({ type: 'next' }));
+document.addEventListener('keydown', (e) => {
+  if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); send({ type: 'next' }); }
+  else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); send({ type: 'prev' }); }
+});
+
+let size = 26;
+try { size = Number(localStorage.getItem('vatp-notes-size')) || 26; } catch {}
+function setSize(v) {
+  size = Math.min(48, Math.max(16, v));
+  document.documentElement.style.setProperty('--size', size + 'px');
+  try { localStorage.setItem('vatp-notes-size', String(size)); } catch {}
+}
+setSize(size);
+$('smaller').addEventListener('click', () => setSize(size - 2));
+$('bigger').addEventListener('click', () => setSize(size + 2));
+
+let t0 = Date.now();
+$('timer').addEventListener('click', () => { t0 = Date.now(); });
+setInterval(() => {
+  const s = Math.floor((Date.now() - t0) / 1000);
+  $('clock').textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+}, 1000);
+
+// Ask the deck for its current slide (it answers on either path).
+send({ type: 'hello' });
+</script>
+</body>
+</html>

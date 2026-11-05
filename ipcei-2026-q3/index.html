@@ -1044,6 +1044,35 @@ addEventListener('touchend', (e) => {
 }, { passive: true });
 addEventListener('resize', () => go(current));
 
+// Presenter view: notes.html (opened with P, or in another tab) follows every slide change and
+// can drive the deck back. opener/postMessage covers the popup; BroadcastChannel covers a tab.
+const presenter = 'BroadcastChannel' in window ? new BroadcastChannel('vatp-ipcei-tour') : null;
+let notesWin = null;
+function stepInfo(i) {
+  const s = STEPS[i];
+  if (!s) return null;
+  const title = s.type === 'cam' ? s.title : ($('scene-' + s.id).querySelector('h1, h2')?.textContent.trim() ?? '');
+  return { title, text: s.type === 'cam' ? s.text : '', say: s.say || '' };
+}
+function broadcast() {
+  const msg = { type: 'step', i: current, total: STEPS.length, stage: STAGES[STEPS[current].stage] ?? '', now: stepInfo(current), next: stepInfo(current + 1) };
+  presenter?.postMessage(msg);
+  if (notesWin && !notesWin.closed) notesWin.postMessage(msg, '*');
+}
+function onPresenter(d) {
+  if (d?.type === 'next') next();
+  else if (d?.type === 'prev') prev();
+  else if (d?.type === 'hello') broadcast();
+}
+presenter?.addEventListener('message', (e) => onPresenter(e.data));
+addEventListener('message', (e) => { if (notesWin && e.source === notesWin) onPresenter(e.data); });
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'p' && e.key !== 'P') return;
+  notesWin = window.open('notes.html', 'vatp-notes', 'width=1000,height=720');
+});
+const goSlide = go;
+go = (i) => { goSlide(i); broadcast(); };
+
 // Preload every screen so camera moves never wait on the network.
 Object.values(SCREENS).forEach((s) => { const im = new Image(); im.src = s.src; });
 
