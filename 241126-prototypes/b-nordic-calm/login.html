@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in · VATP</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-direction="b-nordic-calm" data-screen="login">
+  <div class="login">
+    <section class="login-art">
+      <!-- Ventspils seaside: sky, Baltic, lighthouse, wind turbines -->
+      <svg class="scene" viewBox="0 0 800 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c87ad"/><stop offset=".55" stop-color="#a9c2d6"/><stop offset="1" stop-color="#e9dcc8"/></linearGradient>
+          <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f6d93"/><stop offset="1" stop-color="#1f4e79"/></linearGradient>
+        </defs>
+        <rect width="800" height="900" fill="url(#sky)"/>
+        <circle cx="560" cy="440" r="70" fill="#f6e7cf" opacity=".85"/>
+        <g fill="#fff" opacity=".55"><ellipse cx="180" cy="230" rx="120" ry="22"/><ellipse cx="260" cy="210" rx="80" ry="18"/><ellipse cx="620" cy="300" rx="110" ry="16"/></g>
+        <g stroke="#eef3f7" stroke-width="3" opacity=".9">
+          <g transform="translate(120 470)"><line x1="0" y1="0" x2="0" y2="120"/><g class="blades"><line x1="0" y1="0" x2="0" y2="-46"/><line x1="0" y1="0" x2="40" y2="23"/><line x1="0" y1="0" x2="-40" y2="23"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" repeatCount="indefinite"/></g></g>
+          <g transform="translate(210 490) scale(.75)"><line x1="0" y1="0" x2="0" y2="120"/><g><line x1="0" y1="0" x2="0" y2="-46"/><line x1="0" y1="0" x2="40" y2="23"/><line x1="0" y1="0" x2="-40" y2="23"/><animateTransform attributeName="transform" type="rotate" from="40" to="400" dur="11s" repeatCount="indefinite"/></g></g>
+        </g>
+        <path d="M0 590 Q200 575 400 588 T800 584 V900 H0Z" fill="url(#sea)"/>
+        <g fill="none" stroke="#9fc0db" stroke-width="2" opacity=".5" stroke-linecap="round"><path d="M40 640 q20-6 40 0 t40 0"/><path d="M300 680 q20-6 40 0 t40 0"/><path d="M560 650 q20-6 40 0 t40 0"/><path d="M140 740 q20-6 40 0 t40 0"/></g>
+        <!-- lighthouse on the pier -->
+        <rect x="610" y="585" width="170" height="10" fill="#2b3b4b"/>
+        <path d="M680 585 L690 470 H710 L720 585Z" fill="#fff"/><rect x="684" y="510" width="32" height="14" fill="#b6403a"/><rect x="681" y="550" width="38" height="14" fill="#b6403a"/>
+        <rect x="686" y="452" width="28" height="18" fill="#2b3b4b"/><path d="M684 452 L700 438 L716 452Z" fill="#b6403a"/>
+        <circle cx="700" cy="461" r="5" fill="#ffe7a8"><animate attributeName="opacity" values="1;.3;1" dur="3s" repeatCount="indefinite"/></circle>
+        <path d="M0 800 Q260 760 520 800 T800 790 V900 H0Z" fill="#e9dcc8"/>
+      </svg>
+      <a class="mark" href="#"><span id="mk"></span>VATP</a>
+      <blockquote>Warm rooms, honest numbers, and less energy every week.<span>Ventspils High-Tech Park · Energy & comfort</span></blockquote>
+    </section>
+
+    <section class="login-form">
+      <div style="width:100%;max-width:380px">
+        <div class="lang"><button aria-pressed="false">LV</button><button aria-pressed="true">EN</button></div>
+        <form id="f">
+          <div class="eyebrow">Welcome back</div>
+          <h1>Sign in to see how the campus is doing.</h1>
+          <p class="muted" style="margin:0">We’ll email you a one-time link. No password to remember.</p>
+          <label class="input"><span>Work email</span><input type="email" id="email" placeholder="elina.berzina@vatp.lv" autocomplete="username" /></label>
+          <label class="input" id="pw" hidden><span>Password</span><input type="password" placeholder="Your password" autocomplete="current-password" /></label>
+          <button class="btn primary full" type="submit" id="go">Email me a sign-in link</button>
+          <button class="btn ghost full" type="button" id="usepw" style="margin-top:4px">Use a password instead</button>
+          <div class="sep">or</div>
+          <a class="btn full" href="dashboard.html" style="margin-top:0"><span id="g"></span>Continue with Google</a>
+          <p class="faint" style="font-size:13px;margin-top:24px">Prototype: any input works.</p>
+        </form>
+        <div class="sent" id="sent">
+          <div class="ic">✓</div>
+          <h1 style="font-size:32px">Check your inbox</h1>
+          <p class="muted">We sent a link to <b id="to">your email</b>. It works for 15 minutes.</p>
+          <a class="btn primary full" href="dashboard.html">Open the link (prototype) →</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="../shared/mock-data.js?v=20261124"></script>
+  <script src="../shared/svg-charts.js"></script>
+  <script src="app.js?v=20261124"></script>
+  <script>
+    document.getElementById('mk').innerHTML = NordicCalm.mark;
+    document.getElementById('g').innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8.1z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>';
+    let pw = false;
+    document.getElementById('usepw').onclick = () => {
+      pw = !pw;
+      document.getElementById('pw').hidden = !pw;
+      document.getElementById('go').textContent = pw ? 'Sign in' : 'Email me a sign-in link';
+      document.getElementById('usepw').textContent = pw ? 'Email me a link instead' : 'Use a password instead';
+    };
+    document.getElementById('f').onsubmit = (e) => {
+      e.preventDefault();
+      if (pw) return (location.href = 'dashboard.html');
+      document.getElementById('to').textContent = document.getElementById('email').value || 'your email';
+      document.getElementById('f').style.display = 'none';
+      document.getElementById('sent').style.display = 'block';
+    };
+  </script>
+  <script src="../shared/switcher.js"></script>
+</body>
+</html>

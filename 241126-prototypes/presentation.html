@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="lv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VATP saskarnes dizaina virzieni · Komandas apspriede</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    /* Neutral deck styling, so no direction gets a home advantage. */
+    :root {
+      --bg: #e9e8e4; --paper: #fbfbf9; --ink: #16181d; --ink-2: #4a4f58; --muted: #7b808a; --line: #e2e1dc;
+      --good: #23855b; --good-bg: #e5f3ec; --bad: #b8432f; --bad-bg: #f8e9e5; --hl: #f1c453;
+      --a: #0e7c8a; --b: #1f4e79; --c: #6a4fd8; --d: #2f5c4f;
+      --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --disp: 'Inter Tight', 'Inter', ui-sans-serif, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: var(--bg); color: var(--ink); font: 400 20px/1.5 var(--sans); overflow: hidden; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+
+    /* 1600×900 canvas, scaled to fit the window */
+    .stage { position: fixed; inset: 0; display: grid; place-items: center; }
+    .slide { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; margin: -450px 0 0 -800px; transform: scale(var(--k, 1)); background: var(--paper); border-radius: 18px; box-shadow: 0 30px 80px -30px rgba(0,0,0,.35); padding: 72px 88px; display: none; flex-direction: column; overflow: hidden; }
+    .slide.on { display: flex; }
+    body.notes-on .slide { top: 0; margin-top: 0; transform-origin: 50% 0; }
+
+    .eyebrow { font: 600 15px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+    h1 { font: 700 76px/1.03 var(--disp); letter-spacing: -.03em; margin: 18px 0 22px; }
+    h2 { font: 700 52px/1.08 var(--disp); letter-spacing: -.02em; margin: 14px 0 26px; }
+    h3 { font: 600 22px var(--sans); margin: 0 0 12px; }
+    .lead { font-size: 28px; line-height: 1.45; color: var(--ink-2); max-width: 1100px; margin: 0; }
+    .muted { color: var(--muted); }
+    .mono { font-family: var(--mono); }
+    .grow { flex: 1; }
+    .foot { display: flex; justify-content: space-between; align-items: center; font-size: 15px; color: var(--muted); margin-top: 24px; }
+    mark { background: linear-gradient(transparent 58%, var(--hl) 58%); color: inherit; padding: 0 2px; }
+
+    /* title */
+    .title { background: radial-gradient(1200px 600px at 85% 110%, #dfe8e2 0, transparent 60%), var(--paper); }
+    .chips { display: flex; gap: 14px; margin-top: 40px; flex-wrap: wrap; }
+    .chip { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 14px; background: #fff; border: 1px solid var(--line); font-weight: 600; }
+    .chip i { width: 14px; height: 14px; border-radius: 4px; }
+
+    /* criteria / cards */
+    .cols { display: grid; gap: 24px; }
+    .cols.c4 { grid-template-columns: repeat(4, 1fr); }
+    .cols.c3 { grid-template-columns: repeat(3, 1fr); }
+    .cols.c2 { grid-template-columns: 1fr 1fr; }
+    .box { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; }
+    .box p { margin: 0; color: var(--ink-2); font-size: 19px; }
+    .box .n { font: 700 15px var(--mono); color: var(--muted); margin-bottom: 14px; }
+
+    .crit { margin-top: 18px; }
+    .crit .box { padding: 36px 36px 40px; min-height: 330px; }
+    .crit .box .n { font-size: 18px; margin-bottom: 22px; }
+    .crit h3 { font: 700 34px/1.15 var(--disp); letter-spacing: -.01em; margin-bottom: 18px; }
+    .crit .box p { font-size: 23px; line-height: 1.5; }
+
+    /* direction slide */
+    .dir { padding: 48px 56px; }
+    .dir .top { display: flex; align-items: baseline; gap: 18px; }
+    .dir .top h2 { margin: 0; font-size: 46px; }
+    .dir .top .tag { font: 600 16px var(--mono); padding: 4px 10px; border-radius: 8px; color: #fff; background: var(--acc); align-self: center; }
+    .dir .top .who { margin-left: auto; font-size: 18px; color: var(--muted); }
+    .dir .tagline { font-size: 23px; color: var(--ink-2); margin: 6px 0 22px; }
+    .dir .body { display: grid; grid-template-columns: 900px 1fr; gap: 36px; flex: 1; min-height: 0; }
+    .side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .pc { border-radius: 14px; padding: 16px 20px; }
+    .pc h3 { font-size: 15px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+    .pc ul { margin: 0; padding-left: 20px; font-size: 18px; line-height: 1.42; }
+    .pc li + li { margin-top: 6px; }
+    .pros { background: var(--good-bg); } .pros h3 { color: var(--good); }
+    .cons { background: var(--bad-bg); } .cons h3 { color: var(--bad); }
+    .pick { border-left: 4px solid var(--acc); padding: 4px 0 4px 16px; font-size: 19px; }
+    .pick b { display: block; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--acc); margin-bottom: 2px; }
+    .meta { display: flex; gap: 26px; font-size: 16px; color: var(--muted); }
+    .meta b { color: var(--ink); font-weight: 600; }
+    .dots { display: inline-flex; gap: 4px; vertical-align: middle; margin-left: 6px; }
+    .dots i { width: 11px; height: 11px; border-radius: 3px; background: var(--line); }
+    .dots i.f { background: var(--ink); }
+
+    /* live frame */
+    .frame { display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; border: 1px solid #d6d5cf; background: #fff; box-shadow: 0 16px 40px -20px rgba(0,0,0,.3); min-height: 0; }
+    .chrome { display: flex; align-items: center; gap: 12px; padding: 9px 12px; background: #f1f0ec; border-bottom: 1px solid #dddcd6; font-size: 14px; }
+    .chrome .dt { display: flex; gap: 6px; } .chrome .dt i { width: 11px; height: 11px; border-radius: 50%; background: #d3d1ca; }
+    .chrome .url { font: 500 13px var(--mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chrome nav { margin-left: auto; display: flex; gap: 2px; background: #e4e3de; border-radius: 9px; padding: 3px; }
+    .chrome nav button { white-space: nowrap; }
+    .chrome nav button { border: 0; background: none; padding: 4px 11px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--ink-2); }
+    .chrome nav button[aria-pressed='true'] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+    .chrome a { font-size: 13px; color: var(--muted); text-decoration: none; }
+    .vp { position: relative; overflow: hidden; flex: 1; background: #fafafa; }
+    .vp iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; border: 0; transform-origin: 0 0; transform: scale(var(--s, .6)); background: #fff; }
+    .dir .frame { height: 100%; }
+
+    /* table */
+    table { width: 100%; border-collapse: collapse; font-size: 18px; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    td:first-child { font-weight: 600; width: 210px; }
+    th .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: 1px; }
+    .score { font: 600 18px var(--mono); }
+
+    /* vote */
+    .vote { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .vote .box { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; border-top: 6px solid var(--acc); }
+    .vote .count { font: 700 88px/1 var(--disp); }
+    .vote .row { display: flex; gap: 10px; }
+    .vote .row button { width: 52px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); font-size: 22px; font-weight: 600; }
+    .vote .row button:hover { border-color: var(--ink); }
+    .q { margin: 0; padding-left: 26px; font-size: 22px; line-height: 1.5; color: var(--ink-2); } .q li + li { margin-top: 10px; }
+
+    /* Latvian copy: subtitles, intros and denser direction slides */
+    .sub { font: 600 30px/1.3 var(--disp); color: var(--ink); margin: 0 0 18px; letter-spacing: -.01em; }
+    .intro { font-size: 22px; color: var(--ink-2); margin: 0 0 22px; }
+    .chip > span { display: flex; flex-direction: column; line-height: 1.25; }
+    .chip small { font-weight: 500; font-size: 15px; color: var(--muted); }
+    .abcd { margin: 0; padding: 0; list-style: none; font-size: 21px; line-height: 1.45; color: var(--ink-2); }
+    .abcd li + li { margin-top: 6px; } .abcd b { color: var(--ink); }
+    .common .box { padding: 28px 30px; } .common .box h3 { font-size: 24px; } .common .box p { font-size: 20px; line-height: 1.5; }
+    /* comparison table: larger type for the projector, the slide has room */
+    .cmp { font-size: 20px; } .cmp th { font-size: 15px; } .cmp th, .cmp td { padding: 16px 14px; } .cmp td:first-child { width: 230px; } .cmp .score { font-size: 20px; }
+    .dir .tagline { font-size: 19px; line-height: 1.4; margin: 8px 0 18px; } .dir .tagline b { color: var(--ink); }
+    .dir .body { grid-template-columns: 820px 1fr; gap: 32px; }
+    .dir .side { gap: 12px; }
+    .dir .pc { padding: 12px 18px; } .dir .pc h3 { font-size: 14px; margin-bottom: 6px; }
+    .dir .pc ul { font-size: 16.5px; line-height: 1.4; } .dir .pc li + li { margin-top: 4px; } .dir .pc li b { color: var(--ink); }
+    .dir .pick { font-size: 17px; line-height: 1.4; } .dir .pick b { font-size: 12px; }
+    .dir .meta { font-size: 15px; }
+    .qd li { margin-bottom: 18px; } .qd li b { display: block; color: var(--ink); font-size: 24px; } .qd li span { display: block; font-size: 19px; line-height: 1.45; }
+    .vote .box small { color: var(--muted); font-size: 14px; margin-top: -8px; }
+    .vote .count { font-size: 64px; }
+    /* vote cards with a live thumbnail of each direction */
+    .vote .box.vcard { display: flex; flex-direction: column; align-items: stretch; gap: 10px; text-align: left; padding: 12px 14px 14px; }
+    .vote .thumb { display: block; position: relative; flex: none; height: 150px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #fafafa; }
+    .vote .thumb iframe { pointer-events: none; }
+    .vote .thumb:hover { border-color: var(--acc); }
+    .vote .vrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .vote .vname { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+    .vote .vname small { color: var(--muted); font-size: 14px; margin: 0; }
+    .vote .vcard .row { align-items: center; gap: 8px; }
+    .vote .vcard .count { font: 700 40px/1 var(--disp); min-width: 48px; text-align: center; }
+    .vote .vcard .row button { width: 40px; height: 38px; font-size: 20px; }
+    /* controls */
+    .ctl { position: fixed; right: 18px; bottom: 16px; display: flex; gap: 6px; align-items: center; z-index: 5; background: rgba(22,24,29,.86); color: #eee; border-radius: 999px; padding: 5px; font: 500 13px var(--sans); }
+    .ctl button, .ctl a { border: 0; background: none; color: inherit; padding: 6px 11px; border-radius: 999px; text-decoration: none; }
+    .ctl button:hover, .ctl a:hover { background: rgba(255,255,255,.14); }
+    .ctl .num { padding: 0 8px; font-family: var(--mono); opacity: .8; }
+    .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--ink); z-index: 5; transition: width .25s; }
+    .help { position: fixed; left: 18px; bottom: 18px; font-size: 12px; color: #6d717a; z-index: 5; }
+    .help kbd { font: 500 11px var(--mono); padding: 1px 5px; border: 1px solid #c9c8c2; border-radius: 4px; background: #f6f6f3; }
+
+    /* speaker notes */
+    .notes { display: none; }
+    .notepane { position: fixed; left: 0; right: 0; bottom: 0; height: var(--nh, 30vh); background: #16181d; color: #e8e9ec; padding: 18px 26px 60px; overflow: auto; font-size: 17px; line-height: 1.55; z-index: 4; display: none; }
+    body.notes-on .notepane { display: block; }
+    .notepane h4 { margin: 0 0 6px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #8d929c; }
+    .notepane ul { margin: 0; padding-left: 20px; } .notepane li + li { margin-top: 4px; }
+
+    @media print {
+      @page { size: 1600px 900px; margin: 0; }
+      body { overflow: visible; background: #fff; }
+      .stage { position: static; display: block; }
+      .slide { display: flex !important; position: relative; left: 0; top: 0; margin: 0; transform: none; border-radius: 0; box-shadow: none; page-break-after: always; break-after: page; }
+      .ctl, .progress, .help, .notepane, .chrome nav { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="stage" id="stage">
+
+  <!-- 1 · Tituls -->
+  <section class="slide title">
+    <div class="eyebrow">VATP lietotāja saskarnes dizaina virzieni · Komandas apspriede · IPCEI-CIS HVAC AI pilotprojekts</div>
+    <div class="grow"></div>
+    <h1>Kādu dizaina virzienu<br/>izvēlēsimies VATP sistēmai?</h1>
+    <p class="sub">Četri dizaina virzieni. Vieni un tie paši dati. Viens kopīgs lēmums.</p>
+    <p class="lead">Esam sagatavojuši četrus interaktīvus prototipus, kuros izmantoti vieni un tie paši dati un četri galvenie sistēmas ekrāni. Šodien salīdzināsim pieejas, apspriedīsim to priekšrocības un trūkumus un vienosimies, kuru virzienu attīstīt tālāk.</p>
+    <div class="chips">
+      <span class="chip"><i style="background:var(--a)"></i><span>A — Control Room<small>Operatīvā vadība</small></span></span>
+      <span class="chip"><i style="background:var(--b)"></i><span>B — Nordic Calm<small>Vienkāršība un skaidrība</small></span></span>
+      <span class="chip"><i style="background:var(--c)"></i><span>C — Spatial<small>Telpiskais skatījums</small></span></span>
+      <span class="chip"><i style="background:var(--d)"></i><span>D — Refined<small>Esošās sistēmas pilnveide</small></span></span>
+    </div>
+    <div class="grow"></div>
+    <div class="foot"><span>Prototipi veidoti HTML formātā, izmantojot demonstrācijas datus. Tie nav savienoti ar reālo sistēmu.</span><span class="mono">24.11.2026.</span></div>
+    <div class="notes"><ul><li>Šodienas galvenais mērķis ir izvēlēties vienu dizaina virzienu, uz kura pamata turpināsim sistēmas izstrādi.</li><li>Šie ir konceptuāli prototipi, nevis gatavi produkti. Tāpēc šobrīd nepievēršam pārāk lielu uzmanību atsevišķiem skaitļiem vai nelielām nepilnībām.</li><li>Svarīgākais ir saprast, cik ērta un saprotama ir katra pieeja un kā tā atbilst mūsu lietotāju vajadzībām.</li><li>Pēc sanāksmes visi prototipi būs pieejami arī individuālai apskatei un izmēģināšanai.</li></ul></div>
+  </section>
+
+  <!-- 2 · Kā vērtēsim -->
+  <section class="slide">
+    <div class="eyebrow">Kā vērtēsim dizaina virzienus?</div>
+    <h2>Svarīgākais nav tikai vizuālais izskats</h2>
+    <p class="intro">Izvērtējot katru prototipu, pievērsīsim uzmanību trim jautājumiem.</p>
+    <div class="cols c3 crit">
+      <div class="box"><div class="n">01</div><h3>Kam šī sistēma ir paredzēta?</h3><p>Vai galvenie lietotāji ir operatori un tehniķi, kuri ikdienā uzrauga iekārtu darbību, vai vadītāji un ēku pārvaldnieki, kuriem svarīgāks ir kopējais rezultāts?</p></div>
+      <div class="box"><div class="n">02</div><h3>Kādai informācijai jābūt pirmajā vietā?</h3><ul class="abcd"><li><b>A:</b> iekārtu aktuālais darbības stāvoklis</li><li><b>B:</b> datu nozīme un galvenie secinājumi</li><li><b>C:</b> ēku un iekārtu atrašanās vieta</li><li><b>D:</b> pazīstama, bet uzlabota lietošanas pieredze</li></ul></div>
+      <div class="box"><div class="n">03</div><h3>Cik sarežģīta būs ieviešana un uzturēšana?</h3><p>Jāvērtē ne tikai sākotnējais izstrādes apjoms, bet arī tas, cik viegli risinājumu būs papildināt, pievienojot jaunas ēkas, iekārtas un funkcionalitāti.</p></div>
+    </div>
+    <div class="grow"></div>
+    <p class="lead" style="font-size:22px"><b>Aicinājums:</b> vērtējot katru virzienu, domāsim par tā praktisko pielietojumu, ne tikai vizuālo iespaidu. Noslēgumā balsosim.</p>
+    <div class="notes"><ul><li>Aicinu katru dalībnieku jau prezentācijas laikā novērtēt katru virzienu skalā no 1 līdz 5.</li><li>Tas palīdzēs salīdzināt visus četrus variantus un nepieņemt lēmumu tikai pēc pēdējā redzētā prototipa.</li><li>Galvenais jautājums: kurš risinājums vislabāk atbilst mūsu sistēmas mērķiem un lietotāju ikdienas vajadzībām?</li></ul></div>
+  </section>
+
+  <!-- 3 · Kas kopīgs -->
+  <section class="slide">
+    <div class="eyebrow">Kas visiem prototipiem ir kopīgs?</div>
+    <h2 style="margin-bottom:10px">Vienāds saturs, atšķirīga lietošanas pieredze</h2>
+    <p class="intro">Lai salīdzinājums būtu objektīvs, visiem četriem prototipiem ir vienāds pamats.</p>
+    <div class="cols c3 common">
+      <div class="box"><h3>Vienādi dati un galvenie ekrāni</h3><p>Visos virzienos pieejami četri ekrāni: pieteikšanās, pārskata panelis, enerģijas dati un brīdinājumi. Mainās informācijas izkārtojums un mijiedarbība ar sistēmu.</p></div>
+      <div class="box"><h3>Enerģijas plūsmas vizualizācija</h3><p>Visos prototipos saglabāta enerģijas sadalījuma vizualizācija — no enerģijas avotiem līdz patēriņam. Katrā dizaina virzienā tā pielāgota kopējam stilam.</p></div>
+      <div class="box"><h3>Nozares terminoloģija un mērvienības</h3><p>Siltumsūkņi, ģeotermālie urbumi, gaisa apstrādes iekārtas (AHU), karstā ūdens sagatavošana u. c. Mērvienības: kWh, kW, €/MWh, COP, °C un ppm.</p></div>
+      <div class="box"><h3>Pielāgošanās mobilajām ierīcēm</h3><p>Visi prototipi pielāgoti arī šaurākiem ekrāniem, sākot no 375 px platuma. Tomēr lietošanas ērtums katrā virzienā atšķiras.</p></div>
+      <div class="box"><h3>Gaišais un tumšais režīms</h3><p>Kur tas atbilst dizaina koncepcijai, pieejami abi režīmi. Control Room veidots tikai tumšajā režīmā.</p></div>
+      <div class="box"><h3>Dažādi sistēmas darbības stāvokļi</h3><p>Visos prototipos var apskatīt datu ielādi, tukšu skatu, kļūdas paziņojumu un situāciju, kad nav savienojuma ar sistēmu.</p></div>
+    </div>
+    <div class="notes"><ul><li>Tā kā visos prototipos izmantoti vienādi dati, varam koncentrēties tieši uz dizainu un lietošanas pieredzi.</li><li>Ja kāda vērtība šķiet neprecīza, jāatceras, ka tie ir demonstrācijas dati.</li><li>Pieteikšanās ekrāns iekļauts, lai parādītu kopējo vizuālo pieeju. Autentifikācijas risinājumu šodien neizvērtējam.</li><li>Svarīgi apskatīt arī kļūdu un bezsaistes stāvokļus — lietotājam sistēmai jābūt saprotamai arī tad, kad kaut kas nedarbojas.</li></ul></div>
+  </section>
+
+  <!-- 4 · A -->
+  <section class="slide dir" style="--acc:var(--a)">
+    <div class="top"><span class="tag">A</span><h2>Control Room</h2><span class="who">Operatīvai iekārtu uzraudzībai un vadībai</span></div>
+    <div class="tagline"><b>Viss svarīgākais vienā ekrānā.</b> Tumšs, informācijas ziņā blīvs vadības panelis operatoriem un tehniķiem: aktuālā informācija par iekārtu darbību un iespēja ātri reaģēt uz izmaiņām.</div>
+    <div class="body">
+      <div class="frame" data-dir="a-control-room" data-screen="dashboard"></div>
+      <div class="side">
+        <div class="pc pros"><h3>Priekšrocības</h3><ul><li><b>Ātra piekļuve informācijai.</b> Vienā ekrānā redzami galvenie iekārtu darbības rādītāji un aktuālie brīdinājumi.</li><li><b>Efektīva ikdienas lietošana.</b> Komandu izvēlne (⌘K) un īsinājumtaustiņi (J/K, A, M, R) ļauj ātri strādāt arī ar lielu brīdinājumu un iekārtu skaitu.</li><li><b>Piemērots pastāvīgai uzraudzībai.</b> Labi izmantojams vadības telpās un uz lieliem monitoriem.</li></ul></div>
+        <div class="pc cons"><h3>Trūkumi</h3><ul><li>Lielais informācijas apjoms var būt grūti uztverams vadītājiem un lietotājiem, kuri sistēmu atver tikai reizēm.</li><li>Tumšais, blīvais izkārtojums ir mazāk piemērots mobilajām ierīcēm.</li><li>Pielāgojami paneļi un lietotāju individuālo izkārtojumu saglabāšana palielina uzturēšanas sarežģītību.</li></ul></div>
+        <div class="pick"><b>Kad izvēlēties?</b>Ja galvenie lietotāji ir operatori un tehniķi, kuri ikdienā nepārtraukti uzrauga un pārvalda iekārtu darbību.</div>
+        <div class="meta"><span>Paredzamais izstrādes apjoms: <b>●●○ — Vidējs</b></span></div>
+      </div>
+    </div>
+    <div class="notes"><ul><li>Demonstrācijā vispirms norādām uz augšējo kustīgo informācijas joslu ar aktuālajiem rādītājiem — slodzi, enerģijas cenām, temperatūru u. c.</li><li>Pēc tam noklikšķinām prototipā un atveram komandu izvēlni ar ⌘K. Aizveram ar Esc.</li><li>Pēc tam pārejam uz brīdinājumu sadaļu un parādām pārvietošanos ar J/K un darbību izpildi ar A.</li><li>Šī virziena galvenā ideja ir radīt vadības centra sajūtu — informācija nepārtraukti tiek aktualizēta un ir uzreiz pieejama.</li><li>Diskusijas jautājums: vai mūsu ēku pārvaldnieki šo sistēmu vēlētos izmantot katru dienu, vai arī tā ir vairāk piemērota tehniskajam personālam?</li></ul></div>
+  </section>
+
+  <!-- 5 · B -->
+  <section class="slide dir" style="--acc:var(--b)">
+    <div class="top"><span class="tag">B</span><h2>Nordic Calm</h2><span class="who">Vadītājiem, finansētājiem un ēku pārvaldniekiem</span></div>
+    <div class="tagline"><b>Mazāk datu. Vairāk skaidrības.</b> Gaišs, pārskatāms dizains, kas vispirms palīdz saprast galvenos secinājumus un tikai pēc tam piedāvā iedziļināties skaitļos.</div>
+    <div class="body">
+      <div class="frame" data-dir="b-nordic-calm" data-screen="dashboard" data-q="theme=light"></div>
+      <div class="side">
+        <div class="pc pros"><h3>Priekšrocības</h3><ul><li><b>Viegli uztverama informācija.</b> Grafika vietā sistēma paskaidro: „Enerģijas patēriņš ir par 8 % mazāks nekā pagājušajā otrdienā.”</li><li><b>Ērts mobilajās ierīcēs.</b> Galvenā informācija ir viegli atrodama.</li><li><b>Piemērots pārskatiem un atskaitēm.</b> Atbilst vadības, finansētāju un IPCEI pārskatu vajadzībām.</li><li><b>Pārdomāti brīdinājumi.</b> Grupēti pēc nepieciešamās rīcības, lai lietotāji koncentrētos uz svarīgāko.</li></ul></div>
+        <div class="pc cons"><h3>Trūkumi</h3><ul><li>Automātiski veidotiem secinājumiem vajag kvalitatīvus datus un precīzus formulēšanas noteikumus latviešu un angļu valodā.</li><li>Operatoriem var pietrūkt detalizētas informācijas bez papildu darbībām.</li><li>Brīvāks izkārtojums nozīmē, ka vienlaikus redzams mazāk datu.</li></ul></div>
+        <div class="pick"><b>Kad izvēlēties?</b>Ja svarīgākais ir skaidrs priekšstats par rezultātiem vadītājiem, finansētājiem un ēku pārvaldniekiem.</div>
+        <div class="meta"><span>Paredzamais izstrādes apjoms: <b>●●○ — Vidējs</b></span></div>
+      </div>
+    </div>
+    <div class="notes"><ul><li>Demonstrācijā sākam ar sākuma ekrāna kopsavilkumu: sistēma īsā tekstā pasaka, kāda šobrīd ir situācija.</li><li>Pēc tam atveram enerģijas sadaļu, lēnām ritinām un apskatām piecu sadaļu pārskatu, tostarp ieteikumus tā noslēgumā.</li><li>Noslēgumā atveram brīdinājumus: tie sadalīti pēc tā, vai jārīkojas, situācija jānovēro vai problēma jau ir atrisināta.</li><li>Vizuāli šis ir salīdzinoši vienkāršs risinājums, taču galvenais izaicinājums ir automātiski veidoto secinājumu precizitāte.</li><li>Nepietiek ar skaistu tekstu — tam vienmēr jāatbilst faktiskajiem datiem.</li><li>Diskusijas jautājums: kuriem mūsu sistēmas lietotājiem šāds ikdienas kopsavilkums būtu visnoderīgākais?</li></ul></div>
+  </section>
+
+  <!-- 6 · C -->
+  <section class="slide dir" style="--acc:var(--c)">
+    <div class="top"><span class="tag">C</span><h2>Spatial</h2><span class="who">Ēku kompleksu uzraudzībai un vizuālām demonstrācijām</span></div>
+    <div class="tagline"><b>Redzēt ne tikai kas notiek, bet arī kur.</b> Galvenais navigācijas elements ir ēku kompleksa interaktīvā karte, kas ļauj ātri atrast ēkas vai zonas, kurām vajag uzmanību.</div>
+    <div class="body">
+      <div class="frame" data-dir="c-spatial" data-screen="dashboard"></div>
+      <div class="side">
+        <div class="pc pros"><h3>Priekšrocības</h3><ul><li><b>Vizuāli saprotama atrašanās vieta.</b> Uzreiz redzams, kurā ēkā vai zonā ir novirzes vai brīdinājumi.</li><li><b>Iespaidīga demonstrācijas pieredze.</b> Projekta prezentācijām, viesu vizītēm un IPCEI rezultātu demonstrēšanai.</li><li><b>Ērta datu apskate laikā.</b> Laika slīdnis parāda, kā dienas gaitā mainās rādītāji.</li></ul></div>
+        <div class="pc cons"><h3>Trūkumi</h3><ul><li><b>Lielākais izstrādes un uzturēšanas apjoms.</b> Katrai jaunai ēkai vai objektam jāizveido un jāuztur telpiskais modelis.</li><li>Precīzām vērtībām un detalizētiem datiem vajag papildu darbības.</li><li>Sarežģītāka piekļūstamība un iespējami veiktspējas ierobežojumi, pieaugot objektu skaitam.</li></ul></div>
+        <div class="pick"><b>Kad izvēlēties?</b>Ja vizuāla demonstrēšana ir tikpat svarīga kā sistēmas ikdienas uzraudzība.</div>
+        <div class="meta"><span>Paredzamais izstrādes apjoms: <b>●●● — Augsts</b></span></div>
+      </div>
+    </div>
+    <div class="notes"><ul><li>Demonstrācijā izvēlamies konkrētu ēku, mainām laika slīdņa pozīciju un pēc tam pārslēdzam vizualizācijas režīmu uz komforta rādītājiem (Comfort).</li><li>Mūsu sistēmā jau ir izstrādes stadijā esošs objekta 3D skats. Tātad daļa no šī virziena tehniskajiem pamatiem jau ir pieejama.</li><li>Tomēr pilnvērtīga telpiska navigācija visā sistēmā prasītu papildu darbu.</li><li>Diskusijas jautājums: vai telpiskajai vizualizācijai jākļūst par sistēmas galveno saskarni, vai arī tā būtu vērtīgāka kā atsevišķs 3D un demonstrācijas skats?</li></ul></div>
+  </section>
+
+  <!-- 7 · D -->
+  <section class="slide dir" style="--acc:var(--d)">
+    <div class="top"><span class="tag">D</span><h2>Refined</h2><span class="who">Esošajiem sistēmas lietotājiem</span></div>
+    <div class="tagline"><b>Pazīstama sistēma. Labāka pieredze.</b> Saglabā pašreizējās sistēmas struktūru un pamatprincipus, uzlabojot vizuālo noformējumu, pārskatāmību un lietošanas ērtumu.</div>
+    <div class="body">
+      <div class="frame" data-dir="d-refined" data-screen="dashboard"></div>
+      <div class="side">
+        <div class="pc pros"><h3>Priekšrocības</h3><ul><li><b>Mazāks ieviešanas risks.</b> Sistēma nav jāapgūst no jauna, uzlabojumus var ieviest pakāpeniski.</li><li><b>Saglabāta esošā funkcionalitāte.</b> Ierastā navigācija un pazīstamie elementi, tostarp enerģijas plūsmas vizualizācija.</li><li><b>Vienotāks dizains.</b> Saskaņotas kartītes, skaidrāka datu attēlošana un tumšais režīms.</li><li><b>Elastīga vizuālā identitāte.</b> Krāsas un fontus var pielāgot bez izmaiņām struktūrā.</li></ul></div>
+        <div class="pc cons"><h3>Trūkumi</h3><ul><li>Esošās navigācijas un lietošanas pieredzes problēmas netiek pilnībā atrisinātas.</li><li>Mazāk palīdz interpretēt datus nekā Nordic Calm, un operatīvā vadība ir vājāka nekā Control Room.</li><li>Risks, ka uzlabojumus uztvers tikai kā vizuālas pārmaiņas.</li></ul></div>
+        <div class="pick"><b>Kad izvēlēties?</b>Ja pašreizējā struktūra kopumā atbilst lietotāju vajadzībām un prioritāte ir ātri ieviest redzamus uzlabojumus.</div>
+        <div class="meta"><span>Paredzamais izstrādes apjoms: <b>●○○ — Zems</b></span></div>
+      </div>
+    </div>
+    <div class="notes"><ul><li>Demonstrācijā izmantojam augšējā joslā esošo dizaina iestatījumu pogu, lai parādītu četrus krāsu un fontu variantus.</li><li>Pēc tam atveram enerģijas sadaļu: informācija sadalīta cilnēs — pārskats, enerģijas sadalījums, izmaksas, CO₂ emisijas un patēriņa likumsakarības.</li><li>Noslēgumā atveram brīdinājumus: tie veidoti līdzīgi e-pasta iesūtnei — kreisajā pusē saraksts, labajā detalizēta informācija par izvēlēto brīdinājumu.</li><li>Lielāko daļu uzlabojumu iespējams īstenot ar kopīgiem lietotāja saskarnes komponentiem un CSS mainīgajiem.</li><li>Tas ļautu dizainu atjaunināt pakāpeniski, netraucējot pārējiem izstrādes darbiem.</li><li>Diskusijas jautājums: vai mums šobrīd nepieciešama pilnīgi jauna pieeja, vai arī lielāku ieguvumu dotu esošās sistēmas mērķtiecīga pilnveide?</li></ul></div>
+  </section>
+
+  <!-- 8 · Salīdzinājums -->
+  <section class="slide">
+    <div class="eyebrow">Četru virzienu salīdzinājums</div>
+    <h2 style="margin-bottom:16px">Katram virzienam ir savas stiprās puses</h2>
+    <table class="cmp">
+      <thead><tr><th>Kritērijs</th><th><span class="sw" style="background:var(--a)"></span>A — Control Room</th><th><span class="sw" style="background:var(--b)"></span>B — Nordic Calm</th><th><span class="sw" style="background:var(--c)"></span>C — Spatial</th><th><span class="sw" style="background:var(--d)"></span>D — Refined</th></tr></thead>
+      <tbody>
+        <tr><td>Galvenā auditorija</td><td>Operatori un tehniķi</td><td>Vadītāji, finansētāji</td><td>Demonstrācijas, ēku kompleksi</td><td>Esošie lietotāji</td></tr>
+        <tr><td>Galvenais uzsvars</td><td>Aktuālie darbības dati</td><td>Secinājumi un skaidrība</td><td>Atrašanās vieta</td><td>Pazīstama lietošanas pieredze</td></tr>
+        <tr><td>Informācijas daudzums ekrānā</td><td>Liels</td><td>Neliels</td><td>Vidējs</td><td>Vidējs</td></tr>
+        <tr><td>Lietošana telefonā</td><td>Mazāk ērta</td><td>Ļoti ērta</td><td>Ērta</td><td>Ērta</td></tr>
+        <tr><td>Izstrādes apjoms</td><td class="score">●●○</td><td class="score">●●○</td><td class="score">●●●</td><td class="score">●○○</td></tr>
+        <tr><td>Pārmaiņas lietotājiem</td><td>Būtiskas</td><td>Būtiskas</td><td>Ļoti būtiskas</td><td>Nelielas</td></tr>
+        <tr><td>Galvenais risks</td><td>Pārlieku sarežģīts nespeciālistiem</td><td>Nepietiekama detalizācija operatoriem</td><td>Augstas izmaksas un sarežģīta paplašināšana</td><td>Nepietiekami būtiski uzlabojumi</td></tr>
+      </tbody>
+    </table>
+    <div class="notes"><ul><li>Neviens no četriem virzieniem nav labākais pilnīgi visos aspektos.</li><li>Control Room piedāvā ātrumu un detalizāciju, Nordic Calm — skaidrību, Spatial — telpisku pārskatāmību, bet Refined — mazāku ieviešanas risku.</li><li>Mums jāizvēlas nevis vizuāli iespaidīgākais variants, bet tas, kura priekšrocības un kompromisi vislabāk atbilst mūsu projekta vajadzībām.</li></ul></div>
+  </section>
+
+  <!-- 9 · Lēmums -->
+  <section class="slide">
+    <div class="eyebrow">Kopīgais lēmums</div>
+    <h2 style="margin-bottom:10px">Kuru virzienu attīstīsim tālāk?</h2>
+    <p class="intro">Pirms balsojuma vienosimies par trim būtiskiem jautājumiem.</p>
+    <div class="cols c2" style="gap:40px;flex:1;min-height:0;grid-template-columns:1fr 1.3fr">
+      <ol class="q qd">
+        <li><b>Kas ir mūsu galvenais lietotājs?</b><span>Vai sistēmu visbiežāk izmantos operatori un tehniskais personāls vai vadītāji un ēku pārvaldnieki?</span></li>
+        <li><b>Ko lietotājam jāredz vispirms?</b><span>Iekārtu aktuālo stāvokli, galvenos secinājumus vai informāciju par konkrētām ēkām un zonām?</span></li>
+        <li><b>Cik lielas pārmaiņas esam gatavi ieviest?</b><span>Vai pietiek ar esošās sistēmas pilnveidi, vai arī vēlamies būtiski mainīt tās lietošanas pieredzi?</span></li>
+      </ol>
+      <div>
+        <div class="vote" id="vote" style="grid-template-columns:1fr 1fr">
+          <div class="box vcard" style="--acc:var(--a)" data-v="a"><a class="thumb vp" href="a-control-room/dashboard.html" target="_blank" rel="noopener" title="Atvērt prototipu jaunā cilnē"><iframe data-src="a-control-room/dashboard.html" tabindex="-1" title="A — Control Room"></iframe></a><div class="vrow"><div class="vname"><b>A — Control Room</b><small>Operatīvā vadība</small></div><div class="row"><button data-d="-1" aria-label="Noņemt balsi A">−</button><div class="count">0</div><button data-d="1" aria-label="Pievienot balsi A">+</button></div></div></div>
+          <div class="box vcard" style="--acc:var(--b)" data-v="b"><a class="thumb vp" href="b-nordic-calm/dashboard.html?theme=light" target="_blank" rel="noopener" title="Atvērt prototipu jaunā cilnē"><iframe data-src="b-nordic-calm/dashboard.html?theme=light" tabindex="-1" title="B — Nordic Calm"></iframe></a><div class="vrow"><div class="vname"><b>B — Nordic Calm</b><small>Vienkāršība un skaidrība</small></div><div class="row"><button data-d="-1" aria-label="Noņemt balsi B">−</button><div class="count">0</div><button data-d="1" aria-label="Pievienot balsi B">+</button></div></div></div>
+          <div class="box vcard" style="--acc:var(--c)" data-v="c"><a class="thumb vp" href="c-spatial/dashboard.html" target="_blank" rel="noopener" title="Atvērt prototipu jaunā cilnē"><iframe data-src="c-spatial/dashboard.html" tabindex="-1" title="C — Spatial"></iframe></a><div class="vrow"><div class="vname"><b>C — Spatial</b><small>Telpiskais skatījums</small></div><div class="row"><button data-d="-1" aria-label="Noņemt balsi C">−</button><div class="count">0</div><button data-d="1" aria-label="Pievienot balsi C">+</button></div></div></div>
+          <div class="box vcard" style="--acc:var(--d)" data-v="d"><a class="thumb vp" href="d-refined/dashboard.html" target="_blank" rel="noopener" title="Atvērt prototipu jaunā cilnē"><iframe data-src="d-refined/dashboard.html" tabindex="-1" title="D — Refined"></iframe></a><div class="vrow"><div class="vname"><b>D — Refined</b><small>Esošās sistēmas pilnveide</small></div><div class="row"><button data-d="-1" aria-label="Noņemt balsi D">−</button><div class="count">0</div><button data-d="1" aria-label="Pievienot balsi D">+</button></div></div></div>
+        </div>
+        <p class="muted" style="font-size:15px;margin:14px 0 0"><b>Balsojuma norise:</b> saskaitām katram virzienam atdotās balsis un reģistrējam rezultātus. Balsu skaits tiek saglabāts tikai šajā pārlūkā. <button id="vreset" style="border:0;background:none;text-decoration:underline;color:inherit;padding:0">Notīrīt</button></p>
+        <p class="muted" style="font-size:15px;margin:8px 0 0"><b>Nākamais solis:</b> fiksējam izvēlēto virzienu un vienojamies par pirmā izstrādes posma prioritātēm.</p>
+      </div>
+    </div>
+    <div class="notes"><ul><li>Pirms balsošanas īsi pārrunājam trīs jautājumus, lai lēmums būtu balstīts uz kopīgu izpratni par sistēmas mērķiem.</li><li>Pēc tam aicinu katru izvēlēties, viņaprāt, piemērotāko variantu.</li><li>Ja balsis sadalās galvenokārt starp diviem virzieniem, vēlreiz pārrunājam to priekšrocības un trūkumus un rīkojam atkārtotu balsojumu starp abiem.</li><li>Pēc lēmuma pieņemšanas fiksējam izvēli, galvenos argumentus un nākamos izstrādes uzdevumus.</li><li>Svarīgākais rezultāts nav tikai izvēlēts dizains, bet kopīga izpratne par to, kādu sistēmu vēlamies izveidot un kam tā ikdienā kalpos.</li></ul></div>
+  </section>
+
+</div>
+
+<div class="notepane" id="notepane"><h4>Runātāja piezīmes</h4><div id="notebody"></div></div>
+<div class="help"><kbd>←</kbd> <kbd>→</kbd> pārvietoties · <kbd>N</kbd> piezīmes · <kbd>F</kbd> pilnekrāns · <kbd>P</kbd> drukāt / PDF</div>
+<nav class="ctl" aria-label="Slaidu vadība">
+  <a href="index.html" title="Atpakaļ uz hub">◎ Hub</a>
+  <button id="prev" aria-label="Iepriekšējais slaids">←</button><span class="num" id="num">1 / 1</span><button id="next" aria-label="Nākamais slaids">→</button>
+  <button id="ntog" title="Runātāja piezīmes (N)">Piezīmes</button><button id="fs" title="Pilnekrāns (F)">⤢</button>
+  <a href="presentation-en.html" title="English version">EN</a>
+</nav>
+
+<script>
+(function () {
+  const slides = [...document.querySelectorAll('.slide')];
+  const screens = ['login', 'dashboard', 'energy', 'alerts'];
+  const LBL = { login: 'Pieteikšanās', dashboard: 'Pārskata panelis', energy: 'Enerģija', alerts: 'Brīdinājumi' };
+  let cur = 0;
+
+  // Build the browser-like frames around live prototype pages.
+  document.querySelectorAll('.frame').forEach((f) => {
+    const dir = f.dataset.dir, st = f.dataset.state, q0 = f.dataset.q, mini = f.hasAttribute('data-mini');
+    const src = (s) => { const q = [st && s === 'dashboard' ? `state=${st}` : '', q0].filter(Boolean).join('&'); return `${dir}/${s}.html${q ? `?${q}` : ''}`; };
+    const shown = (s) => (q0 ? src(s).replace(new RegExp(`[?&]${q0}$`), '') : src(s)); // keep the address bar short
+    f.innerHTML = `<div class="chrome"><span class="dt"><i></i><i></i><i></i></span><span class="url">${shown(f.dataset.screen)}</span>
+      ${mini ? '' : `<nav>${screens.map((s) => `<button data-s="${s}" aria-pressed="${s === f.dataset.screen}">${LBL[s]}</button>`).join('')}</nav>`}
+      <a href="${src(f.dataset.screen)}" target="_blank" rel="noopener" title="Atvērt jaunā cilnē">↗</a></div>
+      <div class="vp"><iframe title="${dir} prototype" data-src="${src(f.dataset.screen)}" tabindex="0"></iframe></div>`;
+    f.querySelectorAll('nav button').forEach((b) => b.onclick = () => {
+      f.querySelectorAll('nav button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+      const u = src(b.dataset.s);
+      f.querySelector('.url').textContent = shown(b.dataset.s); f.querySelector('a').href = u;
+      const fr = f.querySelector('iframe'); fr.dataset.src = u; fr.src = u;
+    });
+  });
+
+  // Load frames only near the current slide, so the deck stays quick.
+  function loadNear(i) {
+    slides.forEach((s, j) => s.querySelectorAll('iframe').forEach((fr) => {
+      if (Math.abs(i - j) <= 1 && !fr.getAttribute('src')) fr.src = fr.dataset.src;
+    }));
+  }
+  // Clickers send PageUp/PageDown; forward them even when a frame has focus.
+  document.querySelectorAll('iframe').forEach((fr) => fr.addEventListener('load', () => {
+    try { fr.contentDocument.addEventListener('keydown', (e) => { if (e.key === 'PageDown') go(cur + 1); if (e.key === 'PageUp') go(cur - 1); }); } catch (_) {}
+  }));
+
+  function fit() {
+    const notes = document.body.classList.contains('notes-on');
+    const h = innerHeight * (notes ? 0.68 : 1) - (notes ? 24 : 110), w = innerWidth - 24;
+    document.documentElement.style.setProperty('--nh', notes ? `${innerHeight * 0.32}px` : '0px');
+    const k = Math.min(w / 1600, h / 900);
+    slides.forEach((s) => s.style.setProperty('--k', k));
+    // Scale each live screen to the frame's width, and give it the frame's full height so no grey gap is left below.
+    document.querySelectorAll('.slide.on .vp').forEach((vp) => {
+      const s = vp.offsetWidth / 1440;
+      vp.style.setProperty('--s', s);
+      const fr = vp.querySelector('iframe'); if (fr && vp.offsetHeight) fr.style.height = `${Math.ceil(vp.offsetHeight / s)}px`;
+    });
+  }
+  function go(i) {
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, j) => s.classList.toggle('on', j === cur));
+    document.getElementById('num').textContent = `${cur + 1} / ${slides.length}`;
+    document.getElementById('prog').style.width = `${((cur + 1) / slides.length) * 100}%`;
+    const n = slides[cur].querySelector('.notes');
+    document.getElementById('notebody').innerHTML = n ? n.innerHTML : '<p style="opacity:.6">Šim slaidam nav piezīmju.</p>';
+    if (location.hash !== `#${cur + 1}`) history.replaceState(null, '', `#${cur + 1}`);
+    loadNear(cur); fit();
+  }
+  const toggleNotes = () => { document.body.classList.toggle('notes-on'); fit(); };
+  const fullscreen = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
+
+  document.addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') toggleNotes();
+    else if (e.key === 'f' || e.key === 'F') fullscreen();
+    else if (e.key === 'p' || e.key === 'P') print();
+  });
+  document.getElementById('prev').onclick = () => go(cur - 1);
+  document.getElementById('next').onclick = () => go(cur + 1);
+  document.getElementById('ntog').onclick = toggleNotes;
+  document.getElementById('fs').onclick = fullscreen;
+  addEventListener('resize', fit);
+  addEventListener('hashchange', () => go(parseInt(location.hash.slice(1), 10) - 1 || 0));
+  // Printing: load every frame first so each page has its screen.
+  addEventListener('beforeprint', () => document.querySelectorAll('iframe').forEach((fr) => { if (!fr.getAttribute('src')) fr.src = fr.dataset.src; }));
+
+  // Votes (this browser only)
+  const KEY = 'vatp-deck-votes';
+  let votes = {};
+  try { votes = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) {}
+  const drawVotes = () => document.querySelectorAll('#vote [data-v]').forEach((b) => { b.querySelector('.count').textContent = votes[b.dataset.v] || 0; });
+  document.getElementById('vote').onclick = (e) => {
+    const btn = e.target.closest('[data-d]'); if (!btn) return;
+    const v = btn.closest('[data-v]').dataset.v;
+    votes[v] = Math.max(0, (votes[v] || 0) + +btn.dataset.d);
+    try { localStorage.setItem(KEY, JSON.stringify(votes)); } catch (_) {}
+    drawVotes();
+  };
+  document.getElementById('vreset').onclick = () => { votes = {}; try { localStorage.removeItem(KEY); } catch (_) {} drawVotes(); };
+  drawVotes();
+
+  go(parseInt(location.hash.slice(1), 10) - 1 || 0);
+})();
+</script>
+</body>
+</html>

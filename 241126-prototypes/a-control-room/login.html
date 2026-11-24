@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in · VATP Control Room</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-direction="a-control-room" data-screen="login">
+  <div class="login">
+    <section class="login-l">
+      <div class="brand"><span class="avatar" style="background:linear-gradient(135deg,#3fd0e0,#2a8fd6);color:#031014;border:0">VT</span>VATP · OPS CONSOLE</div>
+      <div>
+        <h1>The campus is running.<br/><span>Take the controls.</span></h1>
+        <p class="muted" style="max-width:460px;margin:0 0 24px">Live plant, energy and comfort data for the Ventspils High-Tech Park, from the on-prem node right next to the devices.</p>
+        <div class="status-strip" aria-label="Live system status">
+          <div><b class="num" style="color:#3ddc97">212<span class="dim" style="font-size:12px">/218</span></b><span>devices online</span></div>
+          <div><b class="num">4.1</b><span>heat pump COP</span></div>
+          <div><b class="num" id="lv-load">129 kW</b><span>load right now</span></div>
+          <div><b class="num" style="color:#ff5d5d">2</b><span>critical alerts</span></div>
+        </div>
+      </div>
+      <div class="foot"><span class="live" style="display:inline-flex"><i></i>vatp-ems-01 · on-prem · all services nominal</span> &nbsp;·&nbsp; v2.4.0</div>
+    </section>
+    <section class="login-r">
+      <form class="login-card" action="dashboard.html">
+        <div class="mono dim" style="font-size:11px;letter-spacing:.1em">AUTHENTICATE</div>
+        <h2>Sign in to the console</h2>
+        <p class="muted" style="margin:0 0 18px">Use your organisation account. Operators get control rights after MFA.</p>
+        <a class="btn primary block" href="dashboard.html" style="text-decoration:none;margin-top:0">Continue with VATP SSO</a>
+        <a class="btn block" href="dashboard.html" style="text-decoration:none;margin-top:8px"><span id="g"></span>Continue with Google</a>
+        <div class="or">OR EMAIL</div>
+        <label class="field"><span>Email</span><input type="email" placeholder="name@vatp.lv" autocomplete="username" /></label>
+        <label class="field"><span>Password</span><input type="password" placeholder="••••••••••" autocomplete="current-password" /></label>
+        <label style="display:flex;gap:8px;align-items:center;margin-top:12px;color:var(--muted);font-size:12px"><input type="checkbox" checked style="accent-color:var(--cyan)" /> Keep this console signed in (control-room screen)</label>
+        <button class="btn block" type="submit">Sign in <kbd style="margin-left:6px">↵</kbd></button>
+        <p class="foot" style="margin-top:18px">Prototype: any input works.</p>
+      </form>
+    </section>
+  </div>
+  <script src="../shared/mock-data.js?v=20261124"></script>
+  <script src="../shared/svg-charts.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('g').innerHTML = ControlRoom.icons.google;
+    setInterval(() => { document.getElementById('lv-load').textContent = 126 + Math.round(Math.random() * 7) + ' kW'; }, 2000);
+  </script>
+  <script src="../shared/switcher.js"></script>
+</body>
+</html>
